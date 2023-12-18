@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/308792019559299633/9edcfeb2bda64fd781de97ebabea11df/artifacts
+end_time: 1702906488896
+entry_point_name: ''
+experiment_id: '308792019559299633'
+lifecycle_stage: active
+run_id: 9edcfeb2bda64fd781de97ebabea11df
+run_name: test_yolo
+run_uuid: 9edcfeb2bda64fd781de97ebabea11df
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1702905569109
+status: 3
+tags: []
+user_id: gbrison
