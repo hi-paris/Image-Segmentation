@@ -7,7 +7,7 @@ INPUT:
 MODEL:
   SEM_SEG_HEAD:
     NUM_CLASSES: 19
-  WEIGHTS: /home/ids/ext-4208/FC/fc-clip/fcclip_cocopan_r50.pth
+  WEIGHTS: /home/ids/gbrison/FC/fc-clip/fcclip_cocopan_r50.pth
 OUTPUT_DIR: ./alliteration_void/output_r50_train_008
 DATASETS:
   TRAIN: ("openvocab_cityscapes_fine_panoptic_train",)

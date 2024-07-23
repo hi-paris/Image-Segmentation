@@ -267,11 +267,11 @@ def save_json(list_data_item,list_paths,get_ann_list):
     id=int(id)
     mypath = str(int(id/499))
     if not os.path.isdir(mypath):
-        os.makedirs(f'/home/ids/ext-4208/FC/fc-clip/images/{mypath}')
+        os.makedirs(f'/home/ids/gbrison/FC/fc-clip/images/{mypath}')
     for data_item in list_paths:
         im=cv2.imread(str(data_item[1]))
         path_des=''.join(data_item[1].split('/'))
-        cv2.imwrite(f'/home/ids/ext-4208/FC/fc-clip/images/{mypath}/{path_des}', im)
+        cv2.imwrite(f'/home/ids/gbrison/FC/fc-clip/images/{mypath}/{path_des}', im)
         
         id+=1
         data[id]=str([data_item[0], f'/{mypath}/{path_des}', data_item[2]])
