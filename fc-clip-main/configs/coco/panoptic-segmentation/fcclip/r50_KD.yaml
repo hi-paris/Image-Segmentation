@@ -1,0 +1,21 @@
+_BASE_: ./fcclip_convnext_large_eval_ade20k_r50.yaml
+
+INPUT:
+  MIN_SIZE_TEST: 1024
+  MAX_SIZE_TEST: 2560
+
+MODEL:
+  SEM_SEG_HEAD:
+    NUM_CLASSES: 19
+  WEIGHTS: /home/ids/gbrison/FC/fc-clip/fcclip_cocopan_r50.pth
+  WEIGHTS_Teacher : /tsi/hi-paris/models/oneformer/mapillary_pretrain_250_16_convnext_l_oneformer_cityscapes_90k.pth
+OUTPUT_DIR: /tsi/hi-paris/FCCLIP_results/All_results/KD_results/KD_Oneformer_R50_Separated_loss_Normal_008_10000iter
+DATASETS:
+  TRAIN: ("openvocab_cityscapes_fine_panoptic_train",)
+  TEST: ("openvocab_cityscapes_fine_panoptic_val",)
+SOLVER:
+  IMS_PER_BATCH: 8
+  MAX_ITER: 100
+TEST:
+  EVAL_PERIOD: 100
+
