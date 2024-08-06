@@ -1,346 +1,199 @@
-# Image Segmentation
+# Image Segmentation In Vocab + Out Vocab 🚀
+
+This readme is work in progress ⚙️
+
+## 01 Installation 📦
+
+<a href="Image-Segmentation/INSTALL.md">installation instructions</a>
+
+## 02 Dataset 💽
 
 
-# download Miniconda installer (from conda-forge)
+<img src="https://i.postimg.cc/X7FPCzvD/0-If-TKQG09q-Kau-Kpba.png" alt="cityscape-dataset.png" width="400px">
 
-wget [https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh](https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh) \
--O [miniconda.sh](http://miniconda.sh/)
+Cityscape - Fine Annotations: These are high-quality annotations for 5,000 images collected in street scenes from 50 different cities, split into 2,975 for training, 500 for validation, and 1,525 for testing. The annotations include classes, such as road, sidewalk, building, wall, fence, pole, traffic light, traffic sign, person, rider, car, truck, bus, train, motorcycle, bicycle, and more.
+<br />
+Configuration 000 = all labels on 19 classes are presents. 11 classes (Stuff) & 8 classes (Things)
+Configuration 008 = Only labels on Stuff classes are presents labels on things are removed 
+<br />
+| Conf-ID | deleted classes | 
+|---------|------------------|
+| 000     | \{-\}            |
+| 001     | \{24\}           |
+| 002     | \{24, 25\}       |
+| 003     | \{24, 25, 26\}   |
+| 004     | \{24, 25, 26, 27\}|
+| 005     | \{24, 25, 26, 27, 28\}|
+| 006     | \{24, 25, 26, 27, 28, 31\}|
+| 007     | \{24, 25, 26, 27, 28, 31, 32\}|
+| 008     | \{24, 25, 26, 27, 28, 31, 32, 33\}|
 
-# install Miniconda
+<br />
 
-MINICONDA_PATH=./miniconda3
-chmod +x [miniconda.sh](http://miniconda.sh/) && ./miniconda.sh -b -p $MINICONDA_PATH
+train: 
 
-# make sure conda is up-to-date
+<br />
 
-source $MINICONDA_PATH/etc/profile.d/conda.sh
-conda update --yes conda
+<img src="https://i.postimg.cc/c4Jnmxbv/frequency-of-each-class.png" alt="frequency-of-each-class.png" width="300px">
 
-# Update your .bashrc to initialise your conda base environment on each login
+<br />
 
-conda init
+val: 
 
-```
-conda create --name fcclip python=3.8 -y
-conda activate fcclip
-conda install pytorch==1.9.0 torchvision==0.10.0 cudatoolkit=11.1 -c pytorch -c nvidia
-pip install -U opencv-python
+<br />
 
-# under your working directory
-git clone https://github.com/facebookresearch/detectron2.git
-python -m pip install -e detectron2
-pip install git+https://github.com/cocodataset/panopticapi.git
-pip install git+https://github.com/mcordts/cityscapesScripts.git
-git clone https://github.com/bytedance/fc-clip.git
-cd fcclip
-pip install -r requirements.txt
-cd fcclip/modeling/pixel_decoder/ops
-sh make.sh
-cd ../../../..
-pip install open-clip-torch==2.24.0
-```
+<img src="https://i.postimg.cc/MpCqv5BW/frequency-of-each-class-val.png" alt="frequency-of-each-class-val.png" width="300px">
 
-/home/infres/gbrison/segmentation/benchmark-mllm/datasets/cityscapes
 
-# How to download the Cityscapes dataset
 
-In the first command, put your username and password. This will login with your credentials and keep the associated cookie:
+## 03 Approaches ➡️
 
-```
-wget --keep-session-cookies --save-cookies=cookies.txt --post-data 'username=myusername&password=mypassword&submit=Login' https://www.cityscapes-dataset.com/login/
-```
+The goal was to find an innovative approach for panoptic segmentation that works for In and Out of vocabulary in finetuning process
 
-In the second command, you need to provide the packageID parameter:
+Our current top performer >>
 
-```
-wget --load-cookies cookies.txt --content-disposition https://www.cityscapes-dataset.com/file-handling/?packageID=1
-```
+<br />
 
-For example, if you want to download “gtFine_trainvaltest.zip” (241MB), you need to set “packageID=1”.
+**Generate Configurations** 
 
-And to download “leftImg8bit_trainvaltest.zip” (11GB), you need to set “packageID=3”.
-
-Once you download the zip files that you need, you can unzip them using the command:
-
-```
-unzip gtFine_trainvaltest.zip
-
-unzip leftImg8bit_trainvaltest.zip
+```bash
+python fc-clip/create_configs.py
 ```
 
-# Dataset preparation:
+**Zero Shot (FCCLIP) - 000 - inference**
 
-The goal here is to get the following structure for the cityscapes dataset:
+1️⃣ Step 1: 
 
-```
-cityscapes/
-  gtFine/
-    train/
-      aachen/
-        color.png, instanceIds.png, labelIds.png, polygons.json,
-        labelTrainIds.png
-      ...
-    val/
-    test/
-    # below are generated Cityscapes panoptic annotation
-    cityscapes_panoptic_train.json
-    cityscapes_panoptic_train/
-    cityscapes_panoptic_val.json
-    cityscapes_panoptic_val/
-    cityscapes_panoptic_test.json
-    cityscapes_panoptic_test/
-  leftImg8bit/
-    train/
-    val/
-    test/
+rename fcclip/fc-clip/fcclip_inference >> fcclip/fc-clip/fcclip
+
+2️⃣ Step 2: 
+
+```bash
+python train_net_inference.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/coco/panoptic-segmentation/fcclip/r50_exp.yaml --eval-only MODEL.WEIGHTS /home/infres/gbrison/fc3/fc-clip/fcclip_cocopan_r50.pth
 ```
 
-Set location for the datasets folder:
+**Upperbound - FT - 000 - 1000 iter**
 
-```
-export DETECTRON2_DATASETS=/path/to/datasets
-```
+1️⃣ Step 1: 
 
-Install cityscapes scripts by:
+rename fcclip/fc-clip/fcclip_normal >> fcclip/fc-clip/fcclip
 
-```
-pip install git+https://github.com/mcordts/cityscapesScripts.git
-```
+2️⃣ Step 2: 
 
-Note: to create labelTrainIds.png, first prepare the above structure, then run cityscapesescript with:
-
-```
-export CITYSCAPES_DATASET=/home/infres/gbrison/fcclip_new/fc-clip/datasets/cityscapes 
-
-python /home/infres/gbrison/fcclip_new/fc-clip/cityscapesScripts/cityscapesscripts/preparation/createTrainIdLabelImgs.py
+```bash
+python train_net_normal.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/coco/panoptic-segmentation/fcclip/r50_exp.yaml --eval-only MODEL.WEIGHTS /home/infres/gbrison/fc3/fc-clip/fcclip_cocopan_r50.pth
 ```
 
-These files are not needed for instance segmentation.
+**FTZS=FT on in-classes (Ground Truth) + ZS predictions for out  - 008 - 1000 iter**
 
-Note: to generate Cityscapes panoptic dataset, run cityscapesescript with:
+1️⃣ Step 1: 
 
+rename fcclip/fc-clip/fcclip_invocab >> fcclip/fc-clip/fcclip
+
+2️⃣ Step 2: 
+
+```bash
+python train_net_invocab.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/coco/panoptic-segmentation/fcclip/r50_exp.yaml --eval-only MODEL.WEIGHTS /home/infres/gbrison/fc3/fc-clip/fcclip_cocopan_r50.pth
 ```
-export CITYSCAPES_DATASET=/home/infres/gbrison/fcclip_new/fc-clip/datasets/cityscapes 
+<img src="https://i.postimg.cc/SNQ6Fm1h/Screenshot-2024-08-06-at-18-28-49.png" alt="flow.png" width="600px">
 
-python /home/infres/gbrison/fcclip_new/fc-clip/cityscapesScripts/cityscapesscripts/preparation/createPanopticImgs.py
+**FT on in-classes-GT (out -> void) + intersection with ZS at inference  - 008 - 1000 iter**
+
+1️⃣ Step 1: 
+
+rename fcclip/fc-clip/fcclip_naive >> fcclip/fc-clip/fcclip
+
+2️⃣ Step 2: 
+
+```bash
+python train_net_naive.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/coco/panoptic-segmentation/fcclip/r50_exp.yaml --num-gpus 2
 ```
 
-These files are not needed for semantic and instance segmentation.
+**Knowledge Distillation (Teacher -Student)**
 
-/home/infres/gbrison/fcclip_new/fc-clip/datasets/cityscapes
+1️⃣ Step 1: 
 
-Run the code :
+rename fcclip/fc-clip/fcclip_kd >> fcclip/fc-clip/fcclip
 
-python train_net_GB.py --config-file config-GB_001.yaml --num-gpus 2
+2️⃣ Step 2: 
 
-/home/infres/gbrison/fcclip_new/fc-clip/datasets
-
-# How to register and use a custom dataset
-
-Follow these instructions on how to use Detectron2 dataset APIs to add and use custom datasets: 
-
-[https://detectron2.readthedocs.io/en/latest/tutorials/datasets.html](https://detectron2.readthedocs.io/en/latest/tutorials/datasets.html)
-
-This an example of how the Cityscapes panoptic dataset (used in FC-CLIP) is registered to the DatasetCatalog :
-
-⚠️ In order to get access to the different parameters (eg: CITYSCAPES_CATEGORIES), you need to check the file directly in the FC-CLIP package: 
- 
-Path to the file: **fc-clip/fcclip/data/datasets/register_cityscapes_panoptic.py**
-
-```python
-"""
-This file may have been modified by Bytedance Ltd. and/or its affiliates (“Bytedance's Modifications”).
-All Bytedance's Modifications are Copyright (year) Bytedance Ltd. and/or its affiliates. 
-
-Reference: https://github.com/facebookresearch/detectron2/blob/main/detectron2/data/datasets/cityscapes_panoptic.py
-"""
-
-import json
-import logging
-import os
-
-from detectron2.data import DatasetCatalog, MetadataCatalog
-from detectron2.utils.file_io import PathManager
-
-from . import openseg_classes
-
-CITYSCAPES_CATEGORIES = openseg_classes.get_cityscapes_categories_with_prompt_eng()
-
-"""
-This file contains functions to register the Cityscapes panoptic dataset to the DatasetCatalog.
-"""
-
-logger = logging.getLogger(__name__)
-
-def get_cityscapes_panoptic_files(image_dir, gt_dir, json_info):
-    files = []
-    # scan through the directory
-    cities = PathManager.ls(image_dir)
-    logger.info(f"{len(cities)} cities found in '{image_dir}'.")
-    image_dict = {}
-    for city in cities:
-        city_img_dir = os.path.join(image_dir, city)
-        for basename in PathManager.ls(city_img_dir):
-            image_file = os.path.join(city_img_dir, basename)
-
-            suffix = "_leftImg8bit.png"
-            assert basename.endswith(suffix), basename
-            basename = os.path.basename(basename)[: -len(suffix)]
-
-            image_dict[basename] = image_file
-
-    for ann in json_info["annotations"]:
-        image_file = image_dict.get(ann["image_id"], None)
-        assert image_file is not None, "No image {} found for annotation {}".format(
-            ann["image_id"], ann["file_name"]
-        )
-        label_file = os.path.join(gt_dir, ann["file_name"])
-        segments_info = ann["segments_info"]
-
-        files.append((image_file, label_file, segments_info))
-
-    assert len(files), "No images found in {}".format(image_dir)
-    assert PathManager.isfile(files[0][0]), files[0][0]
-    assert PathManager.isfile(files[0][1]), files[0][1]
-    return files
-
-def load_cityscapes_panoptic(image_dir, gt_dir, gt_json, meta):
-    """
-    Args:
-        image_dir (str): path to the raw dataset. e.g., "~/cityscapes/leftImg8bit/train".
-        gt_dir (str): path to the raw annotations. e.g.,
-            "~/cityscapes/gtFine/cityscapes_panoptic_train".
-        gt_json (str): path to the json file. e.g.,
-            "~/cityscapes/gtFine/cityscapes_panoptic_train.json".
-        meta (dict): dictionary containing "thing_dataset_id_to_contiguous_id"
-            and "stuff_dataset_id_to_contiguous_id" to map category ids to
-            contiguous ids for training.
-
-    Returns:
-        list[dict]: a list of dicts in Detectron2 standard format. (See
-        `Using Custom Datasets </tutorials/datasets.html>`_ )
-    """
-
-    def _convert_category_id(segment_info, meta):
-        if segment_info["category_id"] in meta["thing_dataset_id_to_contiguous_id"]:
-            segment_info["category_id"] = meta["thing_dataset_id_to_contiguous_id"][
-                segment_info["category_id"]
-            ]
-        else:
-            segment_info["category_id"] = meta["stuff_dataset_id_to_contiguous_id"][
-                segment_info["category_id"]
-            ]
-        return segment_info
-
-    assert os.path.exists(
-        gt_json
-    ), "Please run `python cityscapesscripts/preparation/createPanopticImgs.py` to generate label files."  # noqa
-    with open(gt_json) as f:
-        json_info = json.load(f)
-    files = get_cityscapes_panoptic_files(image_dir, gt_dir, json_info)
-    ret = []
-    for image_file, label_file, segments_info in files:
-        sem_label_file = (
-            image_file.replace("leftImg8bit", "gtFine").split(".")[0] + "_labelTrainIds.png"
-        )
-        segments_info = [_convert_category_id(x, meta) for x in segments_info]
-        ret.append(
-            {
-                "file_name": image_file,
-                "image_id": "_".join(
-                    os.path.splitext(os.path.basename(image_file))[0].split("_")[:3]
-                ),
-                "sem_seg_file_name": sem_label_file,
-                "pan_seg_file_name": label_file,
-                "segments_info": segments_info,
-            }
-        )
-    assert len(ret), f"No images found in {image_dir}!"
-    assert PathManager.isfile(
-        ret[0]["sem_seg_file_name"]
-    ), "Please generate labelTrainIds.png with cityscapesscripts/preparation/createTrainIdLabelImgs.py"  # noqa
-    assert PathManager.isfile(
-        ret[0]["pan_seg_file_name"]
-    ), "Please generate panoptic annotation with python cityscapesscripts/preparation/createPanopticImgs.py"  # noqa
-    return ret
-
-# rename to avoid conflict
-_RAW_CITYSCAPES_PANOPTIC_SPLITS = {
-    "openvocab_cityscapes_fine_panoptic_train": (
-        "cityscapes/leftImg8bit/train",
-        "cityscapes/gtFine/cityscapes_panoptic_train",
-        "cityscapes/gtFine/cityscapes_panoptic_train.json",
-    ),
-    "openvocab_cityscapes_fine_panoptic_val": (
-        "cityscapes/leftImg8bit/val",
-        "cityscapes/gtFine/cityscapes_panoptic_val",
-        "cityscapes/gtFine/cityscapes_panoptic_val.json",
-    ),
-    # "cityscapes_fine_panoptic_test": not supported yet
-}
-
-def register_all_cityscapes_panoptic(root):
-    meta = {}
-    # The following metadata maps contiguous id from [0, #thing categories +
-    # #stuff categories) to their names and colors. We have to replica of the
-    # same name and color under "thing_*" and "stuff_*" because the current
-    # visualization function in D2 handles thing and class classes differently
-    # due to some heuristic used in Panoptic FPN. We keep the same naming to
-    # enable reusing existing visualization functions.
-    thing_classes = [k["name"] for k in CITYSCAPES_CATEGORIES]
-    thing_colors = [k["color"] for k in CITYSCAPES_CATEGORIES]
-    stuff_classes = [k["name"] for k in CITYSCAPES_CATEGORIES]
-    stuff_colors = [k["color"] for k in CITYSCAPES_CATEGORIES]
-
-    meta["thing_classes"] = thing_classes
-    meta["thing_colors"] = thing_colors
-    meta["stuff_classes"] = stuff_classes
-    meta["stuff_colors"] = stuff_colors
-
-    # There are three types of ids in cityscapes panoptic segmentation:
-    # (1) category id: like semantic segmentation, it is the class id for each
-    #   pixel. Since there are some classes not used in evaluation, the category
-    #   id is not always contiguous and thus we have two set of category ids:
-    #       - original category id: category id in the original dataset, mainly
-    #           used for evaluation.
-    #       - contiguous category id: [0, #classes), in order to train the classifier
-    # (2) instance id: this id is used to differentiate different instances from
-    #   the same category. For "stuff" classes, the instance id is always 0; for
-    #   "thing" classes, the instance id starts from 1 and 0 is reserved for
-    #   ignored instances (e.g. crowd annotation).
-    # (3) panoptic id: this is the compact id that encode both category and
-    #   instance id by: category_id * 1000 + instance_id.
-    thing_dataset_id_to_contiguous_id = {}
-    stuff_dataset_id_to_contiguous_id = {}
-
-    for k in CITYSCAPES_CATEGORIES:
-        if k["isthing"] == 1:
-            thing_dataset_id_to_contiguous_id[k["id"]] = k["trainId"]
-        else:
-            stuff_dataset_id_to_contiguous_id[k["id"]] = k["trainId"]
-
-    meta["thing_dataset_id_to_contiguous_id"] = thing_dataset_id_to_contiguous_id
-    meta["stuff_dataset_id_to_contiguous_id"] = stuff_dataset_id_to_contiguous_id
-
-    for key, (image_dir, gt_dir, gt_json) in _RAW_CITYSCAPES_PANOPTIC_SPLITS.items():
-        image_dir = os.path.join(root, image_dir)
-        gt_dir = os.path.join(root, gt_dir)
-        gt_json = os.path.join(root, gt_json)
-
-        DatasetCatalog.register(
-            key, lambda x=image_dir, y=gt_dir, z=gt_json: load_cityscapes_panoptic(x, y, z, meta)
-        )
-        MetadataCatalog.get(key).set(
-            panoptic_root=gt_dir,
-            image_root=image_dir,
-            panoptic_json=gt_json,
-            gt_dir=gt_dir.replace("cityscapes_panoptic_", ""),
-            evaluator_type="cityscapes_panoptic_seg",
-            ignore_label=255,
-            label_divisor=1000,
-            **meta,
-        )
-
-_root = os.getenv("DETECTRON2_DATASETS", "datasets")
-register_all_cityscapes_panoptic(_root)
+```bash
+python train_net_kd.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/coco/panoptic-segmentation/fcclip/r50_exp.yaml --num-gpus 2
 ```
+
+## 03 Results ✨
+
+
+| Approach  | Perf All (PQ) | Perf Stuff/In (PQ) | Perf Things/Out (PQ) |
+|----------|----------|----------|----------|
+| Upperbound - FT - 000 - 1000 iter|  58.197   |  63.995   |  50.224  |  
+| FT on in-classes-GT (out -> void) + intersection with ZS at inference - 008 - 1000 iter  | 50.313 | 65.4 | 29.416 |
+| **FTZS=FT on in-classes (Ground Truth) + ZS predictions for out  - 008 - 1000 iter** | **49.957** | **53.582** | **44.974** |
+| Zero Shot (FCCLIP) 000 - Inference | 40.311 | 48.234 | 29.416 |
+| FT on in-classes-GT (out -> void)- 008 - 1000 iter | 37.965 | 65.575 | 0 |
+| Knowledge Distillation in vocab - 008 - 1000 iter | 53.484 | 59.862 | 44.713 |
+| Knowledge Distillation in vocab - 008 - 10000 iter Separated Loss | 56.192 | 62.359 | 47.712 |
+| FTZS (Separation de Loss for Loss_labels) 0.5 and 0.5 - 008 - 1000 iter | 47.098 | 51.005 | 41.724 |
+| FTZS - 1000 iter (Separation de Loss for Loss_labels) + Soft Labels out + Softmax on Target) 0.5 and 0.5 - 008 - 1000 iter | 45.013 | 58.4 | 26.5 |
+| FTZS  ( Separation de Loss for Loss_labels) + Soft Labels out + Softmax on Target + Setup with 0.7 In vocab 0.3 Out Vocab) - 008 - 1000 iter| 47.241 | 52.394 | 40 |
+| FTZS  - 1000 iter ( Separation of Loss for Loss_labels) + Soft labels out + Top 5 + Softmax on Target - 008 - 1000 iter | 42.605 | 59.139 | 19.872 |
+| Lowerbound - FT on in-classes-GT (out -> void) - 008 - 1000 iter| 37.965 | 65.575  |  0  |
+| Knowledge Distillation in vocab - 008 - 1000 iter | 53.484 | 59.862 | 44.713 |
+| Knowledge Distillation in vocab - 008 - 10000 iter Separated Loss | 56.192 | 62.359 | 47.712 |
+
+
+--------------
+<br />
+
+ℹ️ There is an extra class that is belonging to the void
+
+* Upper bound is fine-tuning of FCCLIP on 1000 iterations - configuration 000
+
+* Lower bound is fine-tuning of FCCLIP on 1000 iterations - configuration 008
+
+## 04 The maths behind it 🧮
+
+<br />
+
+**PQ Metric**
+
+The Panoptic Quality (PQ) is calculated as follows:
+
+PQ = $\frac{\sum_{(p, g) \in TP} \text{IoU}(p, g)}{TP + \frac{1}{2} \times (FP + FN)}$
+
+Where:
+- TP (True Positives) refers to the set of correctly matched predicted segments to the ground truth.
+- IoU(p, g) represents the Intersection over Union for the predicted segment p and the ground truth segment g.
+- FP (False Positives) are the predicted segments with no corresponding ground truth.
+- FN (False Negatives) are the ground truth segments that were not predicted.
+
+----
+<br />
+
+**Softmax**
+
+The Softmax function is defined as follows for a vector **z** of real numbers and its ith component:
+
+Softmax($z_i$) = $\frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}$
+
+Where:
+- $z_i$ is the score or logit for the ith class.
+- $e^{z_i}$ is the exponential of $z_i$.
+- $\sum_{j=1}^{n} e^{z_j}$ is the sum of exponentials of all components of the vector **z**, which serves as the normalization term to ensure the outputs sum up to one, thus forming a probability distribution.
+
+----
+<br />
+
+**Cross-entropy**
+
+Cross-entropy loss is used to measure the dissimilarity between the true probability distribution $p$ and the predicted distribution $q$, for a given set of classes. It is defined as follows:
+
+Cross Entropy Loss = $-\sum_{i=1}^{n} p_i \log(q_i)$
+
+Where:
+- $p_i$ is the true probability of class $i$, often represented as 1 for the true class and 0 for others in classification tasks.
+- $q_i$ is the predicted probability of class $i$, as output by a model, such as from a softmax function.
+- $n$ is the number of classes.
+- $\log(q_i)$ represents the natural logarithm of the predicted probability $q_i$.
+
+----
