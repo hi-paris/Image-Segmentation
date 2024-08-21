@@ -121,6 +121,10 @@ rename fcclip/fc-clip/fcclip_kd >> fcclip/fc-clip/fcclip
 python train_net_kd.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/coco/panoptic-segmentation/fcclip/r50_exp.yaml --num-gpus 2
 ```
 
+** Combination of Models ** 
+
+
+
 ## 03 Results ✨
 
 
