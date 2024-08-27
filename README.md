@@ -131,7 +131,7 @@ python train_net_kd.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/co
 |-------------------------------------------------------------------------------------------------------------------------|--------|----------|------------|
 | **Upperbound: Full finetuning - 000 - 1000 iter - Resnet 50**                                                               | **58.197** | **63.995**   | **50.224**     |
 | FT on in-classes-GT (out -> void) - 1000 iter + intersection with ZS at inference (Naive) - Resnet 50                   | 50.35  | 65.575   | 29.416     |
-| **FTZS=FT on in-classes (Ground Truth) + ZS predictions for out  - 008 - 1000 iter - Resnet 50 (Invocab)**                  | 52.972 | 58.519   | 45.346     |
+| **FTZS=FT on in-classes (Ground Truth) + ZS predictions for out  - 008 - 1000 iter - Resnet 50 (Invocab)**                  | **52.972** | **58.519**   | **45.346**     |
 | Zero Shot (FCCLIP) 000 - Resnet 50                                                                                      | 40.311 | 48.234   | 29.416     |
 | FT on in-classes-GT (out -> void)- 100 iter (train normal 008) - Resnet 50                                              | 35.133 | 60.684   | 0          |
 | **Lower bound: FT on in-classes-GT (out -> void)- 1000 iter (train normal 008) - Resnet 50**                                | **37.965** | **65.575**   | **0**          |
