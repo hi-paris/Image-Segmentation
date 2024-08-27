@@ -46,7 +46,7 @@ val:
 
 
 
-## 03 Approaches ➡️
+## 04 Approaches ➡️
 
 The goal was to find an innovative approach for panoptic segmentation that works for In and Out of vocabulary in finetuning process
 
@@ -56,9 +56,7 @@ Our current top performer >>
 
 **Generate Configurations** 
 
-```bash
-python fc-clip/create_configs.py
-```
+➡️ [installation instructions](data-generation/README.md)
 
 **Zero Shot (FCCLIP) - 000 - inference**
 
