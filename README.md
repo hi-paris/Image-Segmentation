@@ -51,7 +51,7 @@ val:
 The goal was to find an innovative approach for panoptic segmentation that works for In and Out of vocabulary in finetuning process
 
 Our current top performer architecture: >>
-<img src="https://i.postimg.cc/1zqNsZH1/Screenshot-2024-08-27-at-21-27-24.png" alt="flow.png" width="1500px">
+<img src="https://i.postimg.cc/1zqNsZH1/Screenshot-2024-08-27-at-21-27-24.png" alt="flow.png" width="1800px">
 <br />
 
 **Generate Configurations** 
