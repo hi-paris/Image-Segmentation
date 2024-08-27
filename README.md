@@ -126,32 +126,15 @@ python train_net_kd.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/co
 ## 03 Results ✨
 
 
-| Approach  | Perf All (PQ) | Perf Stuff/In (PQ) | Perf Things/Out (PQ) |
-|----------|----------|----------|----------|
-| Upperbound - FT - 000 - 1000 iter|  58.197   |  63.995   |  50.224  |  
-| FT on in-classes-GT (out -> void) + intersection with ZS at inference - 008 - 1000 iter  | 50.313 | 65.4 | 29.416 |
-| **FTZS=FT on in-classes (Ground Truth) + ZS predictions for out  - 008 - 1000 iter** | **49.957** | **53.582** | **44.974** |
-| Zero Shot (FCCLIP) 000 - Inference | 40.311 | 48.234 | 29.416 |
-| FT on in-classes-GT (out -> void)- 008 - 1000 iter | 37.965 | 65.575 | 0 |
-| Knowledge Distillation in vocab - 008 - 1000 iter | 53.484 | 59.862 | 44.713 |
-| Knowledge Distillation in vocab - 008 - 10000 iter Separated Loss | 56.192 | 62.359 | 47.712 |
-| FTZS (Separation de Loss for Loss_labels) 0.5 and 0.5 - 008 - 1000 iter | 47.098 | 51.005 | 41.724 |
-| FTZS - 1000 iter (Separation de Loss for Loss_labels) + Soft Labels out + Softmax on Target) 0.5 and 0.5 - 008 - 1000 iter | 45.013 | 58.4 | 26.5 |
-| FTZS  ( Separation de Loss for Loss_labels) + Soft Labels out + Softmax on Target + Setup with 0.7 In vocab 0.3 Out Vocab) - 008 - 1000 iter| 47.241 | 52.394 | 40 |
-| FTZS  - 1000 iter ( Separation of Loss for Loss_labels) + Soft labels out + Top 5 + Softmax on Target - 008 - 1000 iter | 42.605 | 59.139 | 19.872 |
-| Lowerbound - FT on in-classes-GT (out -> void) - 008 - 1000 iter| 37.965 | 65.575  |  0  |
-| Knowledge Distillation in vocab - 008 - 1000 iter | 53.484 | 59.862 | 44.713 |
-| Knowledge Distillation in vocab - 008 - 10000 iter Separated Loss | 56.192 | 62.359 | 47.712 |
-
 
 | Cityscapes FCCLIP Approaches                                                                                           |  Perf All (PQ) | Perf Stuff/In (PQ) | Perf Things/Out (PQ) |
 |-------------------------------------------------------------------------------------------------------------------------|--------|----------|------------|
-| Upperbound: Full finetuning - 000 - 1000 iter - Resnet 50                                                               | 58.197 | 63.995   | 50.224     |
+| **Upperbound: Full finetuning - 000 - 1000 iter - Resnet 50**                                                               | **58.197** | **63.995**   | **50.224**     |
 | FT on in-classes-GT (out -> void) - 1000 iter + intersection with ZS at inference (Naive) - Resnet 50                   | 50.35  | 65.575   | 29.416     |
-| FTZS=FT on in-classes (Ground Truth) + ZS predictions for out  - 008 - 1000 iter - Resnet 50 (Invocab)                  | 52.972 | 58.519   | 45.346     |
+| **FTZS=FT on in-classes (Ground Truth) + ZS predictions for out  - 008 - 1000 iter - Resnet 50 (Invocab)**                  | 52.972 | 58.519   | 45.346     |
 | Zero Shot (FCCLIP) 000 - Resnet 50                                                                                      | 40.311 | 48.234   | 29.416     |
 | FT on in-classes-GT (out -> void)- 100 iter (train normal 008) - Resnet 50                                              | 35.133 | 60.684   | 0          |
-| Lower bound: FT on in-classes-GT (out -> void)- 1000 iter (train normal 008) - Resnet 50                                | 37.965 | 65.575   | 0          |
+| **Lower bound: FT on in-classes-GT (out -> void)- 1000 iter (train normal 008) - Resnet 50**                                | **37.965** | **65.575**   | **0**          |
 | Intersection n°5 + n°9                                                                                                  | 50.41  | 65.575   | 29.416     |
 | Intersection n°6 + n°9                                                                                                  | 56.935 | 65.575   | 44.974     |
 | n°6 + n°9 - Combined FT - L1 + L2 + Lcombined (mean of Logits of sum of M1+M2) - Pred N°6 - 1000 iter                   | 56.902 | 63.457   | 47.889     |
@@ -159,7 +142,7 @@ python train_net_kd.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/co
 | n°6 + n°9 - Combined FT - L1 + L2 + Lcombined (weighted of Logits 0.6 0.4) - 1000 iter                                  | 57.422 | 64.234   | 48.056     |
 | n°6 + n°9 - Combined FT - L1 + L2 + Lcombined softmax - sum - threshold 0.7 - 1000 iter                                 | 57.745 | 63.719   | 49.531     |
 | n°6 + n°9 - Combined FT - L1 + L2 + Lcombined 2 softmax - sum - top 10 - 1000 iter                                      | 57.932 | 63.929   | 49.688     |
-| n°6 + n°9 - Combined FT - L1 + L2 + Lcombined 2 softmax - entropy - 1000 iter                                           | 58.227 | 64.238   | 49.962     |
+| **n°6 + n°9 - Combined FT - L1 + L2 + Lcombined 2 softmax - entropy - 1000 iter**                                           | **58.227** | **64.238**   | **49.962**     |
 | Zero Shot (FCCLIP) 000 - ConvnextLarge                                                                                  | 43.992 | 49.662   | 36.195     |
 | FT on in-classes-GT (out -> void)- 1000 iter (train normal 008) - ConvNextLarge                                         | 33.231 | 57.398   | 0          |
 | FT on in-classes-GT (out -> void)- 1000 iter (train normal 008) - ConvNextLarge                                         | 34.052 | 58.818   | 0          |
