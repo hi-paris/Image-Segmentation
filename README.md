@@ -56,7 +56,7 @@ Our current top performer >>
 
 **Generate Configurations** 
 
-➡️ [installation instructions](data-generation/README.md)
+➡️ [Configurations Generation](data-generation/README.md)
 
 **Zero Shot (FCCLIP) - 000 - inference**
 
