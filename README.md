@@ -4,7 +4,7 @@ This readme is work in progress ⚙️
 
 ## 01 Installation 📦
 
-➡️[installation instructions](INSTALL.md)
+➡️ [installation instructions](INSTALL.md)
 
 ## 02 Dataset 💽
 
