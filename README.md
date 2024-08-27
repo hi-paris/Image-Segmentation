@@ -144,6 +144,30 @@ python train_net_kd.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/co
 | Knowledge Distillation in vocab - 008 - 10000 iter Separated Loss | 56.192 | 62.359 | 47.712 |
 
 
+| Cityscapes FCCLIP Approaches                                                                                           |  Perf All (PQ) | Perf Stuff/In (PQ) | Perf Things/Out (PQ) |
+|-------------------------------------------------------------------------------------------------------------------------|--------|----------|------------|
+| Upperbound: Full finetuning - 000 - 1000 iter - Resnet 50                                                               | 58.197 | 63.995   | 50.224     |
+| FT on in-classes-GT (out -> void) - 1000 iter + intersection with ZS at inference (Naive) - Resnet 50                   | 50.35  | 65.575   | 29.416     |
+| FTZS=FT on in-classes (Ground Truth) + ZS predictions for out  - 008 - 1000 iter - Resnet 50 (Invocab)                  | 52.972 | 58.519   | 45.346     |
+| Zero Shot (FCCLIP) 000 - Resnet 50                                                                                      | 40.311 | 48.234   | 29.416     |
+| FT on in-classes-GT (out -> void)- 100 iter (train normal 008) - Resnet 50                                              | 35.133 | 60.684   | 0          |
+| Lower bound: FT on in-classes-GT (out -> void)- 1000 iter (train normal 008) - Resnet 50                                | 37.965 | 65.575   | 0          |
+| Intersection n°5 + n°9                                                                                                  | 50.41  | 65.575   | 29.416     |
+| Intersection n°6 + n°9                                                                                                  | 56.935 | 65.575   | 44.974     |
+| n°6 + n°9 - Combined FT - L1 + L2 + Lcombined (mean of Logits of sum of M1+M2) - Pred N°6 - 1000 iter                   | 56.902 | 63.457   | 47.889     |
+| n°9 + n°6 - Combined FT - L1 + L2 + Lcombined (mean of the sum of Logits of M1+M2) - Pred N°9 - 1000 iter               | 55.164 | 64.534   | 42.28      |
+| n°6 + n°9 - Combined FT - L1 + L2 + Lcombined (weighted of Logits 0.6 0.4) - 1000 iter                                  | 57.422 | 64.234   | 48.056     |
+| n°6 + n°9 - Combined FT - L1 + L2 + Lcombined softmax - sum - threshold 0.7 - 1000 iter                                 | 57.745 | 63.719   | 49.531     |
+| n°6 + n°9 - Combined FT - L1 + L2 + Lcombined 2 softmax - sum - top 10 - 1000 iter                                      | 57.932 | 63.929   | 49.688     |
+| n°6 + n°9 - Combined FT - L1 + L2 + Lcombined 2 softmax - entropy - 1000 iter                                           | 58.227 | 64.238   | 49.962     |
+| Zero Shot (FCCLIP) 000 - ConvnextLarge                                                                                  | 43.992 | 49.662   | 36.195     |
+| FT on in-classes-GT (out -> void)- 1000 iter (train normal 008) - ConvNextLarge                                         | 33.231 | 57.398   | 0          |
+| FT on in-classes-GT (out -> void)- 1000 iter (train normal 008) - ConvNextLarge                                         | 34.052 | 58.818   | 0          |
+| FT on in-classes-GT (out -> void) - 1000 iter + intersection with ZS at inference (Naive) - ConvNextLarge               |        |          |            |
+
+
+
+
 --------------
 <br />
 
