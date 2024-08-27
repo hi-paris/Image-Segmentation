@@ -4,7 +4,7 @@ This readme is work in progress ⚙️
 
 ## 01 Installation 📦
 
-<a href="Image-Segmentation/INSTALL.md">installation instructions</a>
+[installation instructions](Image-Segmentation/INSTALL.md)
 
 ## 02 Dataset 💽
 
