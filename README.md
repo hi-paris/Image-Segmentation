@@ -50,8 +50,8 @@ val:
 
 The goal was to find an innovative approach for panoptic segmentation that works for In and Out of vocabulary in finetuning process
 
-Our current top performer >>
-
+Our current top performer architecture: >>
+<img src="https://i.postimg.cc/mrNr2Z0M/Screenshot-2024-08-27-at-21-22-23.png" alt="flow.png" width="600px">
 <br />
 
 **Generate Configurations** 
@@ -93,7 +93,7 @@ rename fcclip/fc-clip/fcclip_invocab >> fcclip/fc-clip/fcclip
 ```bash
 python train_net_invocab.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/coco/panoptic-segmentation/fcclip/r50_exp.yaml --eval-only MODEL.WEIGHTS /home/infres/gbrison/fc3/fc-clip/fcclip_cocopan_r50.pth
 ```
-<img src="https://i.postimg.cc/SNQ6Fm1h/Screenshot-2024-08-06-at-18-28-49.png" alt="flow.png" width="600px">
+
 
 **FT on in-classes-GT (out -> void) + intersection with ZS at inference  - 008 - 1000 iter**
 
