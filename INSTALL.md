@@ -1,4 +1,4 @@
-## 05 📦 Installation
+## 01 📦 Installation
 
 ### download Miniconda installer (from conda-forge)
 
