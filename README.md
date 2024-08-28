@@ -204,5 +204,52 @@ $$
 
 where \(z_i\) is the i-th element of the input vector \(z\) (logits) and \(K\) is the total number of elements (classes).
 
+For your models, the softmax outputs are:
+
+s1 = Softmax(logit_one[i]) 
+s2 = Softmax(logit_two[i])
 
 
+where `i` represents the key for logits (e.g., "pred logits", "pred masks").
+
+*Entropy Calculation*
+
+The entropy for each softmax output is calculated as:
+
+$$
+\text{Entropy}(s) = -\sum s \cdot \log(s + 1 \times 10^{-9})
+$$
+
+The small constant \(1 \times 10^{-9}\) ensures numerical stability.
+
+*New Logits*
+
+The logits are combined using the calculated entropy to scale the softmax outputs:
+
+new_logit[i] = s1 * (1 - Entropy(s1)) + s2 * (1 - Entropy(s2))
+
+**Step 4: Calculating the Combined Loss**
+
+The combined loss is computed using the criterion on the new logits:
+
+Lcombined = criterion(new_logit, targets)
+
+This loss is then added to the loss dictionary:
+
+loss_dict['com ' + i] = Lcombined[i] for each component i
+
+**Step 5: Summing and Backpropagation**
+
+Finally, the total loss to be backpropagated is computed by summing all individual losses:
+
+$$
+L_{total} = \sum_{key} \text{loss_dict}[key]
+$$
+
+The total loss is then used for backpropagation:
+
+Ltotal.backward()
+
+### Summary
+
+The total loss function for the combined model training is a summation of the individual losses from two models along with a newly computed loss based on softmax and entropy. This approach allows leveraging the strengths of both models and introduces an additional regularization effect via entropy, promoting more confident predictions.
