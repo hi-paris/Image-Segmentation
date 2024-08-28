@@ -243,9 +243,7 @@ loss_dict['com ' + i] = Lcombined[i] for each component i
 
 Finally, the total loss to be backpropagated is computed by summing all individual losses:
 
-$$
-L_{total} = \sum_{\text{key}} \text{loss\_dict}[\text{key}]
-$$
+`L_total = ∑ loss_dict[key]`
 
 The total loss is then used for backpropagation:
 
