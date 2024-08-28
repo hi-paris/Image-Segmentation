@@ -247,6 +247,7 @@ The total loss is then used for backpropagation:
 
 Ltotal.backward()
 
+
 ###### Summary
 
 The total loss function for the combined model training is a summation of the individual losses from two models along with a newly computed loss based on softmax and entropy. This approach allows leveraging the strengths of both models and introduces an additional regularization effect via entropy, promoting more confident predictions.
