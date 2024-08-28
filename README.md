@@ -237,7 +237,7 @@ Lcombined = criterion(new_logit, targets)
 
 This loss is then added to the loss dictionary:
 
-loss_dict['com ' + i] = Lcombined[i] for each component i
+`loss_dict['com ' + i] = L_{combined}[i]` for each component `i`
 
 **Step 5: Summing and Backpropagation**
 
