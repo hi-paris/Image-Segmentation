@@ -162,47 +162,59 @@ python train_net_kd.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/co
 
 ## 04 The maths behind it 🧮
 
-<br />
-
-**PQ Metric**
-
-The Panoptic Quality (PQ) is calculated as follows:
-
-PQ = $\frac{\sum_{(p, g) \in TP} \text{IoU}(p, g)}{TP + \frac{1}{2} \times (FP + FN)}$
-
-Where:
-- TP (True Positives) refers to the set of correctly matched predicted segments to the ground truth.
-- IoU(p, g) represents the Intersection over Union for the predicted segment p and the ground truth segment g.
-- FP (False Positives) are the predicted segments with no corresponding ground truth.
-- FN (False Negatives) are the ground truth segments that were not predicted.
-
-----
-<br />
-
-**Softmax**
-
-The Softmax function is defined as follows for a vector **z** of real numbers and its ith component:
-
-Softmax($z_i$) = $\frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}$
-
-Where:
-- $z_i$ is the score or logit for the ith class.
-- $e^{z_i}$ is the exponential of $z_i$.
-- $\sum_{j=1}^{n} e^{z_j}$ is the sum of exponentials of all components of the vector **z**, which serves as the normalization term to ensure the outputs sum up to one, thus forming a probability distribution.
-
-----
-<br />
-
-**Cross-entropy**
-
-Cross-entropy loss is used to measure the dissimilarity between the true probability distribution $p$ and the predicted distribution $q$, for a given set of classes. It is defined as follows:
-
-Cross Entropy Loss = $-\sum_{i=1}^{n} p_i \log(q_i)$
-
-Where:
-- $p_i$ is the true probability of class $i$, often represented as 1 for the true class and 0 for others in classification tasks.
-- $q_i$ is the predicted probability of class $i$, as output by a model, such as from a softmax function.
-- $n$ is the number of classes.
-- $\log(q_i)$ represents the natural logarithm of the predicted probability $q_i$.
-
-----
+Mathematical Formulation
+Step 1: Extracting Losses from Two Models
+Model 1 Loss
+This model is specialized on out of vocabulary panoptic segmentation Given the
+input data data, the first model computes a set of losses:
+L1 = model one(data) →loss dict model one
+Here, L1 is a dictionary containing individual loss components for Model 1.
+Model 2 Loss
+This model is specialized on in of vocabulary panoptic segmentation Similarly,
+for the second model:
+L2 = model two(data) →loss dict model two
+L2 is a dictionary containing individual loss components for Model 2.
+Step 2: Combining the Losses into a New Dictionary
+The losses from both models are combined into a single dictionary:
+loss dict = {’m1 ’ + i : L1[i] for each i ∈L1}∪{’m2 ’ + i : L2[i] for each i ∈L2}
+1
+Step 3: Computing the Combined Logits Using Softmax
+and Entropy
+Softmax Computation
+The softmax function is applied to the logits from both models:
+Softmax(zi) = exp(zi)PK
+j=1 exp(zj )
+where zi is the i-th element of the input vector z (logits) and K is the total
+number of elements (classes).
+For your models, the softmax outputs are:
+s1 = Softmax(logit[i])
+s2 = Softmax(logit two[i])
+where i represents the key for logits (e.g., "pred logits", "pred masks").
+Entropy Calculation
+The entropy for each softmax output is calculated as:
+Entropy(s) = −Xs ·log(s + 1 ×10−9)
+The small constant 1 ×10−9 ensures numerical stability.
+New Logits
+The logits are combined using the calculated entropy to scale the softmax out-
+puts:
+new logit[i] = s1 ·(1 −Entropy(s1)) + s2 ·(1 −Entropy(s2))
+Step 4: Calculating the Combined Loss
+The combined loss is computed using the criterion on the new logits:
+Lcombined = criterion(new logit, targets)
+This loss is then added to the loss dictionary:
+loss dict[’com ’ + i] = Lcombined[i] for each component i
+2
+Step 5: Summing and Backpropagation
+Finally, the total loss to be backpropagated is computed by summing all indi-
+vidual losses:
+Ltotal = X
+key
+loss dict[key]
+The total loss is then used for backpropagation:
+Ltotal.backward()
+Summary
+The total loss function for the combined model training is a summation of
+the individual losses from two models along with a newly computed loss based
+on softmax and entropy. This approach allows leveraging the strengths of both
+models and introduces an additional regularization effect via entropy, promoting
+more confident predictions.
