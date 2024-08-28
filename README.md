@@ -207,8 +207,8 @@ where \(z_i\) is the i-th element of the input vector \(z\) (logits) and \(K\) i
 
 For your models, the softmax outputs are:
 
-s1 = Softmax(logit_one[i]) 
-s2 = Softmax(logit_two[i])
+`s1 = Softmax(logit_one[i])` 
+`s2 = Softmax(logit_two[i])`
 
 
 where `i` represents the key for logits (e.g., "pred logits", "pred masks").
@@ -217,7 +217,9 @@ where `i` represents the key for logits (e.g., "pred logits", "pred masks").
 
 The entropy for each softmax output is calculated as:
 
-Entropy(s) = - Σ s * log(s + 1 * 10^(-9))
+$$
+\text{Entropy}(s) = -\sum s \cdot \log(s + 1 \times 10^{-9})
+$$
 
 The small constant (1 * 10^(-9)) ensures numerical stability.
 
