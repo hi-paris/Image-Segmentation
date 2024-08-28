@@ -162,59 +162,30 @@ python train_net_kd.py --config-file /home/infres/gbrison/fc3/fc-clip/configs/co
 
 ## 04 The maths behind it 🧮
 
-Mathematical Formulation
-Step 1: Extracting Losses from Two Models
-Model 1 Loss
-This model is specialized on out of vocabulary panoptic segmentation Given the
-input data data, the first model computes a set of losses:
-L1 = model one(data) →loss dict model one
-Here, L1 is a dictionary containing individual loss components for Model 1.
-Model 2 Loss
-This model is specialized on in of vocabulary panoptic segmentation Similarly,
-for the second model:
-L2 = model two(data) →loss dict model two
-L2 is a dictionary containing individual loss components for Model 2.
-Step 2: Combining the Losses into a New Dictionary
+## The Maths Behind It
+
+### Mathematical Formulation
+
+**Step 1: Extracting Losses from Two Models**
+
+**Model 1 Loss**
+
+This model is specialized in out-of-vocabulary panoptic segmentation. Given the input data, the first model computes a set of losses:
+
+`L1 = model_one(data) → loss_dict_model_one`
+
+Here, `L1` is a dictionary containing individual loss components for Model 1.
+
+**Model 2 Loss**
+
+This model is specialized in in-vocabulary panoptic segmentation. Similarly, for the second model:
+
+`L2 = model_two(data) → loss_dict_model_two`
+
+`L2` is a dictionary containing individual loss components for Model 2.
+
+**Step 2: Combining the Losses into a New Dictionary**
+
 The losses from both models are combined into a single dictionary:
-loss dict = {’m1 ’ + i : L1[i] for each i ∈L1}∪{’m2 ’ + i : L2[i] for each i ∈L2}
-1
-Step 3: Computing the Combined Logits Using Softmax
-and Entropy
-Softmax Computation
-The softmax function is applied to the logits from both models:
-Softmax(zi) = exp(zi)PK
-j=1 exp(zj )
-where zi is the i-th element of the input vector z (logits) and K is the total
-number of elements (classes).
-For your models, the softmax outputs are:
-s1 = Softmax(logit[i])
-s2 = Softmax(logit two[i])
-where i represents the key for logits (e.g., "pred logits", "pred masks").
-Entropy Calculation
-The entropy for each softmax output is calculated as:
-Entropy(s) = −Xs ·log(s + 1 ×10−9)
-The small constant 1 ×10−9 ensures numerical stability.
-New Logits
-The logits are combined using the calculated entropy to scale the softmax out-
-puts:
-new logit[i] = s1 ·(1 −Entropy(s1)) + s2 ·(1 −Entropy(s2))
-Step 4: Calculating the Combined Loss
-The combined loss is computed using the criterion on the new logits:
-Lcombined = criterion(new logit, targets)
-This loss is then added to the loss dictionary:
-loss dict[’com ’ + i] = Lcombined[i] for each component i
-2
-Step 5: Summing and Backpropagation
-Finally, the total loss to be backpropagated is computed by summing all indi-
-vidual losses:
-Ltotal = X
-key
-loss dict[key]
-The total loss is then used for backpropagation:
-Ltotal.backward()
-Summary
-The total loss function for the combined model training is a summation of
-the individual losses from two models along with a newly computed loss based
-on softmax and entropy. This approach allows leveraging the strengths of both
-models and introduces an additional regularization effect via entropy, promoting
-more confident predictions.
+
+
