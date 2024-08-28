@@ -192,16 +192,17 @@ loss_dict = { 'm1 ' + i : L1[i] for each i ∈ L1 } ∪ { 'm2 ' + i : L2[i] for 
 
 
 
-### Step 3: Computing the Combined Logits Using Softmax and Entropy
+**Step 3: Computing the Combined Logits Using Softmax and Entropy**
 
 *Softmax Computation*
 
 The softmax function is applied to the logits from both models:
 
-\[
+$$
 \text{Softmax}(z_i) = \frac{\exp(z_i)}{\sum_{j=1}^{K} \exp(z_j)}
-\]
+$$
 
 where \(z_i\) is the i-th element of the input vector \(z\) (logits) and \(K\) is the total number of elements (classes).
+
 
 
