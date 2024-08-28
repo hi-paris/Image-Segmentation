@@ -227,7 +227,7 @@ The small constant \(1 \times 10^{-9}\) ensures numerical stability.
 
 The logits are combined using the calculated entropy to scale the softmax outputs:
 
-new_logit[i] = s1 * (1 - Entropy(s1)) + s2 * (1 - Entropy(s2))
+`new_logit[i] = s1 * (1 - Entropy(s1)) + s2 * (1 - Entropy(s2))`
 
 **Step 4: Calculating the Combined Loss**
 
