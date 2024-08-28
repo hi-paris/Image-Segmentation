@@ -217,9 +217,9 @@ where `i` represents the key for logits (e.g., "pred logits", "pred masks").
 
 The entropy for each softmax output is calculated as:
 
-`Entropy(s) = - \sum s \cdot \log(s + 1 \times 10^{-9})`
+Entropy(s) = - Σ s * log(s + 1 * 10^(-9))
 
-The small constant `(1 \times 10^{-9})` ensures numerical stability.
+The small constant (1 * 10^(-9)) ensures numerical stability.
 
 *New Logits*
 
