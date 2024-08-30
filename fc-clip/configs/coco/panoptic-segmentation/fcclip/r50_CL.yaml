@@ -7,7 +7,7 @@ INPUT:
 MODEL:
   SEM_SEG_HEAD:
     NUM_CLASSES: 20
-  WEIGHTS: /home/ids/gbrison/fc3/fc-clip/fcclip_cocopan.pth
+  WEIGHTS: /tsi/hi-paris/GB/segmentation/models/fcclip_cocopan.pth
 OUTPUT_DIR: /tsi/hi-paris/FCCLIP_results/Results_r50_with_out_zero/inference_results/fcclip_cocopan_CL_inference 
 DATASETS:
   TEST: ("openvocab_cityscapes_fine_panoptic_val",)

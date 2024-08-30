@@ -201,10 +201,10 @@ def _pq_compute_single_core(proc_id, annotation_set, gt_folder, pred_folder, cat
     gt_segms_list=[]
 
     idx = 0
-    with open("/home/ids/gbrison/fc3/id.txt", 'r') as file:
+    with open("/home/ids/ext-4208/FC/id.txt", 'r') as file:
         for line in file:
             id_images=int(line.strip())
-    yaml_file = '/home/ids/gbrison/fc3/fc-clip/configs/coco/panoptic-segmentation/fcclip/r50_exp.yaml'
+    yaml_file = '/home/ids/ext-4208/FC/fc-clip/configs/coco/panoptic-segmentation/fcclip/r50_exp.yaml'
     with open(yaml_file, 'r') as file:
         data = yaml.safe_load(file)
     for gt_ann, pred_ann in annotation_set:

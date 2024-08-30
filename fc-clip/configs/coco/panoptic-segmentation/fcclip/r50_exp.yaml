@@ -7,8 +7,8 @@ INPUT:
 MODEL:
   SEM_SEG_HEAD:
     NUM_CLASSES: 19
-  WEIGHTS: /home/ids/gbrison/segmentation/segmentation/fc-clip/fcclip_cocopan_r50.pth
-OUTPUT_DIR: /tsi/hi-paris/GB/segmentation/results/Normal/008_1000
+  WEIGHTS: /tsi/hi-paris/GB/segmentation/models/fcclip_cocopan_r50.pth
+OUTPUT_DIR: /tsi/hi-paris/GB/segmentation/results/In_vocab/r50_008_1000_19
 DATASETS:
   TRAIN: ("openvocab_cityscapes_fine_panoptic_train",)
   TEST: ("openvocab_cityscapes_fine_panoptic_val",)

@@ -7,7 +7,7 @@ INPUT:
 MODEL:
   SEM_SEG_HEAD:
     NUM_CLASSES: 19
-  WEIGHTS: /home/ids/gbrison/fc3/fc-clip/fcclip_cocopan_r50.pth
+  WEIGHTS: /tsi/hi-paris/GB/segmentation/models/fcclip_cocopan_r50.pth
   WEIGHTS_Teacher : /tsi/hi-paris/models/oneformer/mapillary_pretrain_250_16_convnext_l_oneformer_cityscapes_90k.pth
 OUTPUT_DIR: /tsi/hi-paris/FCCLIP_results/All_results/KD_results/KD_Oneformer_R50_Separated_loss_Normal_008_10000iter
 DATASETS:
