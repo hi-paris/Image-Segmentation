@@ -8,13 +8,13 @@ MODEL:
   SEM_SEG_HEAD:
     NUM_CLASSES: 19
   WEIGHTS: /tsi/hi-paris/GB/segmentation/models/fcclip_cocopan.pth
-OUTPUT_DIR: /tsi/hi-paris/GB/segmentation/results/In_vocab/cl_008_1000_19
+OUTPUT_DIR: /tsi/hi-paris/GB/segmentation/Inference_train_data_new/cl_inference_19
 DATASETS:
   TRAIN: ("openvocab_cityscapes_fine_panoptic_train",)
-  TEST: ("openvocab_cityscapes_fine_panoptic_val",)
+  TEST: ("openvocab_cityscapes_fine_panoptic_train",)
 SOLVER:
-  IMS_PER_BATCH: 8
-  MAX_ITER: 1000
+  IMS_PER_BATCH: 9
+  MAX_ITER: 100
 TEST:
-  EVAL_PERIOD: 1000
+  EVAL_PERIOD: 100
 

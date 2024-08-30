@@ -158,7 +158,10 @@ class COCOPanopticEvaluator(DatasetEvaluator):
                     pred_folder=pred_dir,
                 )
             
-            
+            get_matched_anotation(gt_json,
+                    PathManager.get_local_path(predictions_json),
+                    gt_folder=gt_folder,
+                    pred_folder=pred_dir,)
         res = {}
         res["PQ"] = 100 * pq_res["All"]["pq"]
         res["SQ"] = 100 * pq_res["All"]["sq"]
@@ -184,7 +187,53 @@ class COCOPanopticEvaluator(DatasetEvaluator):
 
 
 
+
+def get_matched_anotation(gt_json_file, pred_json_file, gt_folder=None, pred_folder=None):
  
+    with open(gt_json_file, 'r') as f:
+        gt_json = json.load(f)
+    with open(pred_json_file, 'r') as f:
+        pred_json = json.load(f)
+
+    if gt_folder is None:
+        gt_folder = gt_json_file.replace('.json', '')
+    if pred_folder is None:
+        pred_folder = pred_json_file.replace('.json', '')
+    categories = {el['id']: el for el in gt_json['categories']}
+
+    
+    if not os.path.isdir(gt_folder):
+        raise Exception("Folder {} with ground truth segmentations doesn't exist".format(gt_folder))
+    if not os.path.isdir(pred_folder):
+        raise Exception("Folder {} with predicted segmentations doesn't exist".format(pred_folder))
+
+    pred_annotations = {el['image_id']: el for el in pred_json['annotations']}
+    matched_annotations_list = []
+    for gt_ann in gt_json['annotations']:
+        image_id = gt_ann['image_id']
+        if image_id not in pred_annotations:
+            raise Exception('no prediction for the image with id: {}'.format(image_id))
+        matched_annotations_list.append((gt_ann, pred_annotations[image_id]))
+
+    with open("matched_annotations_list_train", "wb") as fp:   #Pickling
+        pickle.dump(matched_annotations_list, fp)
+    
+    pq_stat = pq_compute_multi_core(matched_annotations_list, gt_folder, pred_folder, categories)
+    
+    
+    
+    cpu_num = multiprocessing.cpu_count()
+    print("cpu_num:",cpu_num)
+    annotations_split = np.array_split(matched_annotations_list, 1)
+
+    print("Number of cores: {}, images per core: {}".format(cpu_num, len(annotations_split[0])))
+    workers = multiprocessing.Pool(processes=cpu_num)
+    processes = []
+    for proc_id, annotation_set in enumerate(annotations_split):
+        p = _pq_compute_single_core(proc_id, annotation_set, gt_folder, pred_folder, categories)
+        processes.append(p)
+
+
     
 from panopticapi.evaluation import pq_compute, pq_compute_multi_core,pq_compute_single_core, PQStat
 
@@ -201,10 +250,10 @@ def _pq_compute_single_core(proc_id, annotation_set, gt_folder, pred_folder, cat
     gt_segms_list=[]
 
     idx = 0
-    with open("/home/ids/ext-4208/FC/id.txt", 'r') as file:
+    with open("/home/ids/gbrison/segmentation/segmentation/fc-clip/id.txt", 'r') as file:
         for line in file:
             id_images=int(line.strip())
-    yaml_file = '/home/ids/ext-4208/FC/fc-clip/configs/coco/panoptic-segmentation/fcclip/r50_exp.yaml'
+    yaml_file = '/home/ids/gbrison/segmentation/segmentation/fc-clip/configs/coco/panoptic-segmentation/fcclip/cl_exp.yaml'
     with open(yaml_file, 'r') as file:
         data = yaml.safe_load(file)
     for gt_ann, pred_ann in annotation_set:
@@ -253,7 +302,7 @@ def _pq_compute_single_core(proc_id, annotation_set, gt_folder, pred_folder, cat
             pred_id = label % OFFSET
             gt_pred_map[(gt_id, pred_id)] = intersection
         
-        #aal.append(gt_pred_map)
+        aal.append(gt_pred_map)
         #all1.append(gt_ann)
         #all2.append(pred_ann)
         #gt_segms_list.append(gt_segms)
@@ -306,6 +355,11 @@ def _pq_compute_single_core(proc_id, annotation_set, gt_folder, pred_folder, cat
             if intersection / pred_info['area'] > 0.5:
                 continue
             pq_stat[pred_info['category_id']].fp += 1
+    
+    os.makedirs(os.path.join(data['OUTPUT_DIR'],"all"), exist_ok=True)
+    with open(os.path.join(data['OUTPUT_DIR'],"all","all"+str(id_images)), "wb") as fp:   #Pickling
+        pickle.dump(aal, fp)
+    del aal
 
     """os.makedirs(os.path.join(data['OUTPUT_DIR'],"all"), exist_ok=True)
     with open(os.path.join(data['OUTPUT_DIR'],"all","all"+str(id_images)), "wb") as fp:   #Pickling
