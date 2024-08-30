@@ -7,7 +7,7 @@ INPUT:
 MODEL:
   SEM_SEG_HEAD:
     NUM_CLASSES: 20
-  WEIGHTS: /tsi/hi-paris/GB/segmentation/models/fcclip_cocopan_r50.pth
-OUTPUT_DIR: /tsi/hi-paris/GB/segmentation/results/In_vocab/Inference_train_data_new
+  WEIGHTS: /home/ids/ext-4208/FC/fc-clip/fcclip_cocopan_r50.pth
+OUTPUT_DIR: /tsi/hi-paris/FCCLIP_results/All_results/INvocab/Inference_train_data_new
 DATASETS:
   TEST: ("openvocab_cityscapes_fine_panoptic_train",)
