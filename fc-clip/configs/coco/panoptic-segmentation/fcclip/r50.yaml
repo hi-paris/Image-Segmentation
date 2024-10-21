@@ -8,6 +8,6 @@ MODEL:
   SEM_SEG_HEAD:
     NUM_CLASSES: 20
   WEIGHTS: /home/ids/gbrison/segmentation/segmentation/fc-clip/fcclip_cocopan_r50.pth
-OUTPUT_DIR: .output/
+OUTPUT_DIR: /tsi/hi-paris/GB/segmentation/results/Inference/r50
 DATASETS:
   TEST: ("openvocab_cityscapes_fine_panoptic_train",)

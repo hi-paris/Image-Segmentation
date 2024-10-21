@@ -7,13 +7,14 @@ INPUT:
 MODEL:
   SEM_SEG_HEAD:
     NUM_CLASSES: 19
-  WEIGHTS: /home/ids/ext-4208/FC/fc-clip/fcclip_cocopan_r50.pth
-OUTPUT_DIR: /tsi/hi-paris/FCCLIP_results/inference_results/fcclip_cocopan_train_test
+  WEIGHTS: /tsi/hi-paris/GB/segmentation/models/fcclip_cocopan.pth
+OUTPUT_DIR: /tsi/hi-paris/GB/segmentation/results/Normal/cl_000_1000
 DATASETS:
   TRAIN: ("openvocab_cityscapes_fine_panoptic_train",)
-  TEST: ("openvocab_cityscapes_fine_panoptic_train",)
+  TEST: ("openvocab_cityscapes_fine_panoptic_val",)
 SOLVER:
   IMS_PER_BATCH: 8
-  MAX_ITER: 100
+  MAX_ITER: 1000
 TEST:
-  EVAL_PERIOD: 100
+  EVAL_PERIOD: 1000
+
