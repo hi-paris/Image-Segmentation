@@ -10,7 +10,6 @@ import copy
 import itertools
 import logging
 import os
-
 from collections import OrderedDict
 from typing import Any, Dict, List, Set
 
@@ -18,22 +17,14 @@ from detectron2.projects.deeplab import add_deeplab_config, build_lr_scheduler
 from detectron2.solver.build import maybe_add_gradient_clipping
 from detectron2.utils.logger import setup_logger
 
-
 import torch
-import os
 import detectron2.utils.comm as comm
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.config import get_cfg
 from detectron2.engine import DefaultTrainer, default_argument_parser, default_setup, launch
 from detectron2.evaluation import COCOEvaluator, verify_results
-
- 
-#from detectron2.projects.PanopticFCN.panopticfcn import  build_lr_scheduler
-
-# from panopticfcn import add_panopticfcn_config, build_lr_scheduler
-from detectron2.projects.deeplab import add_deeplab_config
-os.environ["NCCL_LL_THRESHOLD"] = "0"
 from detectron2.data import MetadataCatalog, build_detection_train_loader
+from detectron2.utils.events import EventStorage
 from detectron2.evaluation import (
     CityscapesInstanceEvaluator,
     CityscapesSemSegEvaluator,
@@ -43,7 +34,6 @@ from detectron2.evaluation import (
     LVISEvaluator,
     PascalVOCDetectionEvaluator,
     SemSegEvaluator,
-    verify_results,
 )
 
 from fcclip import (
@@ -59,6 +49,57 @@ from fcclip import (
 )
 
 class Trainer(DefaultTrainer):
+    def train(self, start_iter: int = 0, max_iter: int = None):
+        self.iter = start_iter  # Initialize the iteration
+        self.max_iter = max_iter if max_iter is not None else self.cfg.SOLVER.MAX_ITER
+        
+        self.scheduler = self.build_lr_scheduler(self.cfg, self.optimizer)
+        self.checkpointer = DetectionCheckpointer(
+            self.model, self.cfg.OUTPUT_DIR, optimizer=self.optimizer, scheduler=self.scheduler
+        )
+        
+        # Initialize hooks before starting training
+        self.before_train()
+    
+        # Estimate the number of iterations per epoch
+        total_epochs = 3000  # Set the total number of epochs
+        iters_per_epoch = self.cfg.SOLVER.MAX_ITER // total_epochs  # Calculate iterations per epoch
+    
+        # Start training loop
+        with EventStorage(start_iter) as storage:
+            while self.iter < self.max_iter:
+                # Calculate epoch based on the number of iterations
+                epoch = self.iter // iters_per_epoch
+    
+                # Unfreeze the config to modify the EVAL_PERIOD
+                self.cfg.defrost()
+    
+                # Dynamically adjust EVAL_PERIOD based on the current epoch
+                if 0 <= epoch <= 100:
+                    self.cfg.TEST.EVAL_PERIOD = 10 * iters_per_epoch
+                elif 100 < epoch <= 500:
+                    self.cfg.TEST.EVAL_PERIOD = 50 * iters_per_epoch
+                elif 500 < epoch <= 3000:
+                    self.cfg.TEST.EVAL_PERIOD = 100 * iters_per_epoch
+                
+                # Freeze the config again after modification
+                self.cfg.freeze()
+    
+                # Perform a training step
+                self.run_step()
+    
+                # Perform evaluation at the set intervals
+                if (self.iter % self.cfg.TEST.EVAL_PERIOD == 0) or (self.iter == self.max_iter):
+                    self.test(self.cfg, self.model)
+    
+                # Save the checkpoint after every eval period or at the end of training
+                if (self.iter % self.cfg.SOLVER.CHECKPOINT_PERIOD == 0) or (self.iter == self.max_iter):
+                    self.checkpointer.save(f"model_{self.iter:07d}")
+    
+                # Update iteration
+                self.iter += 1
+
+
     @classmethod
     def build_evaluator(cls, cfg, dataset_name, output_folder=None):
         if output_folder is None:
@@ -103,24 +144,11 @@ class Trainer(DefaultTrainer):
         elif len(evaluator_list) == 1:
             return evaluator_list[0]
         return DatasetEvaluators(evaluator_list)
-    
-    #@classmethod
-    #def build_lr_scheduler(cls, cfg, optimizer):
-        """
-        It now calls :func:`detectron2.solver.build_lr_scheduler`.
-        Overwrite it if you'd like a different scheduler.
-        """
-    #    return build_lr_scheduler(cfg, optimizer)
 
     @classmethod
     def build_train_loader(cls, cfg):
-        # if cfg.DATASETS.NAME == 'Cityscapes':
-        # mapper = CityscapesPanopticDatasetMapper(cfg)
-        # return build_detection_train_loader(cfg, mapper=mapper)
         mapper = MaskFormerPanopticDatasetMapper(cfg, True)
         return build_detection_train_loader(cfg, mapper=mapper)
-        # else:
-        #     return build_detection_train_loader(cfg)
         
     @classmethod
     def build_optimizer(cls, cfg, model):
@@ -136,7 +164,6 @@ class Trainer(DefaultTrainer):
             torch.nn.BatchNorm2d,
             torch.nn.BatchNorm3d,
             torch.nn.SyncBatchNorm,
-            # NaiveSyncBatchNorm inherits from BatchNorm2d
             torch.nn.GroupNorm,
             torch.nn.InstanceNorm1d,
             torch.nn.InstanceNorm2d,
@@ -151,7 +178,6 @@ class Trainer(DefaultTrainer):
             for module_param_name, value in module.named_parameters(recurse=False):
                 if not value.requires_grad:
                     continue
-                # Avoid duplicating parameters
                 if value in memo:
                     continue
                 memo.add(value)
@@ -163,7 +189,6 @@ class Trainer(DefaultTrainer):
                     "relative_position_bias_table" in module_param_name
                     or "absolute_pos_embed" in module_param_name
                 ):
-                    print(module_param_name)
                     hyperparams["weight_decay"] = 0.0
                 if isinstance(module, norm_module_types):
                     hyperparams["weight_decay"] = weight_decay_norm
@@ -172,7 +197,6 @@ class Trainer(DefaultTrainer):
                 params.append({"params": [value], **hyperparams})
 
         def maybe_add_full_model_gradient_clipping(optim):
-            # detectron2 doesn't have full model gradient clipping now
             clip_norm_val = cfg.SOLVER.CLIP_GRADIENTS.CLIP_VALUE
             enable = (
                 cfg.SOLVER.CLIP_GRADIENTS.ENABLED
@@ -206,7 +230,6 @@ class Trainer(DefaultTrainer):
     @classmethod
     def test_with_TTA(cls, cfg, model):
         logger = logging.getLogger("detectron2.trainer")
-        # In the end of training, run an evaluation with TTA.
         logger.info("Running inference with test-time augmentation ...")
         model = SemanticSegmentorWithTTA(cfg, model)
         evaluators = [
@@ -219,22 +242,16 @@ class Trainer(DefaultTrainer):
         res = OrderedDict({k + "_TTA": v for k, v in res.items()})
         return res        
 
-
 def setup(args):
     """
     Create configs and perform basic setups.
     """
     cfg = get_cfg()
-    # add_panopticfcn_config(cfg)
     add_deeplab_config(cfg)
     add_maskformer2_config(cfg)
     add_fcclip_config(cfg) 
-    # cfg.DATASETS.NAME == 'Cityscapes'
-    # cfg.MODEL.SEM_SEG_HEAD.COMMON_STRIDE == 4
     cfg.INPUT.CROP.MINIMUM_INST_AREA = 1
-    
     cfg.merge_from_file(args.config_file)
-    
     cfg.merge_from_list(args.opts)
     cfg.freeze()
     default_setup(cfg, args)
@@ -243,10 +260,6 @@ def setup(args):
 
 def main(args):
     cfg = setup(args)
-     
-
-    # if cfg.DATASETS.NAME == 'Cityscapes':
-    # register_all_cityscapes_panoptic(cfg)
 
     if args.eval_only:
         model = Trainer.build_model(cfg)
@@ -258,8 +271,11 @@ def main(args):
             verify_results(cfg, res)
         return res
 
+    # Use the modified Trainer class
     trainer = Trainer(cfg)
-    trainer.resume_or_load(resume=args.resume) 
+    trainer.resume_or_load(resume=args.resume)
+    
+    # Start training and dynamically adjust eval period
     return trainer.train()
 
 if __name__ == "__main__":
