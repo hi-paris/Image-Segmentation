@@ -17,7 +17,7 @@ cp  /tsi/hi-paris/GB/segmentation/configs/cityscapes_panoptic_train_invocab_008_
 Rename the copied configuration file to make it ready for use.
 
 ```bash
-mv /home/ids/gbrison/segmentation/segmentation/fc-clip/datasets/cityscapes/gtFine/cityscapes_panoptic_train_invocab_008_r50.json datasets/cityscapes/gtFine/cityscapes_panoptic_train.json
+mv /home/ids/gbrison/segmentation/segmentation/fc-clip/datasets/cityscapes/gtFine/cityscapes_panoptic_train_invocab_008_r50.json fc-clip/datasets/cityscapes/gtFine/cityscapes_panoptic_train.json
 ```
 
 
