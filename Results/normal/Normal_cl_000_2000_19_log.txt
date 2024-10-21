@@ -1,0 +1,1692 @@
+[09/10 16:27:38] detectron2 INFO: Rank of current process: 0. World size: 1
+[09/10 16:27:40] detectron2 INFO: Environment info:
+-------------------------------  -------------------------------------------------------------------------------------------------------
+sys.platform                     linux
+Python                           3.8.19 | packaged by conda-forge | (default, Mar 20 2024, 12:47:35) [GCC 12.3.0]
+numpy                            1.24.4
+detectron2                       0.6 @/home/ids/gbrison/segmentation/segmentation/detectron2/detectron2
+Compiler                         GCC 11.4
+CUDA compiler                    CUDA 12.5
+detectron2 arch flags            8.9
+DETECTRON2_ENV_MODULE            <not set>
+PyTorch                          2.4.0+cu121 @/home/ids/gbrison/segmentation/miniconda3/envs/fc/lib/python3.8/site-packages/torch
+PyTorch debug build              False
+torch._C._GLIBCXX_USE_CXX11_ABI  False
+GPU available                    Yes
+GPU 0                            NVIDIA A100-PCIE-40GB (arch=8.0)
+Driver version                   535.113.01
+CUDA_HOME                        /usr/local/cuda
+Pillow                           9.4.0
+torchvision                      0.19.0+cu121 @/home/ids/gbrison/segmentation/miniconda3/envs/fc/lib/python3.8/site-packages/torchvision
+torchvision arch flags           5.0, 6.0, 7.0, 7.5, 8.0, 8.6, 9.0
+fvcore                           0.1.5.post20221221
+iopath                           0.1.9
+cv2                              4.10.0
+-------------------------------  -------------------------------------------------------------------------------------------------------
+PyTorch built with:
+  - GCC 9.3
+  - C++ Version: 201703
+  - Intel(R) oneAPI Math Kernel Library Version 2021.4-Product Build 20210904 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v3.4.2 (Git Hash 1137e04ec0b5251ca2b4400a4fd3c667ce843d67)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 12.1
+  - NVCC architecture flags: -gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_90,code=sm_90
+  - CuDNN 90.1  (built against CUDA 12.4)
+  - Magma 2.6.1
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=12.1, CUDNN_VERSION=9.1.0, CXX_COMPILER=/opt/rh/devtoolset-9/root/usr/bin/c++, CXX_FLAGS= -D_GLIBCXX_USE_CXX11_ABI=0 -fabi-version=11 -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOROCTRACER -DUSE_FBGEMM -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wall -Wextra -Werror=return-type -Werror=non-virtual-dtor -Werror=bool-operation -Wnarrowing -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -Wno-strict-overflow -Wno-strict-aliasing -Wno-stringop-overflow -Wsuggest-override -Wno-psabi -Wno-error=pedantic -Wno-error=old-style-cast -Wno-missing-braces -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=2.4.0, USE_CUDA=ON, USE_CUDNN=ON, USE_CUSPARSELT=1, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_GLOO=ON, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=1, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, USE_ROCM_KERNEL_ASSERT=OFF, 
+
+[09/10 16:27:40] detectron2 INFO: Command line arguments: Namespace(config_file='configs/coco/panoptic-segmentation/fcclip/cl_exp_19_2000.yaml', dist_url='tcp://127.0.0.1:51163', eval_only=False, machine_rank=0, num_gpus=1, num_machines=1, opts=[], resume=False)
+[09/10 16:27:40] detectron2 INFO: Contents of args.config_file=configs/coco/panoptic-segmentation/fcclip/cl_exp_19_2000.yaml:
+_BASE_: ./fcclip_convnext_large_eval_ade20k.yaml
+
+INPUT:
+  MIN_SIZE_TEST: 1024
+  MAX_SIZE_TEST: 2560
+
+MODEL:
+  SEM_SEG_HEAD:
+    NUM_CLASSES: 19
+  WEIGHTS: /tsi/hi-paris/GB/segmentation/models/fcclip_cocopan.pth
+OUTPUT_DIR: /tsi/hi-paris/GB/segmentation/results/Normal/cl_000_2000_19
+DATASETS:
+  TRAIN: ("openvocab_cityscapes_fine_panoptic_train",)
+  TEST: ("openvocab_cityscapes_fine_panoptic_val",)
+SOLVER:
+  IMS_PER_BATCH: 8
+  MAX_ITER: 2000
+TEST:
+  EVAL_PERIOD: 2000
+
+
+[09/10 16:27:40] detectron2 INFO: Running with full config:
+CUDNN_BENCHMARK: false
+DATALOADER:
+  ASPECT_RATIO_GROUPING: true
+  FILTER_EMPTY_ANNOTATIONS: true
+  NUM_WORKERS: 4
+  REPEAT_SQRT: true
+  REPEAT_THRESHOLD: 0.0
+  SAMPLER_TRAIN: TrainingSampler
+DATASETS:
+  PRECOMPUTED_PROPOSAL_TOPK_TEST: 1000
+  PRECOMPUTED_PROPOSAL_TOPK_TRAIN: 2000
+  PROPOSAL_FILES_TEST: []
+  PROPOSAL_FILES_TRAIN: []
+  TEST:
+  - openvocab_cityscapes_fine_panoptic_val
+  TRAIN:
+  - openvocab_cityscapes_fine_panoptic_train
+GLOBAL:
+  HACK: 1.0
+INPUT:
+  COLOR_AUG_SSD: false
+  CROP:
+    ENABLED: false
+    MINIMUM_INST_AREA: 1
+    SINGLE_CATEGORY_MAX_AREA: 1.0
+    SIZE:
+    - 0.9
+    - 0.9
+    TYPE: relative_range
+  DATASET_MAPPER_NAME: coco_panoptic_lsj
+  FORMAT: RGB
+  IMAGE_SIZE: 1024
+  MASK_FORMAT: polygon
+  MAX_SCALE: 2.0
+  MAX_SIZE_TEST: 2560
+  MAX_SIZE_TRAIN: 1333
+  MIN_SCALE: 0.1
+  MIN_SIZE_TEST: 1024
+  MIN_SIZE_TRAIN:
+  - 800
+  MIN_SIZE_TRAIN_SAMPLING: choice
+  RANDOM_FLIP: horizontal
+  SIZE_DIVISIBILITY: -1
+MODEL:
+  ANCHOR_GENERATOR:
+    ANGLES:
+    - - -90
+      - 0
+      - 90
+    ASPECT_RATIOS:
+    - - 0.5
+      - 1.0
+      - 2.0
+    NAME: DefaultAnchorGenerator
+    OFFSET: 0.0
+    SIZES:
+    - - 32
+      - 64
+      - 128
+      - 256
+      - 512
+  BACKBONE:
+    FREEZE_AT: 0
+    NAME: CLIP
+  DEVICE: cuda
+  FC_CLIP:
+    CLIP_MODEL_NAME: convnext_large_d_320
+    CLIP_PRETRAINED_WEIGHTS: laion2b_s29b_b131k_ft_soup
+    EMBED_DIM: 768
+    ENSEMBLE_ON_VALID_MASK: false
+    GEOMETRIC_ENSEMBLE_ALPHA: 0.4
+    GEOMETRIC_ENSEMBLE_BETA: 0.8
+  FPN:
+    FUSE_TYPE: sum
+    IN_FEATURES: []
+    NORM: ''
+    OUT_CHANNELS: 256
+  KEYPOINT_ON: false
+  LOAD_PROPOSALS: false
+  MASK_FORMER:
+    CLASS_WEIGHT: 2.0
+    DEC_LAYERS: 10
+    DEEP_SUPERVISION: true
+    DICE_WEIGHT: 5.0
+    DIM_FEEDFORWARD: 2048
+    DROPOUT: 0.0
+    ENC_LAYERS: 0
+    ENFORCE_INPUT_PROJ: false
+    HIDDEN_DIM: 256
+    IMPORTANCE_SAMPLE_RATIO: 0.75
+    MASK_WEIGHT: 5.0
+    NHEADS: 8
+    NO_OBJECT_WEIGHT: 0.1
+    NUM_OBJECT_QUERIES: 250
+    OVERSAMPLE_RATIO: 3.0
+    PRE_NORM: false
+    SIZE_DIVISIBILITY: 32
+    TEST:
+      INSTANCE_ON: true
+      OBJECT_MASK_THRESHOLD: 0.0
+      OVERLAP_THRESHOLD: 0.8
+      PANOPTIC_ON: true
+      SEMANTIC_ON: true
+      SEM_SEG_POSTPROCESSING_BEFORE_INFERENCE: false
+    TRAIN_NUM_POINTS: 12544
+    TRANSFORMER_DECODER_NAME: MultiScaleMaskedTransformerDecoder
+    TRANSFORMER_IN_FEATURE: multi_scale_pixel_decoder
+  MASK_ON: false
+  META_ARCHITECTURE: FCCLIP
+  PANOPTIC_FPN:
+    COMBINE:
+      ENABLED: true
+      INSTANCES_CONFIDENCE_THRESH: 0.5
+      OVERLAP_THRESH: 0.5
+      STUFF_AREA_LIMIT: 4096
+    INSTANCE_LOSS_WEIGHT: 1.0
+  PIXEL_MEAN:
+  - 122.7709383
+  - 116.7460125
+  - 104.09373615
+  PIXEL_STD:
+  - 68.5005327
+  - 66.6321579
+  - 70.32316305
+  PROPOSAL_GENERATOR:
+    MIN_SIZE: 0
+    NAME: RPN
+  RESNETS:
+    DEFORM_MODULATED: false
+    DEFORM_NUM_GROUPS: 1
+    DEFORM_ON_PER_STAGE:
+    - false
+    - false
+    - false
+    - false
+    DEPTH: 50
+    NORM: FrozenBN
+    NUM_GROUPS: 1
+    OUT_FEATURES:
+    - res2
+    - res3
+    - res4
+    - res5
+    RES2_OUT_CHANNELS: 256
+    RES4_DILATION: 1
+    RES5_DILATION: 1
+    RES5_MULTI_GRID:
+    - 1
+    - 1
+    - 1
+    STEM_OUT_CHANNELS: 64
+    STEM_TYPE: basic
+    STRIDE_IN_1X1: false
+    WIDTH_PER_GROUP: 64
+  RETINANET:
+    BBOX_REG_LOSS_TYPE: smooth_l1
+    BBOX_REG_WEIGHTS: &id002
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    FOCAL_LOSS_ALPHA: 0.25
+    FOCAL_LOSS_GAMMA: 2.0
+    IN_FEATURES:
+    - p3
+    - p4
+    - p5
+    - p6
+    - p7
+    IOU_LABELS:
+    - 0
+    - -1
+    - 1
+    IOU_THRESHOLDS:
+    - 0.4
+    - 0.5
+    NMS_THRESH_TEST: 0.5
+    NORM: ''
+    NUM_CLASSES: 80
+    NUM_CONVS: 4
+    PRIOR_PROB: 0.01
+    SCORE_THRESH_TEST: 0.05
+    SMOOTH_L1_LOSS_BETA: 0.1
+    TOPK_CANDIDATES_TEST: 1000
+  ROI_BOX_CASCADE_HEAD:
+    BBOX_REG_WEIGHTS:
+    - &id001
+      - 10.0
+      - 10.0
+      - 5.0
+      - 5.0
+    - - 20.0
+      - 20.0
+      - 10.0
+      - 10.0
+    - - 30.0
+      - 30.0
+      - 15.0
+      - 15.0
+    IOUS:
+    - 0.5
+    - 0.6
+    - 0.7
+  ROI_BOX_HEAD:
+    BBOX_REG_LOSS_TYPE: smooth_l1
+    BBOX_REG_LOSS_WEIGHT: 1.0
+    BBOX_REG_WEIGHTS: *id001
+    CLS_AGNOSTIC_BBOX_REG: false
+    CONV_DIM: 256
+    FC_DIM: 1024
+    FED_LOSS_FREQ_WEIGHT_POWER: 0.5
+    FED_LOSS_NUM_CLASSES: 50
+    NAME: ''
+    NORM: ''
+    NUM_CONV: 0
+    NUM_FC: 0
+    POOLER_RESOLUTION: 14
+    POOLER_SAMPLING_RATIO: 0
+    POOLER_TYPE: ROIAlignV2
+    SMOOTH_L1_BETA: 0.0
+    TRAIN_ON_PRED_BOXES: false
+    USE_FED_LOSS: false
+    USE_SIGMOID_CE: false
+  ROI_HEADS:
+    BATCH_SIZE_PER_IMAGE: 512
+    IN_FEATURES:
+    - res4
+    IOU_LABELS:
+    - 0
+    - 1
+    IOU_THRESHOLDS:
+    - 0.5
+    NAME: Res5ROIHeads
+    NMS_THRESH_TEST: 0.5
+    NUM_CLASSES: 80
+    POSITIVE_FRACTION: 0.25
+    PROPOSAL_APPEND_GT: true
+    SCORE_THRESH_TEST: 0.05
+  ROI_KEYPOINT_HEAD:
+    CONV_DIMS:
+    - 512
+    - 512
+    - 512
+    - 512
+    - 512
+    - 512
+    - 512
+    - 512
+    LOSS_WEIGHT: 1.0
+    MIN_KEYPOINTS_PER_IMAGE: 1
+    NAME: KRCNNConvDeconvUpsampleHead
+    NORMALIZE_LOSS_BY_VISIBLE_KEYPOINTS: true
+    NUM_KEYPOINTS: 17
+    POOLER_RESOLUTION: 14
+    POOLER_SAMPLING_RATIO: 0
+    POOLER_TYPE: ROIAlignV2
+  ROI_MASK_HEAD:
+    CLS_AGNOSTIC_MASK: false
+    CONV_DIM: 256
+    NAME: MaskRCNNConvUpsampleHead
+    NORM: ''
+    NUM_CONV: 0
+    POOLER_RESOLUTION: 14
+    POOLER_SAMPLING_RATIO: 0
+    POOLER_TYPE: ROIAlignV2
+  RPN:
+    BATCH_SIZE_PER_IMAGE: 256
+    BBOX_REG_LOSS_TYPE: smooth_l1
+    BBOX_REG_LOSS_WEIGHT: 1.0
+    BBOX_REG_WEIGHTS: *id002
+    BOUNDARY_THRESH: -1
+    CONV_DIMS:
+    - -1
+    HEAD_NAME: StandardRPNHead
+    IN_FEATURES:
+    - res4
+    IOU_LABELS:
+    - 0
+    - -1
+    - 1
+    IOU_THRESHOLDS:
+    - 0.3
+    - 0.7
+    LOSS_WEIGHT: 1.0
+    NMS_THRESH: 0.7
+    POSITIVE_FRACTION: 0.5
+    POST_NMS_TOPK_TEST: 1000
+    POST_NMS_TOPK_TRAIN: 2000
+    PRE_NMS_TOPK_TEST: 6000
+    PRE_NMS_TOPK_TRAIN: 12000
+    SMOOTH_L1_BETA: 0.0
+  SEM_SEG_HEAD:
+    ASPP_CHANNELS: 256
+    ASPP_DILATIONS:
+    - 6
+    - 12
+    - 18
+    ASPP_DROPOUT: 0.1
+    COMMON_STRIDE: 4
+    CONVS_DIM: 256
+    DEFORMABLE_TRANSFORMER_ENCODER_IN_FEATURES:
+    - res3
+    - res4
+    - res5
+    DEFORMABLE_TRANSFORMER_ENCODER_N_HEADS: 8
+    DEFORMABLE_TRANSFORMER_ENCODER_N_POINTS: 4
+    IGNORE_VALUE: 255
+    IN_FEATURES:
+    - res2
+    - res3
+    - res4
+    - res5
+    LOSS_TYPE: hard_pixel_mining
+    LOSS_WEIGHT: 1.0
+    MASK_DIM: 256
+    NAME: FCCLIPHead
+    NORM: GN
+    NUM_CLASSES: 19
+    PIXEL_DECODER_NAME: MSDeformAttnPixelDecoder
+    PROJECT_CHANNELS:
+    - 48
+    PROJECT_FEATURES:
+    - res2
+    TRANSFORMER_ENC_LAYERS: 6
+    USE_DEPTHWISE_SEPARABLE_CONV: false
+  SWIN:
+    APE: false
+    ATTN_DROP_RATE: 0.0
+    DEPTHS:
+    - 2
+    - 2
+    - 6
+    - 2
+    DROP_PATH_RATE: 0.3
+    DROP_RATE: 0.0
+    EMBED_DIM: 96
+    MLP_RATIO: 4.0
+    NUM_HEADS:
+    - 3
+    - 6
+    - 12
+    - 24
+    OUT_FEATURES:
+    - res2
+    - res3
+    - res4
+    - res5
+    PATCH_NORM: true
+    PATCH_SIZE: 4
+    PRETRAIN_IMG_SIZE: 224
+    QKV_BIAS: true
+    QK_SCALE: null
+    USE_CHECKPOINT: false
+    WINDOW_SIZE: 7
+  WEIGHTS: /tsi/hi-paris/GB/segmentation/models/fcclip_cocopan.pth
+OUTPUT_DIR: /tsi/hi-paris/GB/segmentation/results/Normal/cl_000_2000_19
+SEED: -1
+SOLVER:
+  AMP:
+    ENABLED: true
+  BACKBONE_MULTIPLIER: 0.1
+  BASE_LR: 0.0001
+  BASE_LR_END: 0.0
+  BIAS_LR_FACTOR: 1.0
+  CHECKPOINT_PERIOD: 5000
+  CLIP_GRADIENTS:
+    CLIP_TYPE: full_model
+    CLIP_VALUE: 0.01
+    ENABLED: true
+    NORM_TYPE: 2.0
+  GAMMA: 0.1
+  IMS_PER_BATCH: 8
+  LR_SCHEDULER_NAME: WarmupMultiStepLR
+  MAX_ITER: 2000
+  MOMENTUM: 0.9
+  NESTEROV: false
+  NUM_DECAYS: 3
+  OPTIMIZER: ADAMW
+  POLY_LR_CONSTANT_ENDING: 0.0
+  POLY_LR_POWER: 0.9
+  REFERENCE_WORLD_SIZE: 0
+  RESCALE_INTERVAL: false
+  STEPS:
+  - 327778
+  - 355092
+  WARMUP_FACTOR: 1.0
+  WARMUP_ITERS: 10
+  WARMUP_METHOD: linear
+  WEIGHT_DECAY: 0.05
+  WEIGHT_DECAY_BIAS: null
+  WEIGHT_DECAY_EMBED: 0.0
+  WEIGHT_DECAY_NORM: 0.0
+TEST:
+  AUG:
+    ENABLED: false
+    FLIP: true
+    MAX_SIZE: 4000
+    MIN_SIZES:
+    - 400
+    - 500
+    - 600
+    - 700
+    - 800
+    - 900
+    - 1000
+    - 1100
+    - 1200
+  DETECTIONS_PER_IMAGE: 100
+  EVAL_PERIOD: 2000
+  EXPECTED_RESULTS: []
+  KEYPOINT_OKS_SIGMAS: []
+  PRECISE_BN:
+    ENABLED: false
+    NUM_ITER: 200
+VERSION: 2
+VIS_PERIOD: 0
+
+[09/10 16:27:40] detectron2 INFO: Full config saved to /tsi/hi-paris/GB/segmentation/results/Normal/cl_000_2000_19/config.yaml
+[09/10 16:27:40] d2.utils.env INFO: Using a generated random seed 42030130
+[09/10 16:27:57] d2.engine.defaults INFO: Model:
+FCCLIP(
+  (backbone): CLIP(
+    (clip_model): CLIP(
+      (visual): TimmModel(
+        (trunk): ConvNeXt(
+          (stem): Sequential(
+            (0): Conv2d(3, 192, kernel_size=(4, 4), stride=(4, 4))
+            (1): LayerNorm2d((192,), eps=1e-06, elementwise_affine=True)
+          )
+          (stages): Sequential(
+            (0): ConvNeXtStage(
+              (downsample): Identity()
+              (blocks): Sequential(
+                (0): ConvNeXtBlock(
+                  (conv_dw): Conv2d(192, 192, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=192)
+                  (norm): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=192, out_features=768, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=768, out_features=192, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): Identity()
+                )
+                (1): ConvNeXtBlock(
+                  (conv_dw): Conv2d(192, 192, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=192)
+                  (norm): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=192, out_features=768, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=768, out_features=192, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.003)
+                )
+                (2): ConvNeXtBlock(
+                  (conv_dw): Conv2d(192, 192, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=192)
+                  (norm): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=192, out_features=768, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=768, out_features=192, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.006)
+                )
+              )
+            )
+            (1): ConvNeXtStage(
+              (downsample): Sequential(
+                (0): LayerNorm2d((192,), eps=1e-06, elementwise_affine=True)
+                (1): Conv2d(192, 384, kernel_size=(2, 2), stride=(2, 2))
+              )
+              (blocks): Sequential(
+                (0): ConvNeXtBlock(
+                  (conv_dw): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+                  (norm): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=384, out_features=1536, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=1536, out_features=384, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.009)
+                )
+                (1): ConvNeXtBlock(
+                  (conv_dw): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+                  (norm): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=384, out_features=1536, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=1536, out_features=384, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.011)
+                )
+                (2): ConvNeXtBlock(
+                  (conv_dw): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+                  (norm): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=384, out_features=1536, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=1536, out_features=384, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.014)
+                )
+              )
+            )
+            (2): ConvNeXtStage(
+              (downsample): Sequential(
+                (0): LayerNorm2d((384,), eps=1e-06, elementwise_affine=True)
+                (1): Conv2d(384, 768, kernel_size=(2, 2), stride=(2, 2))
+              )
+              (blocks): Sequential(
+                (0): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.017)
+                )
+                (1): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.020)
+                )
+                (2): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.023)
+                )
+                (3): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.026)
+                )
+                (4): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.029)
+                )
+                (5): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.031)
+                )
+                (6): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.034)
+                )
+                (7): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.037)
+                )
+                (8): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.040)
+                )
+                (9): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.043)
+                )
+                (10): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.046)
+                )
+                (11): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.049)
+                )
+                (12): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.051)
+                )
+                (13): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.054)
+                )
+                (14): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.057)
+                )
+                (15): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.060)
+                )
+                (16): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.063)
+                )
+                (17): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.066)
+                )
+                (18): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.069)
+                )
+                (19): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.071)
+                )
+                (20): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.074)
+                )
+                (21): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.077)
+                )
+                (22): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.080)
+                )
+                (23): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.083)
+                )
+                (24): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.086)
+                )
+                (25): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.089)
+                )
+                (26): ConvNeXtBlock(
+                  (conv_dw): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+                  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=768, out_features=3072, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=3072, out_features=768, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.091)
+                )
+              )
+            )
+            (3): ConvNeXtStage(
+              (downsample): Sequential(
+                (0): LayerNorm2d((768,), eps=1e-06, elementwise_affine=True)
+                (1): Conv2d(768, 1536, kernel_size=(2, 2), stride=(2, 2))
+              )
+              (blocks): Sequential(
+                (0): ConvNeXtBlock(
+                  (conv_dw): Conv2d(1536, 1536, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=1536)
+                  (norm): LayerNorm((1536,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=1536, out_features=6144, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=6144, out_features=1536, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.094)
+                )
+                (1): ConvNeXtBlock(
+                  (conv_dw): Conv2d(1536, 1536, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=1536)
+                  (norm): LayerNorm((1536,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=1536, out_features=6144, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=6144, out_features=1536, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.097)
+                )
+                (2): ConvNeXtBlock(
+                  (conv_dw): Conv2d(1536, 1536, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=1536)
+                  (norm): LayerNorm((1536,), eps=1e-06, elementwise_affine=True)
+                  (mlp): Mlp(
+                    (fc1): Linear(in_features=1536, out_features=6144, bias=True)
+                    (act): GELU()
+                    (drop1): Dropout(p=0.0, inplace=False)
+                    (norm): Identity()
+                    (fc2): Linear(in_features=6144, out_features=1536, bias=True)
+                    (drop2): Dropout(p=0.0, inplace=False)
+                  )
+                  (shortcut): Identity()
+                  (drop_path): DropPath(drop_prob=0.100)
+                )
+              )
+            )
+          )
+          (norm_pre): Identity()
+          (head): NormMlpClassifierHead(
+            (global_pool): SelectAdaptivePool2d(pool_type=avg, flatten=Identity())
+            (norm): LayerNorm2d((1536,), eps=1e-06, elementwise_affine=True)
+            (flatten): Flatten(start_dim=1, end_dim=-1)
+            (pre_logits): Identity()
+            (drop): Dropout(p=0.0, inplace=False)
+            (fc): Identity()
+          )
+        )
+        (head): Sequential(
+          (mlp): Mlp(
+            (fc1): Linear(in_features=1536, out_features=1536, bias=True)
+            (act): GELU(approximate='none')
+            (drop1): Dropout(p=0.0, inplace=False)
+            (norm): Identity()
+            (fc2): Linear(in_features=1536, out_features=768, bias=False)
+            (drop2): Dropout(p=0, inplace=False)
+          )
+        )
+      )
+      (transformer): Transformer(
+        (resblocks): ModuleList(
+          (0-15): 16 x ResidualAttentionBlock(
+            (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+            )
+            (ls_1): Identity()
+            (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+              (gelu): GELU(approximate='none')
+              (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+            )
+            (ls_2): Identity()
+          )
+        )
+      )
+      (token_embedding): Embedding(49408, 768)
+      (ln_final): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (sem_seg_head): FCCLIPHead(
+    (pixel_decoder): MSDeformAttnPixelDecoder(
+      (input_proj): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(1536, 256, kernel_size=(1, 1), stride=(1, 1))
+          (1): GroupNorm(32, 256, eps=1e-05, affine=True)
+        )
+        (1): Sequential(
+          (0): Conv2d(768, 256, kernel_size=(1, 1), stride=(1, 1))
+          (1): GroupNorm(32, 256, eps=1e-05, affine=True)
+        )
+        (2): Sequential(
+          (0): Conv2d(384, 256, kernel_size=(1, 1), stride=(1, 1))
+          (1): GroupNorm(32, 256, eps=1e-05, affine=True)
+        )
+      )
+      (transformer): MSDeformAttnTransformerEncoderOnly(
+        (encoder): MSDeformAttnTransformerEncoder(
+          (layers): ModuleList(
+            (0-5): 6 x MSDeformAttnTransformerEncoderLayer(
+              (self_attn): MSDeformAttn(
+                (sampling_offsets): Linear(in_features=256, out_features=192, bias=True)
+                (attention_weights): Linear(in_features=256, out_features=96, bias=True)
+                (value_proj): Linear(in_features=256, out_features=256, bias=True)
+                (output_proj): Linear(in_features=256, out_features=256, bias=True)
+              )
+              (dropout1): Dropout(p=0.0, inplace=False)
+              (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+              (linear1): Linear(in_features=256, out_features=1024, bias=True)
+              (dropout2): Dropout(p=0.0, inplace=False)
+              (linear2): Linear(in_features=1024, out_features=256, bias=True)
+              (dropout3): Dropout(p=0.0, inplace=False)
+              (norm2): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+            )
+          )
+        )
+      )
+      (pe_layer): Positional encoding PositionEmbeddingSine
+          num_pos_feats: 128
+          temperature: 10000
+          normalize: True
+          scale: 6.283185307179586
+      (mask_features): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1))
+      (adapter_1): Conv2d(
+        192, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+        (norm): GroupNorm(32, 256, eps=1e-05, affine=True)
+      )
+      (layer_1): Conv2d(
+        256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+        (norm): GroupNorm(32, 256, eps=1e-05, affine=True)
+      )
+    )
+    (predictor): MultiScaleMaskedTransformerDecoder(
+      (pe_layer): Positional encoding PositionEmbeddingSine
+          num_pos_feats: 128
+          temperature: 10000
+          normalize: True
+          scale: 6.283185307179586
+      (transformer_self_attention_layers): ModuleList(
+        (0-8): 9 x SelfAttentionLayer(
+          (self_attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+          )
+          (norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          (dropout): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (transformer_cross_attention_layers): ModuleList(
+        (0-8): 9 x CrossAttentionLayer(
+          (multihead_attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+          )
+          (norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          (dropout): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (transformer_ffn_layers): ModuleList(
+        (0-8): 9 x FFNLayer(
+          (linear1): Linear(in_features=256, out_features=2048, bias=True)
+          (dropout): Dropout(p=0.0, inplace=False)
+          (linear2): Linear(in_features=2048, out_features=256, bias=True)
+          (norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+      (decoder_norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+      (query_feat): Embedding(250, 256)
+      (query_embed): Embedding(250, 256)
+      (level_embed): Embedding(3, 256)
+      (input_proj): ModuleList(
+        (0-2): 3 x Sequential()
+      )
+      (mask_embed): MLP(
+        (layers): ModuleList(
+          (0-2): 3 x Linear(in_features=256, out_features=256, bias=True)
+        )
+      )
+      (mask_pooling): MaskPooling()
+      (_mask_pooling_proj): Sequential(
+        (0): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (1): Linear(in_features=256, out_features=256, bias=True)
+      )
+      (class_embed): MLP(
+        (layers): ModuleList(
+          (0-1): 2 x Linear(in_features=256, out_features=256, bias=True)
+          (2): Linear(in_features=256, out_features=768, bias=True)
+        )
+      )
+    )
+  )
+  (criterion): Criterion SetCriterion
+      matcher: Matcher HungarianMatcher
+          cost_class: 2.0
+          cost_mask: 5.0
+          cost_dice: 5.0
+      losses: ['labels', 'masks']
+      weight_dict: {'loss_ce': 2.0, 'loss_mask': 5.0, 'loss_dice': 5.0, 'loss_ce_0': 2.0, 'loss_mask_0': 5.0, 'loss_dice_0': 5.0, 'loss_ce_1': 2.0, 'loss_mask_1': 5.0, 'loss_dice_1': 5.0, 'loss_ce_2': 2.0, 'loss_mask_2': 5.0, 'loss_dice_2': 5.0, 'loss_ce_3': 2.0, 'loss_mask_3': 5.0, 'loss_dice_3': 5.0, 'loss_ce_4': 2.0, 'loss_mask_4': 5.0, 'loss_dice_4': 5.0, 'loss_ce_5': 2.0, 'loss_mask_5': 5.0, 'loss_dice_5': 5.0, 'loss_ce_6': 2.0, 'loss_mask_6': 5.0, 'loss_dice_6': 5.0, 'loss_ce_7': 2.0, 'loss_mask_7': 5.0, 'loss_dice_7': 5.0, 'loss_ce_8': 2.0, 'loss_mask_8': 5.0, 'loss_dice_8': 5.0}
+      num_classes: 19
+      eos_coef: 0.1
+      num_points: 12544
+      oversample_ratio: 3.0
+      importance_sample_ratio: 0.75
+  (mask_pooling): MaskPooling()
+  (void_embedding): Embedding(1, 768)
+)
+[09/10 16:27:57] fcclip.data.dataset_mappers.mask_former_semantic_dataset_mapper INFO: [MaskFormerPanopticDatasetMapper] Augmentations used in training: [ResizeShortestEdge(short_edge_length=(800,), max_size=1333, sample_style='choice'), RandomFlip()]
+[09/10 16:27:58] fcclip.data.datasets.register_cityscapes_panoptic INFO: 18 cities found in 'datasets/cityscapes/leftImg8bit/train'.
+[09/10 16:27:58] d2.data.build INFO: Using training sampler TrainingSampler
+[09/10 16:27:58] d2.data.common INFO: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[09/10 16:27:58] d2.data.common INFO: Serializing 2975 elements to byte tensors and concatenating them all ...
+[09/10 16:27:58] d2.data.common INFO: Serialized dataset takes 4.12 MiB
+[09/10 16:27:58] d2.data.build INFO: Making batched data loader with batch_size=8
+[09/10 16:27:58] d2.solver.build WARNING: SOLVER.STEPS contains values larger than SOLVER.MAX_ITER. These values will be ignored.
+[09/10 16:27:58] d2.checkpoint.detection_checkpoint INFO: [DetectionCheckpointer] Loading from /tsi/hi-paris/GB/segmentation/models/fcclip_cocopan.pth ...
+[09/10 16:27:58] fvcore.common.checkpoint INFO: [Checkpointer] Loading from /tsi/hi-paris/GB/segmentation/models/fcclip_cocopan.pth ...
+[09/10 16:28:00] fvcore.common.checkpoint WARNING: Skip loading parameter 'criterion.empty_weight' to the model due to incompatible shapes: (134,) in the checkpoint but (20,) in the model! You might want to double check if this is expected.
+[09/10 16:28:00] fvcore.common.checkpoint WARNING: Some model parameters or buffers are not found in the checkpoint:
+[34mbackbone.clip_model.ln_final.{bias, weight}[0m
+[34mbackbone.clip_model.token_embedding.weight[0m
+[34mbackbone.clip_model.transformer.resblocks.0.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.0.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.0.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.0.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.0.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.0.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.1.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.1.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.1.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.1.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.1.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.1.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.10.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.10.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.10.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.10.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.10.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.10.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.11.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.11.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.11.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.11.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.11.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.11.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.12.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.12.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.12.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.12.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.12.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.12.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.13.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.13.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.13.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.13.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.13.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.13.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.14.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.14.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.14.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.14.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.14.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.14.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.15.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.15.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.15.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.15.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.15.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.15.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.2.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.2.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.2.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.2.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.2.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.2.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.3.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.3.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.3.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.3.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.3.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.3.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.4.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.4.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.4.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.4.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.4.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.4.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.5.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.5.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.5.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.5.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.5.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.5.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.6.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.6.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.6.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.6.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.6.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.6.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.7.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.7.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.7.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.7.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.7.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.7.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.8.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.8.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.8.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.8.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.8.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.8.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.9.attn.out_proj.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.9.attn.{in_proj_bias, in_proj_weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.9.ln_1.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.9.ln_2.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.9.mlp.c_fc.{bias, weight}[0m
+[34mbackbone.clip_model.transformer.resblocks.9.mlp.c_proj.{bias, weight}[0m
+[34mbackbone.clip_model.visual.head.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.head.mlp.fc2.weight[0m
+[34mbackbone.clip_model.visual.trunk.head.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.0.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.0.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.0.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.0.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.0.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.1.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.1.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.1.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.1.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.1.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.2.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.2.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.2.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.2.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.0.blocks.2.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.0.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.0.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.0.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.0.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.0.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.1.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.1.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.1.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.1.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.1.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.2.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.2.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.2.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.2.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.blocks.2.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.downsample.0.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.1.downsample.1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.0.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.0.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.0.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.0.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.0.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.1.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.1.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.1.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.1.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.1.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.10.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.10.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.10.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.10.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.10.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.11.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.11.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.11.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.11.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.11.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.12.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.12.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.12.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.12.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.12.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.13.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.13.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.13.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.13.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.13.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.14.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.14.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.14.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.14.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.14.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.15.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.15.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.15.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.15.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.15.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.16.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.16.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.16.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.16.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.16.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.17.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.17.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.17.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.17.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.17.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.18.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.18.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.18.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.18.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.18.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.19.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.19.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.19.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.19.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.19.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.2.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.2.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.2.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.2.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.2.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.20.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.20.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.20.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.20.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.20.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.21.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.21.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.21.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.21.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.21.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.22.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.22.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.22.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.22.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.22.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.23.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.23.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.23.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.23.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.23.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.24.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.24.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.24.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.24.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.24.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.25.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.25.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.25.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.25.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.25.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.26.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.26.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.26.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.26.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.26.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.3.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.3.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.3.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.3.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.3.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.4.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.4.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.4.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.4.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.4.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.5.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.5.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.5.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.5.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.5.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.6.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.6.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.6.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.6.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.6.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.7.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.7.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.7.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.7.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.7.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.8.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.8.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.8.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.8.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.8.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.9.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.9.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.9.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.9.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.blocks.9.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.downsample.0.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.2.downsample.1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.0.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.0.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.0.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.0.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.0.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.1.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.1.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.1.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.1.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.1.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.2.conv_dw.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.2.gamma[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.2.mlp.fc1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.2.mlp.fc2.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.blocks.2.norm.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.downsample.0.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stages.3.downsample.1.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stem.0.{bias, weight}[0m
+[34mbackbone.clip_model.visual.trunk.stem.1.{bias, weight}[0m
+[34mbackbone.clip_model.{logit_scale, positional_embedding, text_projection}[0m
+[34mcriterion.empty_weight[0m
+[09/10 16:28:00] d2.engine.train_loop INFO: Starting training from iteration 0
+[09/10 16:28:30] d2.utils.events INFO:  eta: 0:40:39  iter: 19  total_loss: 28.54  loss_ce: 0.9612  loss_mask: 0.2403  loss_dice: 1.502  loss_ce_0: 1.226  loss_mask_0: 0.2669  loss_dice_0: 1.866  loss_ce_1: 1.178  loss_mask_1: 0.2563  loss_dice_1: 1.724  loss_ce_2: 1.083  loss_mask_2: 0.2467  loss_dice_2: 1.617  loss_ce_3: 1.065  loss_mask_3: 0.247  loss_dice_3: 1.571  loss_ce_4: 1.018  loss_mask_4: 0.2437  loss_dice_4: 1.542  loss_ce_5: 1.004  loss_mask_5: 0.2425  loss_dice_5: 1.528  loss_ce_6: 0.9957  loss_mask_6: 0.2492  loss_dice_6: 1.513  loss_ce_7: 0.9668  loss_mask_7: 0.243  loss_dice_7: 1.504  loss_ce_8: 0.9763  loss_mask_8: 0.2426  loss_dice_8: 1.49    time: 1.2461  last_time: 1.2124  data_time: 0.1102  last_data_time: 0.0576   lr: 0.0001  max_mem: 31279M
+[09/10 16:28:54] d2.utils.events INFO:  eta: 0:40:06  iter: 39  total_loss: 25.14  loss_ce: 0.7389  loss_mask: 0.2094  loss_dice: 1.408  loss_ce_0: 0.8767  loss_mask_0: 0.2417  loss_dice_0: 1.759  loss_ce_1: 0.8646  loss_mask_1: 0.2268  loss_dice_1: 1.593  loss_ce_2: 0.8569  loss_mask_2: 0.2145  loss_dice_2: 1.534  loss_ce_3: 0.7959  loss_mask_3: 0.2118  loss_dice_3: 1.464  loss_ce_4: 0.7647  loss_mask_4: 0.2134  loss_dice_4: 1.448  loss_ce_5: 0.7352  loss_mask_5: 0.2112  loss_dice_5: 1.454  loss_ce_6: 0.7333  loss_mask_6: 0.2087  loss_dice_6: 1.433  loss_ce_7: 0.7187  loss_mask_7: 0.2088  loss_dice_7: 1.4  loss_ce_8: 0.7291  loss_mask_8: 0.2093  loss_dice_8: 1.422    time: 1.2402  last_time: 1.2226  data_time: 0.0517  last_data_time: 0.0458   lr: 0.0001  max_mem: 31939M
+[09/10 16:29:19] d2.utils.events INFO:  eta: 0:39:39  iter: 59  total_loss: 22.31  loss_ce: 0.5917  loss_mask: 0.1973  loss_dice: 1.286  loss_ce_0: 0.7398  loss_mask_0: 0.2388  loss_dice_0: 1.612  loss_ce_1: 0.7905  loss_mask_1: 0.225  loss_dice_1: 1.484  loss_ce_2: 0.7165  loss_mask_2: 0.201  loss_dice_2: 1.429  loss_ce_3: 0.6792  loss_mask_3: 0.2006  loss_dice_3: 1.34  loss_ce_4: 0.6509  loss_mask_4: 0.1994  loss_dice_4: 1.353  loss_ce_5: 0.6582  loss_mask_5: 0.1956  loss_dice_5: 1.329  loss_ce_6: 0.5975  loss_mask_6: 0.1993  loss_dice_6: 1.305  loss_ce_7: 0.6017  loss_mask_7: 0.1957  loss_dice_7: 1.302  loss_ce_8: 0.5773  loss_mask_8: 0.1994  loss_dice_8: 1.308    time: 1.2333  last_time: 1.2667  data_time: 0.0461  last_data_time: 0.0460   lr: 0.0001  max_mem: 31939M
+[09/10 16:29:44] d2.utils.events INFO:  eta: 0:39:17  iter: 79  total_loss: 22.32  loss_ce: 0.578  loss_mask: 0.2023  loss_dice: 1.316  loss_ce_0: 0.6751  loss_mask_0: 0.2296  loss_dice_0: 1.622  loss_ce_1: 0.7664  loss_mask_1: 0.2138  loss_dice_1: 1.496  loss_ce_2: 0.7004  loss_mask_2: 0.1935  loss_dice_2: 1.412  loss_ce_3: 0.64  loss_mask_3: 0.1982  loss_dice_3: 1.331  loss_ce_4: 0.5943  loss_mask_4: 0.1974  loss_dice_4: 1.334  loss_ce_5: 0.5703  loss_mask_5: 0.1992  loss_dice_5: 1.359  loss_ce_6: 0.5894  loss_mask_6: 0.1945  loss_dice_6: 1.317  loss_ce_7: 0.5516  loss_mask_7: 0.2015  loss_dice_7: 1.323  loss_ce_8: 0.5849  loss_mask_8: 0.2005  loss_dice_8: 1.311    time: 1.2364  last_time: 1.2275  data_time: 0.0466  last_data_time: 0.0468   lr: 0.0001  max_mem: 32940M
+[09/10 16:30:09] d2.utils.events INFO:  eta: 0:38:54  iter: 99  total_loss: 20.47  loss_ce: 0.5183  loss_mask: 0.1905  loss_dice: 1.226  loss_ce_0: 0.6336  loss_mask_0: 0.2182  loss_dice_0: 1.447  loss_ce_1: 0.7409  loss_mask_1: 0.198  loss_dice_1: 1.377  loss_ce_2: 0.6575  loss_mask_2: 0.1908  loss_dice_2: 1.288  loss_ce_3: 0.6089  loss_mask_3: 0.1969  loss_dice_3: 1.248  loss_ce_4: 0.5561  loss_mask_4: 0.1957  loss_dice_4: 1.302  loss_ce_5: 0.5513  loss_mask_5: 0.1924  loss_dice_5: 1.248  loss_ce_6: 0.5521  loss_mask_6: 0.1914  loss_dice_6: 1.222  loss_ce_7: 0.5294  loss_mask_7: 0.1924  loss_dice_7: 1.25  loss_ce_8: 0.5582  loss_mask_8: 0.1931  loss_dice_8: 1.201    time: 1.2364  last_time: 1.2566  data_time: 0.0504  last_data_time: 0.0631   lr: 0.0001  max_mem: 32940M
+[09/10 16:30:34] d2.utils.events INFO:  eta: 0:38:30  iter: 119  total_loss: 21.55  loss_ce: 0.485  loss_mask: 0.176  loss_dice: 1.268  loss_ce_0: 0.618  loss_mask_0: 0.2087  loss_dice_0: 1.547  loss_ce_1: 0.6461  loss_mask_1: 0.1961  loss_dice_1: 1.474  loss_ce_2: 0.6626  loss_mask_2: 0.1836  loss_dice_2: 1.394  loss_ce_3: 0.5863  loss_mask_3: 0.1809  loss_dice_3: 1.332  loss_ce_4: 0.5227  loss_mask_4: 0.1825  loss_dice_4: 1.34  loss_ce_5: 0.5258  loss_mask_5: 0.1859  loss_dice_5: 1.318  loss_ce_6: 0.5209  loss_mask_6: 0.1835  loss_dice_6: 1.298  loss_ce_7: 0.5468  loss_mask_7: 0.1827  loss_dice_7: 1.317  loss_ce_8: 0.5037  loss_mask_8: 0.1841  loss_dice_8: 1.305    time: 1.2382  last_time: 1.3740  data_time: 0.0549  last_data_time: 0.0646   lr: 0.0001  max_mem: 32940M
+[09/10 16:30:58] d2.utils.events INFO:  eta: 0:38:07  iter: 139  total_loss: 20.45  loss_ce: 0.5374  loss_mask: 0.1812  loss_dice: 1.251  loss_ce_0: 0.627  loss_mask_0: 0.2102  loss_dice_0: 1.476  loss_ce_1: 0.6778  loss_mask_1: 0.1998  loss_dice_1: 1.399  loss_ce_2: 0.5976  loss_mask_2: 0.1945  loss_dice_2: 1.349  loss_ce_3: 0.5771  loss_mask_3: 0.1912  loss_dice_3: 1.293  loss_ce_4: 0.546  loss_mask_4: 0.1857  loss_dice_4: 1.286  loss_ce_5: 0.5217  loss_mask_5: 0.1833  loss_dice_5: 1.281  loss_ce_6: 0.5109  loss_mask_6: 0.1797  loss_dice_6: 1.225  loss_ce_7: 0.5171  loss_mask_7: 0.1794  loss_dice_7: 1.261  loss_ce_8: 0.5319  loss_mask_8: 0.1786  loss_dice_8: 1.274    time: 1.2378  last_time: 1.2579  data_time: 0.0489  last_data_time: 0.0619   lr: 0.0001  max_mem: 32940M
+[09/10 16:31:24] d2.utils.events INFO:  eta: 0:37:46  iter: 159  total_loss: 21.38  loss_ce: 0.4822  loss_mask: 0.1829  loss_dice: 1.258  loss_ce_0: 0.5915  loss_mask_0: 0.2093  loss_dice_0: 1.488  loss_ce_1: 0.6518  loss_mask_1: 0.1945  loss_dice_1: 1.458  loss_ce_2: 0.5957  loss_mask_2: 0.1896  loss_dice_2: 1.368  loss_ce_3: 0.5488  loss_mask_3: 0.1884  loss_dice_3: 1.323  loss_ce_4: 0.5374  loss_mask_4: 0.188  loss_dice_4: 1.305  loss_ce_5: 0.4921  loss_mask_5: 0.1826  loss_dice_5: 1.326  loss_ce_6: 0.4935  loss_mask_6: 0.1844  loss_dice_6: 1.283  loss_ce_7: 0.4794  loss_mask_7: 0.1829  loss_dice_7: 1.277  loss_ce_8: 0.5111  loss_mask_8: 0.1825  loss_dice_8: 1.265    time: 1.2391  last_time: 1.2538  data_time: 0.0584  last_data_time: 0.0586   lr: 0.0001  max_mem: 32940M
+[09/10 16:31:48] d2.utils.events INFO:  eta: 0:37:18  iter: 179  total_loss: 21.71  loss_ce: 0.556  loss_mask: 0.1797  loss_dice: 1.332  loss_ce_0: 0.6221  loss_mask_0: 0.1989  loss_dice_0: 1.577  loss_ce_1: 0.6909  loss_mask_1: 0.1849  loss_dice_1: 1.499  loss_ce_2: 0.6423  loss_mask_2: 0.1801  loss_dice_2: 1.46  loss_ce_3: 0.6078  loss_mask_3: 0.1784  loss_dice_3: 1.364  loss_ce_4: 0.5739  loss_mask_4: 0.1785  loss_dice_4: 1.383  loss_ce_5: 0.562  loss_mask_5: 0.1821  loss_dice_5: 1.36  loss_ce_6: 0.5666  loss_mask_6: 0.1786  loss_dice_6: 1.358  loss_ce_7: 0.5775  loss_mask_7: 0.1783  loss_dice_7: 1.32  loss_ce_8: 0.5746  loss_mask_8: 0.1778  loss_dice_8: 1.304    time: 1.2394  last_time: 1.3238  data_time: 0.0498  last_data_time: 0.0683   lr: 0.0001  max_mem: 32940M
+[09/10 16:32:13] d2.utils.events INFO:  eta: 0:36:56  iter: 199  total_loss: 20.76  loss_ce: 0.5357  loss_mask: 0.1778  loss_dice: 1.252  loss_ce_0: 0.6096  loss_mask_0: 0.2023  loss_dice_0: 1.483  loss_ce_1: 0.6835  loss_mask_1: 0.1915  loss_dice_1: 1.386  loss_ce_2: 0.6111  loss_mask_2: 0.1833  loss_dice_2: 1.357  loss_ce_3: 0.5727  loss_mask_3: 0.1808  loss_dice_3: 1.302  loss_ce_4: 0.5393  loss_mask_4: 0.1816  loss_dice_4: 1.285  loss_ce_5: 0.5419  loss_mask_5: 0.1809  loss_dice_5: 1.288  loss_ce_6: 0.5215  loss_mask_6: 0.1793  loss_dice_6: 1.266  loss_ce_7: 0.5307  loss_mask_7: 0.1824  loss_dice_7: 1.257  loss_ce_8: 0.5316  loss_mask_8: 0.1803  loss_dice_8: 1.293    time: 1.2392  last_time: 1.2511  data_time: 0.0512  last_data_time: 0.0489   lr: 0.0001  max_mem: 32940M
+[09/10 16:32:39] d2.utils.events INFO:  eta: 0:36:39  iter: 219  total_loss: 21.3  loss_ce: 0.5188  loss_mask: 0.1774  loss_dice: 1.299  loss_ce_0: 0.5849  loss_mask_0: 0.2115  loss_dice_0: 1.57  loss_ce_1: 0.6743  loss_mask_1: 0.198  loss_dice_1: 1.527  loss_ce_2: 0.614  loss_mask_2: 0.1917  loss_dice_2: 1.42  loss_ce_3: 0.6031  loss_mask_3: 0.1826  loss_dice_3: 1.338  loss_ce_4: 0.5523  loss_mask_4: 0.183  loss_dice_4: 1.332  loss_ce_5: 0.5256  loss_mask_5: 0.1833  loss_dice_5: 1.318  loss_ce_6: 0.5273  loss_mask_6: 0.1839  loss_dice_6: 1.334  loss_ce_7: 0.5241  loss_mask_7: 0.1836  loss_dice_7: 1.304  loss_ce_8: 0.5189  loss_mask_8: 0.1784  loss_dice_8: 1.337    time: 1.2416  last_time: 1.2578  data_time: 0.0499  last_data_time: 0.0499   lr: 0.0001  max_mem: 32940M
+[09/10 16:33:04] d2.utils.events INFO:  eta: 0:36:14  iter: 239  total_loss: 20.95  loss_ce: 0.505  loss_mask: 0.1747  loss_dice: 1.295  loss_ce_0: 0.5918  loss_mask_0: 0.1954  loss_dice_0: 1.54  loss_ce_1: 0.673  loss_mask_1: 0.1943  loss_dice_1: 1.406  loss_ce_2: 0.5887  loss_mask_2: 0.1813  loss_dice_2: 1.336  loss_ce_3: 0.5596  loss_mask_3: 0.1798  loss_dice_3: 1.326  loss_ce_4: 0.5036  loss_mask_4: 0.1773  loss_dice_4: 1.29  loss_ce_5: 0.4968  loss_mask_5: 0.1774  loss_dice_5: 1.301  loss_ce_6: 0.4935  loss_mask_6: 0.1788  loss_dice_6: 1.287  loss_ce_7: 0.5036  loss_mask_7: 0.1754  loss_dice_7: 1.268  loss_ce_8: 0.4936  loss_mask_8: 0.175  loss_dice_8: 1.26    time: 1.2421  last_time: 1.2407  data_time: 0.0533  last_data_time: 0.0686   lr: 0.0001  max_mem: 32940M
+[09/10 16:33:28] d2.utils.events INFO:  eta: 0:35:49  iter: 259  total_loss: 19.7  loss_ce: 0.4561  loss_mask: 0.1578  loss_dice: 1.236  loss_ce_0: 0.5693  loss_mask_0: 0.1937  loss_dice_0: 1.486  loss_ce_1: 0.6569  loss_mask_1: 0.183  loss_dice_1: 1.378  loss_ce_2: 0.5796  loss_mask_2: 0.1775  loss_dice_2: 1.331  loss_ce_3: 0.5475  loss_mask_3: 0.1663  loss_dice_3: 1.255  loss_ce_4: 0.4816  loss_mask_4: 0.1611  loss_dice_4: 1.249  loss_ce_5: 0.485  loss_mask_5: 0.1602  loss_dice_5: 1.227  loss_ce_6: 0.4624  loss_mask_6: 0.1606  loss_dice_6: 1.241  loss_ce_7: 0.4637  loss_mask_7: 0.1596  loss_dice_7: 1.265  loss_ce_8: 0.5116  loss_mask_8: 0.1607  loss_dice_8: 1.214    time: 1.2420  last_time: 1.2073  data_time: 0.0535  last_data_time: 0.0454   lr: 0.0001  max_mem: 32940M
+[09/10 16:33:53] d2.utils.events INFO:  eta: 0:35:21  iter: 279  total_loss: 19.95  loss_ce: 0.4656  loss_mask: 0.1803  loss_dice: 1.192  loss_ce_0: 0.5663  loss_mask_0: 0.2096  loss_dice_0: 1.394  loss_ce_1: 0.6333  loss_mask_1: 0.1997  loss_dice_1: 1.355  loss_ce_2: 0.5564  loss_mask_2: 0.1952  loss_dice_2: 1.295  loss_ce_3: 0.501  loss_mask_3: 0.1827  loss_dice_3: 1.223  loss_ce_4: 0.4792  loss_mask_4: 0.1765  loss_dice_4: 1.241  loss_ce_5: 0.4579  loss_mask_5: 0.183  loss_dice_5: 1.217  loss_ce_6: 0.4672  loss_mask_6: 0.185  loss_dice_6: 1.191  loss_ce_7: 0.4648  loss_mask_7: 0.1839  loss_dice_7: 1.225  loss_ce_8: 0.436  loss_mask_8: 0.1798  loss_dice_8: 1.196    time: 1.2415  last_time: 1.2203  data_time: 0.0495  last_data_time: 0.0468   lr: 0.0001  max_mem: 32940M
+[09/10 16:34:18] d2.utils.events INFO:  eta: 0:34:55  iter: 299  total_loss: 19.49  loss_ce: 0.4841  loss_mask: 0.1757  loss_dice: 1.227  loss_ce_0: 0.5711  loss_mask_0: 0.1954  loss_dice_0: 1.41  loss_ce_1: 0.6178  loss_mask_1: 0.1882  loss_dice_1: 1.33  loss_ce_2: 0.5496  loss_mask_2: 0.1792  loss_dice_2: 1.296  loss_ce_3: 0.5154  loss_mask_3: 0.1808  loss_dice_3: 1.246  loss_ce_4: 0.482  loss_mask_4: 0.18  loss_dice_4: 1.247  loss_ce_5: 0.4747  loss_mask_5: 0.18  loss_dice_5: 1.224  loss_ce_6: 0.4628  loss_mask_6: 0.1785  loss_dice_6: 1.197  loss_ce_7: 0.4989  loss_mask_7: 0.1773  loss_dice_7: 1.202  loss_ce_8: 0.4898  loss_mask_8: 0.1768  loss_dice_8: 1.196    time: 1.2413  last_time: 1.2011  data_time: 0.0502  last_data_time: 0.0455   lr: 0.0001  max_mem: 32940M
+[09/10 16:34:43] d2.utils.events INFO:  eta: 0:34:28  iter: 319  total_loss: 19.12  loss_ce: 0.4803  loss_mask: 0.1895  loss_dice: 1.161  loss_ce_0: 0.5354  loss_mask_0: 0.2109  loss_dice_0: 1.414  loss_ce_1: 0.5803  loss_mask_1: 0.2061  loss_dice_1: 1.347  loss_ce_2: 0.599  loss_mask_2: 0.1972  loss_dice_2: 1.243  loss_ce_3: 0.5131  loss_mask_3: 0.2012  loss_dice_3: 1.184  loss_ce_4: 0.4887  loss_mask_4: 0.1996  loss_dice_4: 1.176  loss_ce_5: 0.4659  loss_mask_5: 0.2011  loss_dice_5: 1.17  loss_ce_6: 0.4699  loss_mask_6: 0.2  loss_dice_6: 1.165  loss_ce_7: 0.48  loss_mask_7: 0.1933  loss_dice_7: 1.158  loss_ce_8: 0.4589  loss_mask_8: 0.1942  loss_dice_8: 1.151    time: 1.2401  last_time: 1.2169  data_time: 0.0532  last_data_time: 0.0509   lr: 0.0001  max_mem: 32940M
+[09/10 16:35:07] d2.utils.events INFO:  eta: 0:34:05  iter: 339  total_loss: 20.34  loss_ce: 0.504  loss_mask: 0.1674  loss_dice: 1.239  loss_ce_0: 0.613  loss_mask_0: 0.1983  loss_dice_0: 1.465  loss_ce_1: 0.6733  loss_mask_1: 0.1849  loss_dice_1: 1.376  loss_ce_2: 0.615  loss_mask_2: 0.1756  loss_dice_2: 1.308  loss_ce_3: 0.5438  loss_mask_3: 0.1757  loss_dice_3: 1.271  loss_ce_4: 0.5272  loss_mask_4: 0.1732  loss_dice_4: 1.268  loss_ce_5: 0.499  loss_mask_5: 0.1746  loss_dice_5: 1.273  loss_ce_6: 0.5086  loss_mask_6: 0.1714  loss_dice_6: 1.245  loss_ce_7: 0.4977  loss_mask_7: 0.1669  loss_dice_7: 1.219  loss_ce_8: 0.5105  loss_mask_8: 0.1686  loss_dice_8: 1.249    time: 1.2399  last_time: 1.2058  data_time: 0.0539  last_data_time: 0.0469   lr: 0.0001  max_mem: 32940M
+[09/10 16:35:32] d2.utils.events INFO:  eta: 0:33:39  iter: 359  total_loss: 19.48  loss_ce: 0.4789  loss_mask: 0.1832  loss_dice: 1.164  loss_ce_0: 0.5312  loss_mask_0: 0.2122  loss_dice_0: 1.355  loss_ce_1: 0.6018  loss_mask_1: 0.1927  loss_dice_1: 1.32  loss_ce_2: 0.5514  loss_mask_2: 0.1876  loss_dice_2: 1.206  loss_ce_3: 0.5366  loss_mask_3: 0.1852  loss_dice_3: 1.202  loss_ce_4: 0.4916  loss_mask_4: 0.1821  loss_dice_4: 1.181  loss_ce_5: 0.4676  loss_mask_5: 0.1831  loss_dice_5: 1.143  loss_ce_6: 0.4679  loss_mask_6: 0.1826  loss_dice_6: 1.173  loss_ce_7: 0.4483  loss_mask_7: 0.1805  loss_dice_7: 1.204  loss_ce_8: 0.4597  loss_mask_8: 0.1825  loss_dice_8: 1.146    time: 1.2397  last_time: 1.2762  data_time: 0.0476  last_data_time: 0.0569   lr: 0.0001  max_mem: 32940M
+[09/10 16:35:57] d2.utils.events INFO:  eta: 0:33:14  iter: 379  total_loss: 19.54  loss_ce: 0.4714  loss_mask: 0.1716  loss_dice: 1.189  loss_ce_0: 0.5193  loss_mask_0: 0.2002  loss_dice_0: 1.405  loss_ce_1: 0.6348  loss_mask_1: 0.1841  loss_dice_1: 1.353  loss_ce_2: 0.5727  loss_mask_2: 0.1843  loss_dice_2: 1.286  loss_ce_3: 0.541  loss_mask_3: 0.1744  loss_dice_3: 1.249  loss_ce_4: 0.5016  loss_mask_4: 0.1787  loss_dice_4: 1.238  loss_ce_5: 0.489  loss_mask_5: 0.174  loss_dice_5: 1.205  loss_ce_6: 0.4648  loss_mask_6: 0.1684  loss_dice_6: 1.199  loss_ce_7: 0.47  loss_mask_7: 0.1695  loss_dice_7: 1.184  loss_ce_8: 0.4794  loss_mask_8: 0.1708  loss_dice_8: 1.219    time: 1.2397  last_time: 1.2579  data_time: 0.0603  last_data_time: 0.0483   lr: 0.0001  max_mem: 32940M
+[09/10 16:36:22] d2.utils.events INFO:  eta: 0:32:49  iter: 399  total_loss: 19.64  loss_ce: 0.4602  loss_mask: 0.1769  loss_dice: 1.243  loss_ce_0: 0.5597  loss_mask_0: 0.197  loss_dice_0: 1.458  loss_ce_1: 0.6213  loss_mask_1: 0.1899  loss_dice_1: 1.366  loss_ce_2: 0.5797  loss_mask_2: 0.1812  loss_dice_2: 1.351  loss_ce_3: 0.539  loss_mask_3: 0.1765  loss_dice_3: 1.263  loss_ce_4: 0.4777  loss_mask_4: 0.1751  loss_dice_4: 1.265  loss_ce_5: 0.4906  loss_mask_5: 0.1729  loss_dice_5: 1.245  loss_ce_6: 0.4774  loss_mask_6: 0.1745  loss_dice_6: 1.238  loss_ce_7: 0.478  loss_mask_7: 0.1768  loss_dice_7: 1.235  loss_ce_8: 0.4683  loss_mask_8: 0.1748  loss_dice_8: 1.262    time: 1.2396  last_time: 1.2834  data_time: 0.0529  last_data_time: 0.0631   lr: 0.0001  max_mem: 32940M
+[09/10 16:36:47] d2.utils.events INFO:  eta: 0:32:24  iter: 419  total_loss: 18.9  loss_ce: 0.4422  loss_mask: 0.1791  loss_dice: 1.137  loss_ce_0: 0.5227  loss_mask_0: 0.1988  loss_dice_0: 1.324  loss_ce_1: 0.6288  loss_mask_1: 0.1883  loss_dice_1: 1.285  loss_ce_2: 0.507  loss_mask_2: 0.1867  loss_dice_2: 1.235  loss_ce_3: 0.4848  loss_mask_3: 0.1883  loss_dice_3: 1.162  loss_ce_4: 0.4499  loss_mask_4: 0.1869  loss_dice_4: 1.163  loss_ce_5: 0.4742  loss_mask_5: 0.1841  loss_dice_5: 1.171  loss_ce_6: 0.4444  loss_mask_6: 0.1812  loss_dice_6: 1.126  loss_ce_7: 0.4442  loss_mask_7: 0.1858  loss_dice_7: 1.168  loss_ce_8: 0.4542  loss_mask_8: 0.1833  loss_dice_8: 1.124    time: 1.2392  last_time: 1.2702  data_time: 0.0573  last_data_time: 0.0565   lr: 0.0001  max_mem: 32940M
+[09/10 16:37:11] d2.utils.events INFO:  eta: 0:32:00  iter: 439  total_loss: 19.27  loss_ce: 0.4528  loss_mask: 0.174  loss_dice: 1.187  loss_ce_0: 0.5392  loss_mask_0: 0.2043  loss_dice_0: 1.39  loss_ce_1: 0.5925  loss_mask_1: 0.1942  loss_dice_1: 1.303  loss_ce_2: 0.5519  loss_mask_2: 0.1819  loss_dice_2: 1.241  loss_ce_3: 0.5338  loss_mask_3: 0.1779  loss_dice_3: 1.204  loss_ce_4: 0.4969  loss_mask_4: 0.1754  loss_dice_4: 1.205  loss_ce_5: 0.4683  loss_mask_5: 0.1745  loss_dice_5: 1.193  loss_ce_6: 0.4572  loss_mask_6: 0.1724  loss_dice_6: 1.19  loss_ce_7: 0.4136  loss_mask_7: 0.1763  loss_dice_7: 1.192  loss_ce_8: 0.4702  loss_mask_8: 0.1744  loss_dice_8: 1.173    time: 1.2392  last_time: 1.2339  data_time: 0.0615  last_data_time: 0.0570   lr: 0.0001  max_mem: 32940M
+[09/10 16:37:37] d2.utils.events INFO:  eta: 0:31:38  iter: 459  total_loss: 19.4  loss_ce: 0.5151  loss_mask: 0.1587  loss_dice: 1.206  loss_ce_0: 0.5672  loss_mask_0: 0.1792  loss_dice_0: 1.368  loss_ce_1: 0.6692  loss_mask_1: 0.167  loss_dice_1: 1.364  loss_ce_2: 0.622  loss_mask_2: 0.1643  loss_dice_2: 1.304  loss_ce_3: 0.5372  loss_mask_3: 0.1615  loss_dice_3: 1.226  loss_ce_4: 0.5365  loss_mask_4: 0.1612  loss_dice_4: 1.236  loss_ce_5: 0.5363  loss_mask_5: 0.158  loss_dice_5: 1.226  loss_ce_6: 0.5185  loss_mask_6: 0.1587  loss_dice_6: 1.223  loss_ce_7: 0.4989  loss_mask_7: 0.1606  loss_dice_7: 1.186  loss_ce_8: 0.4905  loss_mask_8: 0.16  loss_dice_8: 1.197    time: 1.2398  last_time: 1.2076  data_time: 0.0544  last_data_time: 0.0474   lr: 0.0001  max_mem: 32940M
+[09/10 16:38:02] d2.utils.events INFO:  eta: 0:31:15  iter: 479  total_loss: 19.65  loss_ce: 0.4698  loss_mask: 0.1584  loss_dice: 1.211  loss_ce_0: 0.5252  loss_mask_0: 0.1765  loss_dice_0: 1.359  loss_ce_1: 0.6429  loss_mask_1: 0.174  loss_dice_1: 1.357  loss_ce_2: 0.5727  loss_mask_2: 0.1642  loss_dice_2: 1.266  loss_ce_3: 0.519  loss_mask_3: 0.1619  loss_dice_3: 1.226  loss_ce_4: 0.498  loss_mask_4: 0.1606  loss_dice_4: 1.229  loss_ce_5: 0.4801  loss_mask_5: 0.1613  loss_dice_5: 1.209  loss_ce_6: 0.4707  loss_mask_6: 0.163  loss_dice_6: 1.224  loss_ce_7: 0.464  loss_mask_7: 0.1626  loss_dice_7: 1.234  loss_ce_8: 0.4754  loss_mask_8: 0.157  loss_dice_8: 1.245    time: 1.2408  last_time: 1.2413  data_time: 0.0507  last_data_time: 0.0516   lr: 0.0001  max_mem: 32940M
+[09/10 16:38:27] d2.utils.events INFO:  eta: 0:30:51  iter: 499  total_loss: 19.09  loss_ce: 0.4653  loss_mask: 0.1658  loss_dice: 1.184  loss_ce_0: 0.531  loss_mask_0: 0.1862  loss_dice_0: 1.382  loss_ce_1: 0.6148  loss_mask_1: 0.1777  loss_dice_1: 1.332  loss_ce_2: 0.5434  loss_mask_2: 0.1679  loss_dice_2: 1.261  loss_ce_3: 0.4931  loss_mask_3: 0.1678  loss_dice_3: 1.2  loss_ce_4: 0.4747  loss_mask_4: 0.1665  loss_dice_4: 1.199  loss_ce_5: 0.4781  loss_mask_5: 0.1651  loss_dice_5: 1.232  loss_ce_6: 0.48  loss_mask_6: 0.1628  loss_dice_6: 1.224  loss_ce_7: 0.4777  loss_mask_7: 0.1616  loss_dice_7: 1.24  loss_ce_8: 0.4614  loss_mask_8: 0.1639  loss_dice_8: 1.211    time: 1.2409  last_time: 1.1965  data_time: 0.0571  last_data_time: 0.0510   lr: 0.0001  max_mem: 32940M
+[09/10 16:38:52] d2.utils.events INFO:  eta: 0:30:27  iter: 519  total_loss: 18.94  loss_ce: 0.4457  loss_mask: 0.1646  loss_dice: 1.2  loss_ce_0: 0.5642  loss_mask_0: 0.1924  loss_dice_0: 1.422  loss_ce_1: 0.6405  loss_mask_1: 0.1789  loss_dice_1: 1.342  loss_ce_2: 0.5329  loss_mask_2: 0.1715  loss_dice_2: 1.334  loss_ce_3: 0.5453  loss_mask_3: 0.169  loss_dice_3: 1.22  loss_ce_4: 0.5006  loss_mask_4: 0.1664  loss_dice_4: 1.208  loss_ce_5: 0.4413  loss_mask_5: 0.1659  loss_dice_5: 1.205  loss_ce_6: 0.4741  loss_mask_6: 0.1659  loss_dice_6: 1.166  loss_ce_7: 0.4305  loss_mask_7: 0.1662  loss_dice_7: 1.201  loss_ce_8: 0.46  loss_mask_8: 0.1663  loss_dice_8: 1.158    time: 1.2410  last_time: 1.2551  data_time: 0.0574  last_data_time: 0.0635   lr: 0.0001  max_mem: 32940M
+[09/10 16:39:17] d2.utils.events INFO:  eta: 0:30:02  iter: 539  total_loss: 18.68  loss_ce: 0.4349  loss_mask: 0.1839  loss_dice: 1.161  loss_ce_0: 0.5805  loss_mask_0: 0.2097  loss_dice_0: 1.341  loss_ce_1: 0.5817  loss_mask_1: 0.1948  loss_dice_1: 1.351  loss_ce_2: 0.5491  loss_mask_2: 0.1833  loss_dice_2: 1.284  loss_ce_3: 0.4716  loss_mask_3: 0.1835  loss_dice_3: 1.237  loss_ce_4: 0.4779  loss_mask_4: 0.1835  loss_dice_4: 1.212  loss_ce_5: 0.4673  loss_mask_5: 0.1775  loss_dice_5: 1.179  loss_ce_6: 0.4396  loss_mask_6: 0.1802  loss_dice_6: 1.165  loss_ce_7: 0.453  loss_mask_7: 0.1801  loss_dice_7: 1.166  loss_ce_8: 0.4227  loss_mask_8: 0.1837  loss_dice_8: 1.16    time: 1.2407  last_time: 1.2738  data_time: 0.0472  last_data_time: 0.0469   lr: 0.0001  max_mem: 32940M
+[09/10 16:39:42] d2.utils.events INFO:  eta: 0:29:38  iter: 559  total_loss: 19.29  loss_ce: 0.4518  loss_mask: 0.1612  loss_dice: 1.264  loss_ce_0: 0.5686  loss_mask_0: 0.1834  loss_dice_0: 1.399  loss_ce_1: 0.5997  loss_mask_1: 0.1757  loss_dice_1: 1.323  loss_ce_2: 0.5717  loss_mask_2: 0.1691  loss_dice_2: 1.321  loss_ce_3: 0.5063  loss_mask_3: 0.1649  loss_dice_3: 1.27  loss_ce_4: 0.4831  loss_mask_4: 0.1594  loss_dice_4: 1.265  loss_ce_5: 0.4693  loss_mask_5: 0.1612  loss_dice_5: 1.242  loss_ce_6: 0.4571  loss_mask_6: 0.1669  loss_dice_6: 1.243  loss_ce_7: 0.467  loss_mask_7: 0.1638  loss_dice_7: 1.224  loss_ce_8: 0.4588  loss_mask_8: 0.1614  loss_dice_8: 1.219    time: 1.2414  last_time: 1.2503  data_time: 0.0541  last_data_time: 0.0547   lr: 0.0001  max_mem: 33442M
+[09/10 16:40:07] d2.utils.events INFO:  eta: 0:29:14  iter: 579  total_loss: 19.73  loss_ce: 0.4541  loss_mask: 0.1675  loss_dice: 1.219  loss_ce_0: 0.6096  loss_mask_0: 0.1917  loss_dice_0: 1.408  loss_ce_1: 0.6482  loss_mask_1: 0.1868  loss_dice_1: 1.368  loss_ce_2: 0.5749  loss_mask_2: 0.1757  loss_dice_2: 1.273  loss_ce_3: 0.5426  loss_mask_3: 0.1741  loss_dice_3: 1.255  loss_ce_4: 0.4796  loss_mask_4: 0.1705  loss_dice_4: 1.244  loss_ce_5: 0.481  loss_mask_5: 0.1678  loss_dice_5: 1.255  loss_ce_6: 0.4864  loss_mask_6: 0.1657  loss_dice_6: 1.219  loss_ce_7: 0.4791  loss_mask_7: 0.1648  loss_dice_7: 1.199  loss_ce_8: 0.4762  loss_mask_8: 0.1646  loss_dice_8: 1.173    time: 1.2414  last_time: 1.2374  data_time: 0.0585  last_data_time: 0.0709   lr: 0.0001  max_mem: 33442M
+[09/10 16:40:32] d2.utils.events INFO:  eta: 0:28:50  iter: 599  total_loss: 19.41  loss_ce: 0.4665  loss_mask: 0.1616  loss_dice: 1.167  loss_ce_0: 0.5513  loss_mask_0: 0.176  loss_dice_0: 1.35  loss_ce_1: 0.6113  loss_mask_1: 0.167  loss_dice_1: 1.342  loss_ce_2: 0.5619  loss_mask_2: 0.1614  loss_dice_2: 1.266  loss_ce_3: 0.5361  loss_mask_3: 0.1645  loss_dice_3: 1.215  loss_ce_4: 0.5207  loss_mask_4: 0.1647  loss_dice_4: 1.216  loss_ce_5: 0.4941  loss_mask_5: 0.1611  loss_dice_5: 1.175  loss_ce_6: 0.4847  loss_mask_6: 0.1607  loss_dice_6: 1.183  loss_ce_7: 0.4594  loss_mask_7: 0.1629  loss_dice_7: 1.175  loss_ce_8: 0.435  loss_mask_8: 0.1586  loss_dice_8: 1.2    time: 1.2415  last_time: 1.2432  data_time: 0.0560  last_data_time: 0.0493   lr: 0.0001  max_mem: 33442M
+[09/10 16:40:57] d2.utils.events INFO:  eta: 0:28:26  iter: 619  total_loss: 19.65  loss_ce: 0.5121  loss_mask: 0.1483  loss_dice: 1.19  loss_ce_0: 0.5887  loss_mask_0: 0.1727  loss_dice_0: 1.396  loss_ce_1: 0.6659  loss_mask_1: 0.1571  loss_dice_1: 1.336  loss_ce_2: 0.6134  loss_mask_2: 0.1542  loss_dice_2: 1.271  loss_ce_3: 0.5224  loss_mask_3: 0.1551  loss_dice_3: 1.272  loss_ce_4: 0.5221  loss_mask_4: 0.1578  loss_dice_4: 1.244  loss_ce_5: 0.4902  loss_mask_5: 0.1501  loss_dice_5: 1.207  loss_ce_6: 0.4902  loss_mask_6: 0.153  loss_dice_6: 1.206  loss_ce_7: 0.4872  loss_mask_7: 0.1522  loss_dice_7: 1.191  loss_ce_8: 0.5093  loss_mask_8: 0.1498  loss_dice_8: 1.236    time: 1.2420  last_time: 1.2665  data_time: 0.0510  last_data_time: 0.0491   lr: 0.0001  max_mem: 33442M
+[09/10 16:41:22] d2.utils.events INFO:  eta: 0:28:01  iter: 639  total_loss: 19.06  loss_ce: 0.4539  loss_mask: 0.1628  loss_dice: 1.173  loss_ce_0: 0.5716  loss_mask_0: 0.1874  loss_dice_0: 1.356  loss_ce_1: 0.664  loss_mask_1: 0.1769  loss_dice_1: 1.29  loss_ce_2: 0.5602  loss_mask_2: 0.1673  loss_dice_2: 1.227  loss_ce_3: 0.4881  loss_mask_3: 0.1645  loss_dice_3: 1.174  loss_ce_4: 0.469  loss_mask_4: 0.1664  loss_dice_4: 1.203  loss_ce_5: 0.4432  loss_mask_5: 0.1635  loss_dice_5: 1.19  loss_ce_6: 0.4558  loss_mask_6: 0.1632  loss_dice_6: 1.202  loss_ce_7: 0.4641  loss_mask_7: 0.1632  loss_dice_7: 1.203  loss_ce_8: 0.5002  loss_mask_8: 0.1642  loss_dice_8: 1.167    time: 1.2420  last_time: 1.2805  data_time: 0.0496  last_data_time: 0.0440   lr: 0.0001  max_mem: 33442M
+[09/10 16:41:47] d2.utils.events INFO:  eta: 0:27:36  iter: 659  total_loss: 18.52  loss_ce: 0.4386  loss_mask: 0.1672  loss_dice: 1.122  loss_ce_0: 0.5432  loss_mask_0: 0.1939  loss_dice_0: 1.297  loss_ce_1: 0.6182  loss_mask_1: 0.1801  loss_dice_1: 1.228  loss_ce_2: 0.5475  loss_mask_2: 0.1706  loss_dice_2: 1.199  loss_ce_3: 0.5049  loss_mask_3: 0.1728  loss_dice_3: 1.146  loss_ce_4: 0.4619  loss_mask_4: 0.1707  loss_dice_4: 1.154  loss_ce_5: 0.4647  loss_mask_5: 0.1685  loss_dice_5: 1.143  loss_ce_6: 0.4647  loss_mask_6: 0.167  loss_dice_6: 1.118  loss_ce_7: 0.4291  loss_mask_7: 0.1683  loss_dice_7: 1.112  loss_ce_8: 0.4341  loss_mask_8: 0.1655  loss_dice_8: 1.13    time: 1.2419  last_time: 1.2409  data_time: 0.0579  last_data_time: 0.0562   lr: 0.0001  max_mem: 33442M
+[09/10 16:42:11] d2.utils.events INFO:  eta: 0:27:11  iter: 679  total_loss: 18.79  loss_ce: 0.4144  loss_mask: 0.1708  loss_dice: 1.185  loss_ce_0: 0.5667  loss_mask_0: 0.1853  loss_dice_0: 1.331  loss_ce_1: 0.6078  loss_mask_1: 0.172  loss_dice_1: 1.278  loss_ce_2: 0.5511  loss_mask_2: 0.1673  loss_dice_2: 1.25  loss_ce_3: 0.472  loss_mask_3: 0.1676  loss_dice_3: 1.192  loss_ce_4: 0.4553  loss_mask_4: 0.1689  loss_dice_4: 1.206  loss_ce_5: 0.4546  loss_mask_5: 0.1677  loss_dice_5: 1.186  loss_ce_6: 0.4192  loss_mask_6: 0.1694  loss_dice_6: 1.17  loss_ce_7: 0.4422  loss_mask_7: 0.1691  loss_dice_7: 1.184  loss_ce_8: 0.4384  loss_mask_8: 0.1694  loss_dice_8: 1.168    time: 1.2414  last_time: 1.2293  data_time: 0.0548  last_data_time: 0.0578   lr: 0.0001  max_mem: 33442M
+[09/10 16:42:36] d2.utils.events INFO:  eta: 0:26:46  iter: 699  total_loss: 19.09  loss_ce: 0.4794  loss_mask: 0.1533  loss_dice: 1.146  loss_ce_0: 0.6123  loss_mask_0: 0.1881  loss_dice_0: 1.34  loss_ce_1: 0.6242  loss_mask_1: 0.1662  loss_dice_1: 1.286  loss_ce_2: 0.5548  loss_mask_2: 0.1602  loss_dice_2: 1.232  loss_ce_3: 0.5145  loss_mask_3: 0.1595  loss_dice_3: 1.203  loss_ce_4: 0.5162  loss_mask_4: 0.157  loss_dice_4: 1.197  loss_ce_5: 0.4747  loss_mask_5: 0.1555  loss_dice_5: 1.168  loss_ce_6: 0.4628  loss_mask_6: 0.1557  loss_dice_6: 1.154  loss_ce_7: 0.472  loss_mask_7: 0.1544  loss_dice_7: 1.165  loss_ce_8: 0.4733  loss_mask_8: 0.1518  loss_dice_8: 1.161    time: 1.2415  last_time: 1.2492  data_time: 0.0617  last_data_time: 0.0550   lr: 0.0001  max_mem: 33442M
+[09/10 16:43:01] d2.utils.events INFO:  eta: 0:26:22  iter: 719  total_loss: 19.14  loss_ce: 0.4931  loss_mask: 0.1496  loss_dice: 1.167  loss_ce_0: 0.5829  loss_mask_0: 0.1757  loss_dice_0: 1.43  loss_ce_1: 0.6378  loss_mask_1: 0.1643  loss_dice_1: 1.294  loss_ce_2: 0.5612  loss_mask_2: 0.1482  loss_dice_2: 1.274  loss_ce_3: 0.4938  loss_mask_3: 0.1462  loss_dice_3: 1.197  loss_ce_4: 0.5021  loss_mask_4: 0.1467  loss_dice_4: 1.22  loss_ce_5: 0.4962  loss_mask_5: 0.15  loss_dice_5: 1.194  loss_ce_6: 0.4995  loss_mask_6: 0.1446  loss_dice_6: 1.193  loss_ce_7: 0.4956  loss_mask_7: 0.1489  loss_dice_7: 1.204  loss_ce_8: 0.4796  loss_mask_8: 0.1487  loss_dice_8: 1.188    time: 1.2417  last_time: 1.2386  data_time: 0.0588  last_data_time: 0.0677   lr: 0.0001  max_mem: 33442M
+[09/10 16:43:26] d2.utils.events INFO:  eta: 0:25:57  iter: 739  total_loss: 19.32  loss_ce: 0.4673  loss_mask: 0.1558  loss_dice: 1.204  loss_ce_0: 0.5592  loss_mask_0: 0.1791  loss_dice_0: 1.405  loss_ce_1: 0.6201  loss_mask_1: 0.1727  loss_dice_1: 1.361  loss_ce_2: 0.5527  loss_mask_2: 0.1629  loss_dice_2: 1.287  loss_ce_3: 0.4625  loss_mask_3: 0.1578  loss_dice_3: 1.264  loss_ce_4: 0.4682  loss_mask_4: 0.1594  loss_dice_4: 1.228  loss_ce_5: 0.4452  loss_mask_5: 0.1599  loss_dice_5: 1.267  loss_ce_6: 0.4468  loss_mask_6: 0.1588  loss_dice_6: 1.213  loss_ce_7: 0.484  loss_mask_7: 0.161  loss_dice_7: 1.217  loss_ce_8: 0.4535  loss_mask_8: 0.1615  loss_dice_8: 1.214    time: 1.2417  last_time: 1.2195  data_time: 0.0553  last_data_time: 0.0564   lr: 0.0001  max_mem: 33442M
+[09/10 16:43:51] d2.utils.events INFO:  eta: 0:25:32  iter: 759  total_loss: 17.87  loss_ce: 0.3833  loss_mask: 0.1517  loss_dice: 1.073  loss_ce_0: 0.5236  loss_mask_0: 0.1768  loss_dice_0: 1.295  loss_ce_1: 0.5854  loss_mask_1: 0.1623  loss_dice_1: 1.225  loss_ce_2: 0.5294  loss_mask_2: 0.1505  loss_dice_2: 1.159  loss_ce_3: 0.4742  loss_mask_3: 0.1527  loss_dice_3: 1.111  loss_ce_4: 0.437  loss_mask_4: 0.152  loss_dice_4: 1.117  loss_ce_5: 0.4257  loss_mask_5: 0.1515  loss_dice_5: 1.128  loss_ce_6: 0.4148  loss_mask_6: 0.1513  loss_dice_6: 1.111  loss_ce_7: 0.4163  loss_mask_7: 0.1508  loss_dice_7: 1.103  loss_ce_8: 0.4299  loss_mask_8: 0.1518  loss_dice_8: 1.102    time: 1.2415  last_time: 1.2388  data_time: 0.0585  last_data_time: 0.0450   lr: 0.0001  max_mem: 33442M
+[09/10 16:44:16] d2.utils.events INFO:  eta: 0:25:08  iter: 779  total_loss: 18.59  loss_ce: 0.4217  loss_mask: 0.1616  loss_dice: 1.139  loss_ce_0: 0.5483  loss_mask_0: 0.1829  loss_dice_0: 1.329  loss_ce_1: 0.5956  loss_mask_1: 0.1732  loss_dice_1: 1.287  loss_ce_2: 0.5193  loss_mask_2: 0.1627  loss_dice_2: 1.24  loss_ce_3: 0.4642  loss_mask_3: 0.163  loss_dice_3: 1.22  loss_ce_4: 0.4521  loss_mask_4: 0.1642  loss_dice_4: 1.21  loss_ce_5: 0.4334  loss_mask_5: 0.1607  loss_dice_5: 1.174  loss_ce_6: 0.4311  loss_mask_6: 0.1593  loss_dice_6: 1.155  loss_ce_7: 0.4341  loss_mask_7: 0.1616  loss_dice_7: 1.178  loss_ce_8: 0.4105  loss_mask_8: 0.1602  loss_dice_8: 1.167    time: 1.2414  last_time: 1.2396  data_time: 0.0498  last_data_time: 0.0458   lr: 0.0001  max_mem: 33442M
+[09/10 16:44:41] d2.utils.events INFO:  eta: 0:24:43  iter: 799  total_loss: 18.15  loss_ce: 0.4067  loss_mask: 0.1509  loss_dice: 1.148  loss_ce_0: 0.5368  loss_mask_0: 0.1654  loss_dice_0: 1.306  loss_ce_1: 0.5947  loss_mask_1: 0.16  loss_dice_1: 1.264  loss_ce_2: 0.5269  loss_mask_2: 0.1551  loss_dice_2: 1.208  loss_ce_3: 0.483  loss_mask_3: 0.1505  loss_dice_3: 1.165  loss_ce_4: 0.4642  loss_mask_4: 0.152  loss_dice_4: 1.148  loss_ce_5: 0.4602  loss_mask_5: 0.151  loss_dice_5: 1.161  loss_ce_6: 0.4041  loss_mask_6: 0.1512  loss_dice_6: 1.142  loss_ce_7: 0.419  loss_mask_7: 0.151  loss_dice_7: 1.167  loss_ce_8: 0.4291  loss_mask_8: 0.1532  loss_dice_8: 1.159    time: 1.2415  last_time: 1.2434  data_time: 0.0525  last_data_time: 0.0491   lr: 0.0001  max_mem: 33442M
+[09/10 16:45:06] d2.utils.events INFO:  eta: 0:24:19  iter: 819  total_loss: 18.65  loss_ce: 0.4434  loss_mask: 0.1473  loss_dice: 1.183  loss_ce_0: 0.5544  loss_mask_0: 0.1753  loss_dice_0: 1.384  loss_ce_1: 0.6156  loss_mask_1: 0.1648  loss_dice_1: 1.362  loss_ce_2: 0.5406  loss_mask_2: 0.1612  loss_dice_2: 1.297  loss_ce_3: 0.477  loss_mask_3: 0.1575  loss_dice_3: 1.201  loss_ce_4: 0.4819  loss_mask_4: 0.156  loss_dice_4: 1.188  loss_ce_5: 0.4505  loss_mask_5: 0.1511  loss_dice_5: 1.209  loss_ce_6: 0.4752  loss_mask_6: 0.1492  loss_dice_6: 1.163  loss_ce_7: 0.4532  loss_mask_7: 0.1495  loss_dice_7: 1.162  loss_ce_8: 0.441  loss_mask_8: 0.1467  loss_dice_8: 1.174    time: 1.2418  last_time: 1.2280  data_time: 0.0529  last_data_time: 0.0510   lr: 0.0001  max_mem: 33442M
+[09/10 16:45:31] d2.utils.events INFO:  eta: 0:23:54  iter: 839  total_loss: 18.27  loss_ce: 0.4215  loss_mask: 0.1606  loss_dice: 1.135  loss_ce_0: 0.5456  loss_mask_0: 0.1804  loss_dice_0: 1.304  loss_ce_1: 0.5906  loss_mask_1: 0.1682  loss_dice_1: 1.23  loss_ce_2: 0.5405  loss_mask_2: 0.164  loss_dice_2: 1.216  loss_ce_3: 0.4827  loss_mask_3: 0.1633  loss_dice_3: 1.175  loss_ce_4: 0.4612  loss_mask_4: 0.162  loss_dice_4: 1.139  loss_ce_5: 0.4541  loss_mask_5: 0.1601  loss_dice_5: 1.146  loss_ce_6: 0.4379  loss_mask_6: 0.162  loss_dice_6: 1.154  loss_ce_7: 0.4275  loss_mask_7: 0.1614  loss_dice_7: 1.139  loss_ce_8: 0.4257  loss_mask_8: 0.1607  loss_dice_8: 1.117    time: 1.2418  last_time: 1.2004  data_time: 0.0549  last_data_time: 0.0573   lr: 0.0001  max_mem: 33442M
+[09/10 16:45:56] d2.utils.events INFO:  eta: 0:23:29  iter: 859  total_loss: 18.55  loss_ce: 0.4546  loss_mask: 0.1637  loss_dice: 1.141  loss_ce_0: 0.555  loss_mask_0: 0.1879  loss_dice_0: 1.358  loss_ce_1: 0.5882  loss_mask_1: 0.1768  loss_dice_1: 1.297  loss_ce_2: 0.5204  loss_mask_2: 0.1658  loss_dice_2: 1.224  loss_ce_3: 0.4951  loss_mask_3: 0.1625  loss_dice_3: 1.192  loss_ce_4: 0.4448  loss_mask_4: 0.1623  loss_dice_4: 1.18  loss_ce_5: 0.4299  loss_mask_5: 0.1595  loss_dice_5: 1.178  loss_ce_6: 0.4238  loss_mask_6: 0.1621  loss_dice_6: 1.158  loss_ce_7: 0.4148  loss_mask_7: 0.158  loss_dice_7: 1.17  loss_ce_8: 0.4188  loss_mask_8: 0.1617  loss_dice_8: 1.157    time: 1.2421  last_time: 1.2595  data_time: 0.0569  last_data_time: 0.0881   lr: 0.0001  max_mem: 33442M
+[09/10 16:46:21] d2.utils.events INFO:  eta: 0:23:04  iter: 879  total_loss: 18.31  loss_ce: 0.4215  loss_mask: 0.1623  loss_dice: 1.127  loss_ce_0: 0.5459  loss_mask_0: 0.1841  loss_dice_0: 1.317  loss_ce_1: 0.601  loss_mask_1: 0.1741  loss_dice_1: 1.24  loss_ce_2: 0.514  loss_mask_2: 0.1648  loss_dice_2: 1.217  loss_ce_3: 0.4649  loss_mask_3: 0.1619  loss_dice_3: 1.176  loss_ce_4: 0.4627  loss_mask_4: 0.1625  loss_dice_4: 1.167  loss_ce_5: 0.4288  loss_mask_5: 0.1607  loss_dice_5: 1.147  loss_ce_6: 0.4397  loss_mask_6: 0.1605  loss_dice_6: 1.121  loss_ce_7: 0.3969  loss_mask_7: 0.1612  loss_dice_7: 1.132  loss_ce_8: 0.4289  loss_mask_8: 0.1621  loss_dice_8: 1.134    time: 1.2419  last_time: 1.2073  data_time: 0.0568  last_data_time: 0.0595   lr: 0.0001  max_mem: 33442M
+[09/10 16:46:46] d2.utils.events INFO:  eta: 0:22:40  iter: 899  total_loss: 18.59  loss_ce: 0.4241  loss_mask: 0.1524  loss_dice: 1.177  loss_ce_0: 0.5597  loss_mask_0: 0.1732  loss_dice_0: 1.376  loss_ce_1: 0.6255  loss_mask_1: 0.1629  loss_dice_1: 1.301  loss_ce_2: 0.5236  loss_mask_2: 0.1544  loss_dice_2: 1.256  loss_ce_3: 0.4829  loss_mask_3: 0.1558  loss_dice_3: 1.229  loss_ce_4: 0.4583  loss_mask_4: 0.1567  loss_dice_4: 1.185  loss_ce_5: 0.4368  loss_mask_5: 0.1536  loss_dice_5: 1.195  loss_ce_6: 0.4572  loss_mask_6: 0.1516  loss_dice_6: 1.164  loss_ce_7: 0.4423  loss_mask_7: 0.1542  loss_dice_7: 1.168  loss_ce_8: 0.43  loss_mask_8: 0.1538  loss_dice_8: 1.176    time: 1.2420  last_time: 1.2674  data_time: 0.0567  last_data_time: 0.0536   lr: 0.0001  max_mem: 33442M
+[09/10 16:47:10] d2.utils.events INFO:  eta: 0:22:16  iter: 919  total_loss: 18.21  loss_ce: 0.4275  loss_mask: 0.1595  loss_dice: 1.128  loss_ce_0: 0.566  loss_mask_0: 0.1761  loss_dice_0: 1.282  loss_ce_1: 0.6048  loss_mask_1: 0.1671  loss_dice_1: 1.273  loss_ce_2: 0.5458  loss_mask_2: 0.1618  loss_dice_2: 1.219  loss_ce_3: 0.4727  loss_mask_3: 0.1622  loss_dice_3: 1.148  loss_ce_4: 0.4602  loss_mask_4: 0.1607  loss_dice_4: 1.163  loss_ce_5: 0.4505  loss_mask_5: 0.1588  loss_dice_5: 1.151  loss_ce_6: 0.4509  loss_mask_6: 0.1581  loss_dice_6: 1.119  loss_ce_7: 0.4499  loss_mask_7: 0.1569  loss_dice_7: 1.105  loss_ce_8: 0.4506  loss_mask_8: 0.1597  loss_dice_8: 1.16    time: 1.2421  last_time: 1.2655  data_time: 0.0558  last_data_time: 0.0758   lr: 0.0001  max_mem: 33442M
+[09/10 16:47:35] d2.utils.events INFO:  eta: 0:21:50  iter: 939  total_loss: 18.38  loss_ce: 0.4406  loss_mask: 0.1639  loss_dice: 1.114  loss_ce_0: 0.5102  loss_mask_0: 0.1894  loss_dice_0: 1.299  loss_ce_1: 0.5867  loss_mask_1: 0.1751  loss_dice_1: 1.232  loss_ce_2: 0.5582  loss_mask_2: 0.1615  loss_dice_2: 1.197  loss_ce_3: 0.5201  loss_mask_3: 0.1616  loss_dice_3: 1.138  loss_ce_4: 0.4957  loss_mask_4: 0.1632  loss_dice_4: 1.14  loss_ce_5: 0.4818  loss_mask_5: 0.1634  loss_dice_5: 1.133  loss_ce_6: 0.4309  loss_mask_6: 0.1622  loss_dice_6: 1.142  loss_ce_7: 0.4556  loss_mask_7: 0.1608  loss_dice_7: 1.102  loss_ce_8: 0.4341  loss_mask_8: 0.1606  loss_dice_8: 1.112    time: 1.2421  last_time: 1.2034  data_time: 0.0582  last_data_time: 0.0547   lr: 0.0001  max_mem: 33442M
+[09/10 16:48:00] d2.utils.events INFO:  eta: 0:21:26  iter: 959  total_loss: 19.05  loss_ce: 0.4431  loss_mask: 0.1596  loss_dice: 1.134  loss_ce_0: 0.5595  loss_mask_0: 0.1917  loss_dice_0: 1.381  loss_ce_1: 0.6188  loss_mask_1: 0.1711  loss_dice_1: 1.301  loss_ce_2: 0.5611  loss_mask_2: 0.1605  loss_dice_2: 1.251  loss_ce_3: 0.5128  loss_mask_3: 0.1622  loss_dice_3: 1.226  loss_ce_4: 0.4919  loss_mask_4: 0.1644  loss_dice_4: 1.198  loss_ce_5: 0.4785  loss_mask_5: 0.1601  loss_dice_5: 1.179  loss_ce_6: 0.4741  loss_mask_6: 0.1564  loss_dice_6: 1.175  loss_ce_7: 0.4691  loss_mask_7: 0.1581  loss_dice_7: 1.157  loss_ce_8: 0.4513  loss_mask_8: 0.158  loss_dice_8: 1.19    time: 1.2421  last_time: 1.2564  data_time: 0.0567  last_data_time: 0.0481   lr: 0.0001  max_mem: 33442M
+[09/10 16:48:25] d2.utils.events INFO:  eta: 0:21:01  iter: 979  total_loss: 18.89  loss_ce: 0.4256  loss_mask: 0.1582  loss_dice: 1.209  loss_ce_0: 0.5215  loss_mask_0: 0.1836  loss_dice_0: 1.352  loss_ce_1: 0.5859  loss_mask_1: 0.1742  loss_dice_1: 1.348  loss_ce_2: 0.5578  loss_mask_2: 0.165  loss_dice_2: 1.281  loss_ce_3: 0.4766  loss_mask_3: 0.1627  loss_dice_3: 1.248  loss_ce_4: 0.4569  loss_mask_4: 0.1619  loss_dice_4: 1.184  loss_ce_5: 0.46  loss_mask_5: 0.1613  loss_dice_5: 1.216  loss_ce_6: 0.4417  loss_mask_6: 0.1591  loss_dice_6: 1.2  loss_ce_7: 0.4357  loss_mask_7: 0.1579  loss_dice_7: 1.189  loss_ce_8: 0.4652  loss_mask_8: 0.1598  loss_dice_8: 1.197    time: 1.2421  last_time: 1.2200  data_time: 0.0574  last_data_time: 0.0503   lr: 0.0001  max_mem: 33442M
+[09/10 16:48:50] d2.utils.events INFO:  eta: 0:20:36  iter: 999  total_loss: 19.14  loss_ce: 0.4715  loss_mask: 0.1673  loss_dice: 1.197  loss_ce_0: 0.5818  loss_mask_0: 0.1889  loss_dice_0: 1.353  loss_ce_1: 0.6111  loss_mask_1: 0.1732  loss_dice_1: 1.317  loss_ce_2: 0.5557  loss_mask_2: 0.1692  loss_dice_2: 1.278  loss_ce_3: 0.5134  loss_mask_3: 0.1655  loss_dice_3: 1.18  loss_ce_4: 0.5205  loss_mask_4: 0.1705  loss_dice_4: 1.19  loss_ce_5: 0.4813  loss_mask_5: 0.1677  loss_dice_5: 1.237  loss_ce_6: 0.4669  loss_mask_6: 0.1618  loss_dice_6: 1.192  loss_ce_7: 0.4786  loss_mask_7: 0.1633  loss_dice_7: 1.194  loss_ce_8: 0.4821  loss_mask_8: 0.1661  loss_dice_8: 1.19    time: 1.2421  last_time: 1.2297  data_time: 0.0503  last_data_time: 0.0457   lr: 0.0001  max_mem: 33442M
+[09/10 16:49:15] d2.utils.events INFO:  eta: 0:20:11  iter: 1019  total_loss: 19.1  loss_ce: 0.4936  loss_mask: 0.1527  loss_dice: 1.161  loss_ce_0: 0.5865  loss_mask_0: 0.172  loss_dice_0: 1.338  loss_ce_1: 0.6428  loss_mask_1: 0.1581  loss_dice_1: 1.296  loss_ce_2: 0.5738  loss_mask_2: 0.1562  loss_dice_2: 1.234  loss_ce_3: 0.5022  loss_mask_3: 0.1546  loss_dice_3: 1.232  loss_ce_4: 0.4744  loss_mask_4: 0.1518  loss_dice_4: 1.205  loss_ce_5: 0.4983  loss_mask_5: 0.1449  loss_dice_5: 1.184  loss_ce_6: 0.4857  loss_mask_6: 0.1511  loss_dice_6: 1.193  loss_ce_7: 0.5134  loss_mask_7: 0.1438  loss_dice_7: 1.219  loss_ce_8: 0.468  loss_mask_8: 0.1532  loss_dice_8: 1.152    time: 1.2423  last_time: 1.2270  data_time: 0.0583  last_data_time: 0.0562   lr: 0.0001  max_mem: 33442M
+[09/10 16:49:40] d2.utils.events INFO:  eta: 0:19:47  iter: 1039  total_loss: 19.02  loss_ce: 0.3961  loss_mask: 0.1449  loss_dice: 1.251  loss_ce_0: 0.5764  loss_mask_0: 0.1623  loss_dice_0: 1.408  loss_ce_1: 0.6207  loss_mask_1: 0.1561  loss_dice_1: 1.352  loss_ce_2: 0.5362  loss_mask_2: 0.1476  loss_dice_2: 1.288  loss_ce_3: 0.4783  loss_mask_3: 0.1454  loss_dice_3: 1.229  loss_ce_4: 0.4566  loss_mask_4: 0.1475  loss_dice_4: 1.233  loss_ce_5: 0.4304  loss_mask_5: 0.1436  loss_dice_5: 1.228  loss_ce_6: 0.4448  loss_mask_6: 0.1423  loss_dice_6: 1.212  loss_ce_7: 0.4289  loss_mask_7: 0.1449  loss_dice_7: 1.194  loss_ce_8: 0.417  loss_mask_8: 0.1431  loss_dice_8: 1.224    time: 1.2425  last_time: 1.2532  data_time: 0.0581  last_data_time: 0.0588   lr: 0.0001  max_mem: 33442M
+[09/10 16:50:05] d2.utils.events INFO:  eta: 0:19:23  iter: 1059  total_loss: 18.39  loss_ce: 0.4194  loss_mask: 0.1635  loss_dice: 1.147  loss_ce_0: 0.5626  loss_mask_0: 0.1922  loss_dice_0: 1.35  loss_ce_1: 0.6047  loss_mask_1: 0.1853  loss_dice_1: 1.294  loss_ce_2: 0.5358  loss_mask_2: 0.1728  loss_dice_2: 1.199  loss_ce_3: 0.4813  loss_mask_3: 0.1674  loss_dice_3: 1.168  loss_ce_4: 0.4494  loss_mask_4: 0.1703  loss_dice_4: 1.146  loss_ce_5: 0.4459  loss_mask_5: 0.1706  loss_dice_5: 1.171  loss_ce_6: 0.4064  loss_mask_6: 0.1613  loss_dice_6: 1.175  loss_ce_7: 0.4298  loss_mask_7: 0.1647  loss_dice_7: 1.162  loss_ce_8: 0.4102  loss_mask_8: 0.1653  loss_dice_8: 1.135    time: 1.2425  last_time: 1.2155  data_time: 0.0584  last_data_time: 0.0575   lr: 0.0001  max_mem: 33442M
+[09/10 16:50:30] d2.utils.events INFO:  eta: 0:18:58  iter: 1079  total_loss: 18.21  loss_ce: 0.4251  loss_mask: 0.1589  loss_dice: 1.121  loss_ce_0: 0.5314  loss_mask_0: 0.1822  loss_dice_0: 1.294  loss_ce_1: 0.6135  loss_mask_1: 0.1719  loss_dice_1: 1.281  loss_ce_2: 0.5047  loss_mask_2: 0.1677  loss_dice_2: 1.215  loss_ce_3: 0.4417  loss_mask_3: 0.1601  loss_dice_3: 1.179  loss_ce_4: 0.4148  loss_mask_4: 0.1603  loss_dice_4: 1.149  loss_ce_5: 0.4474  loss_mask_5: 0.1579  loss_dice_5: 1.15  loss_ce_6: 0.427  loss_mask_6: 0.1582  loss_dice_6: 1.132  loss_ce_7: 0.4403  loss_mask_7: 0.1607  loss_dice_7: 1.144  loss_ce_8: 0.4291  loss_mask_8: 0.1614  loss_dice_8: 1.127    time: 1.2425  last_time: 1.2292  data_time: 0.0580  last_data_time: 0.0600   lr: 0.0001  max_mem: 33442M
+[09/10 16:50:55] d2.utils.events INFO:  eta: 0:18:34  iter: 1099  total_loss: 18.66  loss_ce: 0.4246  loss_mask: 0.1566  loss_dice: 1.163  loss_ce_0: 0.4988  loss_mask_0: 0.1816  loss_dice_0: 1.338  loss_ce_1: 0.5465  loss_mask_1: 0.1708  loss_dice_1: 1.297  loss_ce_2: 0.5027  loss_mask_2: 0.1637  loss_dice_2: 1.258  loss_ce_3: 0.4532  loss_mask_3: 0.1634  loss_dice_3: 1.199  loss_ce_4: 0.3997  loss_mask_4: 0.1629  loss_dice_4: 1.187  loss_ce_5: 0.3949  loss_mask_5: 0.1576  loss_dice_5: 1.165  loss_ce_6: 0.406  loss_mask_6: 0.1566  loss_dice_6: 1.201  loss_ce_7: 0.3881  loss_mask_7: 0.1565  loss_dice_7: 1.183  loss_ce_8: 0.4224  loss_mask_8: 0.1592  loss_dice_8: 1.192    time: 1.2425  last_time: 1.2365  data_time: 0.0605  last_data_time: 0.0589   lr: 0.0001  max_mem: 33442M
+[09/10 16:51:20] d2.utils.events INFO:  eta: 0:18:09  iter: 1119  total_loss: 18.47  loss_ce: 0.4455  loss_mask: 0.1466  loss_dice: 1.157  loss_ce_0: 0.5595  loss_mask_0: 0.1759  loss_dice_0: 1.436  loss_ce_1: 0.5578  loss_mask_1: 0.1597  loss_dice_1: 1.338  loss_ce_2: 0.5231  loss_mask_2: 0.1566  loss_dice_2: 1.257  loss_ce_3: 0.484  loss_mask_3: 0.1504  loss_dice_3: 1.209  loss_ce_4: 0.4527  loss_mask_4: 0.1517  loss_dice_4: 1.215  loss_ce_5: 0.4726  loss_mask_5: 0.1505  loss_dice_5: 1.207  loss_ce_6: 0.4221  loss_mask_6: 0.1478  loss_dice_6: 1.17  loss_ce_7: 0.4261  loss_mask_7: 0.1482  loss_dice_7: 1.136  loss_ce_8: 0.4295  loss_mask_8: 0.1472  loss_dice_8: 1.19    time: 1.2428  last_time: 1.3644  data_time: 0.0591  last_data_time: 0.0548   lr: 0.0001  max_mem: 33442M
+[09/10 16:51:45] d2.utils.events INFO:  eta: 0:17:44  iter: 1139  total_loss: 18  loss_ce: 0.4079  loss_mask: 0.1558  loss_dice: 1.113  loss_ce_0: 0.5749  loss_mask_0: 0.1699  loss_dice_0: 1.345  loss_ce_1: 0.5877  loss_mask_1: 0.164  loss_dice_1: 1.302  loss_ce_2: 0.531  loss_mask_2: 0.1538  loss_dice_2: 1.216  loss_ce_3: 0.4685  loss_mask_3: 0.158  loss_dice_3: 1.142  loss_ce_4: 0.4099  loss_mask_4: 0.1561  loss_dice_4: 1.144  loss_ce_5: 0.4048  loss_mask_5: 0.1552  loss_dice_5: 1.173  loss_ce_6: 0.4119  loss_mask_6: 0.155  loss_dice_6: 1.145  loss_ce_7: 0.3941  loss_mask_7: 0.151  loss_dice_7: 1.161  loss_ce_8: 0.3975  loss_mask_8: 0.1542  loss_dice_8: 1.114    time: 1.2429  last_time: 1.2852  data_time: 0.0544  last_data_time: 0.0566   lr: 0.0001  max_mem: 33442M
+[09/10 16:52:11] d2.utils.events INFO:  eta: 0:17:20  iter: 1159  total_loss: 19.02  loss_ce: 0.4294  loss_mask: 0.1476  loss_dice: 1.166  loss_ce_0: 0.5349  loss_mask_0: 0.1683  loss_dice_0: 1.352  loss_ce_1: 0.5948  loss_mask_1: 0.1609  loss_dice_1: 1.339  loss_ce_2: 0.552  loss_mask_2: 0.1542  loss_dice_2: 1.274  loss_ce_3: 0.4805  loss_mask_3: 0.1477  loss_dice_3: 1.204  loss_ce_4: 0.4787  loss_mask_4: 0.1461  loss_dice_4: 1.201  loss_ce_5: 0.4497  loss_mask_5: 0.1465  loss_dice_5: 1.221  loss_ce_6: 0.4379  loss_mask_6: 0.1442  loss_dice_6: 1.154  loss_ce_7: 0.4547  loss_mask_7: 0.1456  loss_dice_7: 1.177  loss_ce_8: 0.4093  loss_mask_8: 0.1412  loss_dice_8: 1.176    time: 1.2431  last_time: 1.2534  data_time: 0.0526  last_data_time: 0.0842   lr: 0.0001  max_mem: 33442M
+[09/10 16:52:36] d2.utils.events INFO:  eta: 0:16:55  iter: 1179  total_loss: 18.38  loss_ce: 0.4083  loss_mask: 0.1654  loss_dice: 1.134  loss_ce_0: 0.5295  loss_mask_0: 0.1832  loss_dice_0: 1.315  loss_ce_1: 0.5719  loss_mask_1: 0.1728  loss_dice_1: 1.311  loss_ce_2: 0.4927  loss_mask_2: 0.1652  loss_dice_2: 1.205  loss_ce_3: 0.4742  loss_mask_3: 0.1674  loss_dice_3: 1.163  loss_ce_4: 0.4351  loss_mask_4: 0.1617  loss_dice_4: 1.151  loss_ce_5: 0.3965  loss_mask_5: 0.1645  loss_dice_5: 1.155  loss_ce_6: 0.3984  loss_mask_6: 0.1617  loss_dice_6: 1.14  loss_ce_7: 0.3893  loss_mask_7: 0.1676  loss_dice_7: 1.134  loss_ce_8: 0.4188  loss_mask_8: 0.1651  loss_dice_8: 1.124    time: 1.2432  last_time: 1.2702  data_time: 0.0521  last_data_time: 0.0513   lr: 0.0001  max_mem: 33442M
+[09/10 16:53:00] d2.utils.events INFO:  eta: 0:16:31  iter: 1199  total_loss: 18.23  loss_ce: 0.4518  loss_mask: 0.1582  loss_dice: 1.107  loss_ce_0: 0.5229  loss_mask_0: 0.1754  loss_dice_0: 1.302  loss_ce_1: 0.5637  loss_mask_1: 0.1726  loss_dice_1: 1.263  loss_ce_2: 0.5392  loss_mask_2: 0.161  loss_dice_2: 1.164  loss_ce_3: 0.4773  loss_mask_3: 0.1597  loss_dice_3: 1.153  loss_ce_4: 0.4408  loss_mask_4: 0.1587  loss_dice_4: 1.18  loss_ce_5: 0.4096  loss_mask_5: 0.1591  loss_dice_5: 1.147  loss_ce_6: 0.4326  loss_mask_6: 0.1575  loss_dice_6: 1.12  loss_ce_7: 0.4103  loss_mask_7: 0.1607  loss_dice_7: 1.157  loss_ce_8: 0.4541  loss_mask_8: 0.1594  loss_dice_8: 1.149    time: 1.2431  last_time: 1.2388  data_time: 0.0578  last_data_time: 0.0494   lr: 0.0001  max_mem: 33442M
+[09/10 16:53:25] d2.utils.events INFO:  eta: 0:16:06  iter: 1219  total_loss: 17.64  loss_ce: 0.3923  loss_mask: 0.1675  loss_dice: 1.085  loss_ce_0: 0.4986  loss_mask_0: 0.1914  loss_dice_0: 1.269  loss_ce_1: 0.543  loss_mask_1: 0.1797  loss_dice_1: 1.247  loss_ce_2: 0.4465  loss_mask_2: 0.1748  loss_dice_2: 1.139  loss_ce_3: 0.4373  loss_mask_3: 0.1735  loss_dice_3: 1.1  loss_ce_4: 0.4086  loss_mask_4: 0.1715  loss_dice_4: 1.079  loss_ce_5: 0.4099  loss_mask_5: 0.1709  loss_dice_5: 1.107  loss_ce_6: 0.4007  loss_mask_6: 0.1692  loss_dice_6: 1.117  loss_ce_7: 0.3677  loss_mask_7: 0.168  loss_dice_7: 1.095  loss_ce_8: 0.4022  loss_mask_8: 0.1674  loss_dice_8: 1.103    time: 1.2430  last_time: 1.2490  data_time: 0.0556  last_data_time: 0.0632   lr: 0.0001  max_mem: 33442M
+[09/10 16:53:50] d2.utils.events INFO:  eta: 0:15:41  iter: 1239  total_loss: 18.83  loss_ce: 0.4562  loss_mask: 0.1597  loss_dice: 1.194  loss_ce_0: 0.5188  loss_mask_0: 0.1842  loss_dice_0: 1.373  loss_ce_1: 0.5918  loss_mask_1: 0.1702  loss_dice_1: 1.358  loss_ce_2: 0.5293  loss_mask_2: 0.1629  loss_dice_2: 1.255  loss_ce_3: 0.4721  loss_mask_3: 0.166  loss_dice_3: 1.261  loss_ce_4: 0.4539  loss_mask_4: 0.1641  loss_dice_4: 1.236  loss_ce_5: 0.4521  loss_mask_5: 0.1609  loss_dice_5: 1.246  loss_ce_6: 0.4286  loss_mask_6: 0.1622  loss_dice_6: 1.22  loss_ce_7: 0.4527  loss_mask_7: 0.1593  loss_dice_7: 1.224  loss_ce_8: 0.4384  loss_mask_8: 0.1597  loss_dice_8: 1.199    time: 1.2431  last_time: 1.2853  data_time: 0.0567  last_data_time: 0.0676   lr: 0.0001  max_mem: 33442M
+[09/10 16:54:15] d2.utils.events INFO:  eta: 0:15:16  iter: 1259  total_loss: 17.91  loss_ce: 0.4537  loss_mask: 0.1445  loss_dice: 1.119  loss_ce_0: 0.5084  loss_mask_0: 0.155  loss_dice_0: 1.3  loss_ce_1: 0.5552  loss_mask_1: 0.1633  loss_dice_1: 1.278  loss_ce_2: 0.4935  loss_mask_2: 0.1471  loss_dice_2: 1.215  loss_ce_3: 0.4881  loss_mask_3: 0.1436  loss_dice_3: 1.143  loss_ce_4: 0.4272  loss_mask_4: 0.1404  loss_dice_4: 1.093  loss_ce_5: 0.4582  loss_mask_5: 0.1445  loss_dice_5: 1.15  loss_ce_6: 0.4285  loss_mask_6: 0.1432  loss_dice_6: 1.169  loss_ce_7: 0.4222  loss_mask_7: 0.1426  loss_dice_7: 1.146  loss_ce_8: 0.45  loss_mask_8: 0.1416  loss_dice_8: 1.134    time: 1.2429  last_time: 1.2282  data_time: 0.0557  last_data_time: 0.0620   lr: 0.0001  max_mem: 33442M
+[09/10 16:54:40] d2.utils.events INFO:  eta: 0:14:52  iter: 1279  total_loss: 18.72  loss_ce: 0.4036  loss_mask: 0.1557  loss_dice: 1.189  loss_ce_0: 0.5327  loss_mask_0: 0.1803  loss_dice_0: 1.414  loss_ce_1: 0.5838  loss_mask_1: 0.1671  loss_dice_1: 1.356  loss_ce_2: 0.531  loss_mask_2: 0.1603  loss_dice_2: 1.289  loss_ce_3: 0.4496  loss_mask_3: 0.1572  loss_dice_3: 1.225  loss_ce_4: 0.4527  loss_mask_4: 0.1601  loss_dice_4: 1.237  loss_ce_5: 0.4573  loss_mask_5: 0.1572  loss_dice_5: 1.228  loss_ce_6: 0.4272  loss_mask_6: 0.1569  loss_dice_6: 1.207  loss_ce_7: 0.3993  loss_mask_7: 0.1586  loss_dice_7: 1.208  loss_ce_8: 0.4199  loss_mask_8: 0.1561  loss_dice_8: 1.194    time: 1.2430  last_time: 1.1959  data_time: 0.0552  last_data_time: 0.0514   lr: 0.0001  max_mem: 33442M
+[09/10 16:55:05] d2.utils.events INFO:  eta: 0:14:27  iter: 1299  total_loss: 17.77  loss_ce: 0.4373  loss_mask: 0.1518  loss_dice: 1.132  loss_ce_0: 0.5162  loss_mask_0: 0.1767  loss_dice_0: 1.274  loss_ce_1: 0.5686  loss_mask_1: 0.1616  loss_dice_1: 1.249  loss_ce_2: 0.5286  loss_mask_2: 0.1544  loss_dice_2: 1.174  loss_ce_3: 0.4809  loss_mask_3: 0.1602  loss_dice_3: 1.126  loss_ce_4: 0.4494  loss_mask_4: 0.1562  loss_dice_4: 1.155  loss_ce_5: 0.4384  loss_mask_5: 0.1511  loss_dice_5: 1.123  loss_ce_6: 0.43  loss_mask_6: 0.1547  loss_dice_6: 1.091  loss_ce_7: 0.4232  loss_mask_7: 0.1529  loss_dice_7: 1.137  loss_ce_8: 0.4345  loss_mask_8: 0.1515  loss_dice_8: 1.107    time: 1.2430  last_time: 1.2675  data_time: 0.0520  last_data_time: 0.0589   lr: 0.0001  max_mem: 33442M
+[09/10 16:55:29] d2.utils.events INFO:  eta: 0:14:03  iter: 1319  total_loss: 17.81  loss_ce: 0.4045  loss_mask: 0.1504  loss_dice: 1.121  loss_ce_0: 0.5342  loss_mask_0: 0.1652  loss_dice_0: 1.312  loss_ce_1: 0.5724  loss_mask_1: 0.1606  loss_dice_1: 1.257  loss_ce_2: 0.5168  loss_mask_2: 0.1493  loss_dice_2: 1.197  loss_ce_3: 0.4509  loss_mask_3: 0.1527  loss_dice_3: 1.143  loss_ce_4: 0.4371  loss_mask_4: 0.1516  loss_dice_4: 1.139  loss_ce_5: 0.3981  loss_mask_5: 0.1493  loss_dice_5: 1.124  loss_ce_6: 0.406  loss_mask_6: 0.1488  loss_dice_6: 1.132  loss_ce_7: 0.4013  loss_mask_7: 0.1523  loss_dice_7: 1.123  loss_ce_8: 0.4216  loss_mask_8: 0.1499  loss_dice_8: 1.126    time: 1.2427  last_time: 1.2499  data_time: 0.0513  last_data_time: 0.0552   lr: 0.0001  max_mem: 33442M
+[09/10 16:55:54] d2.utils.events INFO:  eta: 0:13:37  iter: 1339  total_loss: 18.78  loss_ce: 0.4161  loss_mask: 0.1521  loss_dice: 1.176  loss_ce_0: 0.5536  loss_mask_0: 0.177  loss_dice_0: 1.391  loss_ce_1: 0.6292  loss_mask_1: 0.1604  loss_dice_1: 1.286  loss_ce_2: 0.5148  loss_mask_2: 0.1553  loss_dice_2: 1.234  loss_ce_3: 0.4856  loss_mask_3: 0.1574  loss_dice_3: 1.21  loss_ce_4: 0.4197  loss_mask_4: 0.1586  loss_dice_4: 1.172  loss_ce_5: 0.4456  loss_mask_5: 0.1549  loss_dice_5: 1.17  loss_ce_6: 0.426  loss_mask_6: 0.1511  loss_dice_6: 1.169  loss_ce_7: 0.423  loss_mask_7: 0.1525  loss_dice_7: 1.197  loss_ce_8: 0.4333  loss_mask_8: 0.1518  loss_dice_8: 1.154    time: 1.2423  last_time: 1.2346  data_time: 0.0584  last_data_time: 0.0552   lr: 0.0001  max_mem: 33442M
+[09/10 16:56:18] d2.utils.events INFO:  eta: 0:13:12  iter: 1359  total_loss: 18.55  loss_ce: 0.4089  loss_mask: 0.146  loss_dice: 1.179  loss_ce_0: 0.5317  loss_mask_0: 0.1746  loss_dice_0: 1.387  loss_ce_1: 0.5889  loss_mask_1: 0.1543  loss_dice_1: 1.311  loss_ce_2: 0.5121  loss_mask_2: 0.1488  loss_dice_2: 1.262  loss_ce_3: 0.4928  loss_mask_3: 0.1447  loss_dice_3: 1.196  loss_ce_4: 0.4409  loss_mask_4: 0.1463  loss_dice_4: 1.21  loss_ce_5: 0.4411  loss_mask_5: 0.1446  loss_dice_5: 1.207  loss_ce_6: 0.4208  loss_mask_6: 0.1457  loss_dice_6: 1.161  loss_ce_7: 0.407  loss_mask_7: 0.1441  loss_dice_7: 1.199  loss_ce_8: 0.4266  loss_mask_8: 0.1445  loss_dice_8: 1.177    time: 1.2418  last_time: 1.2589  data_time: 0.0604  last_data_time: 0.0577   lr: 0.0001  max_mem: 33442M
+[09/10 16:56:43] d2.utils.events INFO:  eta: 0:12:47  iter: 1379  total_loss: 18.81  loss_ce: 0.412  loss_mask: 0.1396  loss_dice: 1.205  loss_ce_0: 0.5408  loss_mask_0: 0.1616  loss_dice_0: 1.402  loss_ce_1: 0.5695  loss_mask_1: 0.1491  loss_dice_1: 1.344  loss_ce_2: 0.5409  loss_mask_2: 0.1411  loss_dice_2: 1.291  loss_ce_3: 0.4642  loss_mask_3: 0.1427  loss_dice_3: 1.216  loss_ce_4: 0.4328  loss_mask_4: 0.1391  loss_dice_4: 1.22  loss_ce_5: 0.4596  loss_mask_5: 0.1388  loss_dice_5: 1.259  loss_ce_6: 0.4376  loss_mask_6: 0.1383  loss_dice_6: 1.189  loss_ce_7: 0.4132  loss_mask_7: 0.1376  loss_dice_7: 1.193  loss_ce_8: 0.429  loss_mask_8: 0.1373  loss_dice_8: 1.201    time: 1.2416  last_time: 1.1995  data_time: 0.0651  last_data_time: 0.0508   lr: 0.0001  max_mem: 33442M
+[09/10 16:57:07] d2.utils.events INFO:  eta: 0:12:22  iter: 1399  total_loss: 18.11  loss_ce: 0.4182  loss_mask: 0.1584  loss_dice: 1.076  loss_ce_0: 0.5458  loss_mask_0: 0.1763  loss_dice_0: 1.281  loss_ce_1: 0.5573  loss_mask_1: 0.1675  loss_dice_1: 1.235  loss_ce_2: 0.5308  loss_mask_2: 0.161  loss_dice_2: 1.153  loss_ce_3: 0.4661  loss_mask_3: 0.1627  loss_dice_3: 1.093  loss_ce_4: 0.4528  loss_mask_4: 0.1547  loss_dice_4: 1.078  loss_ce_5: 0.4498  loss_mask_5: 0.1576  loss_dice_5: 1.098  loss_ce_6: 0.4289  loss_mask_6: 0.1577  loss_dice_6: 1.084  loss_ce_7: 0.426  loss_mask_7: 0.157  loss_dice_7: 1.1  loss_ce_8: 0.4473  loss_mask_8: 0.1568  loss_dice_8: 1.092    time: 1.2411  last_time: 1.2136  data_time: 0.0614  last_data_time: 0.0642   lr: 0.0001  max_mem: 33442M
+[09/10 16:57:31] d2.utils.events INFO:  eta: 0:11:57  iter: 1419  total_loss: 18.77  loss_ce: 0.4867  loss_mask: 0.1556  loss_dice: 1.149  loss_ce_0: 0.5319  loss_mask_0: 0.1776  loss_dice_0: 1.358  loss_ce_1: 0.5966  loss_mask_1: 0.167  loss_dice_1: 1.294  loss_ce_2: 0.5379  loss_mask_2: 0.1606  loss_dice_2: 1.249  loss_ce_3: 0.5042  loss_mask_3: 0.1637  loss_dice_3: 1.187  loss_ce_4: 0.4447  loss_mask_4: 0.1611  loss_dice_4: 1.208  loss_ce_5: 0.476  loss_mask_5: 0.1588  loss_dice_5: 1.163  loss_ce_6: 0.4704  loss_mask_6: 0.1566  loss_dice_6: 1.168  loss_ce_7: 0.4189  loss_mask_7: 0.1562  loss_dice_7: 1.182  loss_ce_8: 0.4477  loss_mask_8: 0.1559  loss_dice_8: 1.158    time: 1.2407  last_time: 1.2362  data_time: 0.0520  last_data_time: 0.0568   lr: 0.0001  max_mem: 33442M
+[09/10 16:57:55] d2.utils.events INFO:  eta: 0:11:32  iter: 1439  total_loss: 17.26  loss_ce: 0.437  loss_mask: 0.1411  loss_dice: 1.083  loss_ce_0: 0.5075  loss_mask_0: 0.1602  loss_dice_0: 1.278  loss_ce_1: 0.588  loss_mask_1: 0.1493  loss_dice_1: 1.217  loss_ce_2: 0.5081  loss_mask_2: 0.1434  loss_dice_2: 1.162  loss_ce_3: 0.4545  loss_mask_3: 0.1417  loss_dice_3: 1.13  loss_ce_4: 0.438  loss_mask_4: 0.1436  loss_dice_4: 1.113  loss_ce_5: 0.4163  loss_mask_5: 0.1428  loss_dice_5: 1.124  loss_ce_6: 0.4297  loss_mask_6: 0.1414  loss_dice_6: 1.093  loss_ce_7: 0.4248  loss_mask_7: 0.1402  loss_dice_7: 1.099  loss_ce_8: 0.4094  loss_mask_8: 0.1411  loss_dice_8: 1.117    time: 1.2402  last_time: 1.2012  data_time: 0.0474  last_data_time: 0.0431   lr: 0.0001  max_mem: 33442M
+[09/10 16:58:19] d2.utils.events INFO:  eta: 0:11:07  iter: 1459  total_loss: 18.66  loss_ce: 0.4394  loss_mask: 0.1482  loss_dice: 1.179  loss_ce_0: 0.5472  loss_mask_0: 0.1694  loss_dice_0: 1.351  loss_ce_1: 0.6106  loss_mask_1: 0.1597  loss_dice_1: 1.293  loss_ce_2: 0.5102  loss_mask_2: 0.1541  loss_dice_2: 1.268  loss_ce_3: 0.4625  loss_mask_3: 0.1532  loss_dice_3: 1.188  loss_ce_4: 0.4206  loss_mask_4: 0.1502  loss_dice_4: 1.198  loss_ce_5: 0.4424  loss_mask_5: 0.1494  loss_dice_5: 1.211  loss_ce_6: 0.4304  loss_mask_6: 0.1501  loss_dice_6: 1.155  loss_ce_7: 0.4373  loss_mask_7: 0.1477  loss_dice_7: 1.137  loss_ce_8: 0.4178  loss_mask_8: 0.1475  loss_dice_8: 1.161    time: 1.2396  last_time: 1.1906  data_time: 0.0501  last_data_time: 0.0588   lr: 0.0001  max_mem: 33442M
+[09/10 16:58:44] d2.utils.events INFO:  eta: 0:10:42  iter: 1479  total_loss: 18.41  loss_ce: 0.3975  loss_mask: 0.1524  loss_dice: 1.131  loss_ce_0: 0.5457  loss_mask_0: 0.1739  loss_dice_0: 1.305  loss_ce_1: 0.599  loss_mask_1: 0.1732  loss_dice_1: 1.24  loss_ce_2: 0.4933  loss_mask_2: 0.156  loss_dice_2: 1.2  loss_ce_3: 0.4571  loss_mask_3: 0.1521  loss_dice_3: 1.164  loss_ce_4: 0.4034  loss_mask_4: 0.1517  loss_dice_4: 1.168  loss_ce_5: 0.4333  loss_mask_5: 0.152  loss_dice_5: 1.157  loss_ce_6: 0.4214  loss_mask_6: 0.1512  loss_dice_6: 1.162  loss_ce_7: 0.4165  loss_mask_7: 0.1523  loss_dice_7: 1.125  loss_ce_8: 0.4048  loss_mask_8: 0.1516  loss_dice_8: 1.13    time: 1.2391  last_time: 1.2100  data_time: 0.0534  last_data_time: 0.0490   lr: 0.0001  max_mem: 33442M
+[09/10 16:59:08] d2.utils.events INFO:  eta: 0:10:16  iter: 1499  total_loss: 18.41  loss_ce: 0.4379  loss_mask: 0.1395  loss_dice: 1.159  loss_ce_0: 0.5637  loss_mask_0: 0.1663  loss_dice_0: 1.347  loss_ce_1: 0.6246  loss_mask_1: 0.1481  loss_dice_1: 1.308  loss_ce_2: 0.5353  loss_mask_2: 0.1399  loss_dice_2: 1.281  loss_ce_3: 0.4718  loss_mask_3: 0.1407  loss_dice_3: 1.202  loss_ce_4: 0.4644  loss_mask_4: 0.1416  loss_dice_4: 1.185  loss_ce_5: 0.4363  loss_mask_5: 0.1405  loss_dice_5: 1.181  loss_ce_6: 0.43  loss_mask_6: 0.139  loss_dice_6: 1.149  loss_ce_7: 0.424  loss_mask_7: 0.1395  loss_dice_7: 1.151  loss_ce_8: 0.4487  loss_mask_8: 0.1383  loss_dice_8: 1.178    time: 1.2387  last_time: 1.2080  data_time: 0.0512  last_data_time: 0.0504   lr: 0.0001  max_mem: 33442M
+[09/10 16:59:32] d2.utils.events INFO:  eta: 0:09:51  iter: 1519  total_loss: 17.82  loss_ce: 0.4114  loss_mask: 0.1468  loss_dice: 1.119  loss_ce_0: 0.5467  loss_mask_0: 0.1734  loss_dice_0: 1.282  loss_ce_1: 0.5802  loss_mask_1: 0.1639  loss_dice_1: 1.223  loss_ce_2: 0.4932  loss_mask_2: 0.1497  loss_dice_2: 1.162  loss_ce_3: 0.4408  loss_mask_3: 0.1501  loss_dice_3: 1.102  loss_ce_4: 0.4294  loss_mask_4: 0.1487  loss_dice_4: 1.13  loss_ce_5: 0.4007  loss_mask_5: 0.1501  loss_dice_5: 1.106  loss_ce_6: 0.4088  loss_mask_6: 0.1481  loss_dice_6: 1.132  loss_ce_7: 0.4087  loss_mask_7: 0.1468  loss_dice_7: 1.126  loss_ce_8: 0.4003  loss_mask_8: 0.1488  loss_dice_8: 1.096    time: 1.2384  last_time: 1.2666  data_time: 0.0468  last_data_time: 0.0421   lr: 0.0001  max_mem: 33442M
+[09/10 16:59:56] d2.utils.events INFO:  eta: 0:09:27  iter: 1539  total_loss: 18.38  loss_ce: 0.4095  loss_mask: 0.1552  loss_dice: 1.121  loss_ce_0: 0.5061  loss_mask_0: 0.1832  loss_dice_0: 1.32  loss_ce_1: 0.5655  loss_mask_1: 0.1771  loss_dice_1: 1.243  loss_ce_2: 0.4906  loss_mask_2: 0.1656  loss_dice_2: 1.223  loss_ce_3: 0.4622  loss_mask_3: 0.1595  loss_dice_3: 1.178  loss_ce_4: 0.4289  loss_mask_4: 0.1657  loss_dice_4: 1.161  loss_ce_5: 0.4405  loss_mask_5: 0.1593  loss_dice_5: 1.15  loss_ce_6: 0.4124  loss_mask_6: 0.1596  loss_dice_6: 1.183  loss_ce_7: 0.4188  loss_mask_7: 0.158  loss_dice_7: 1.146  loss_ce_8: 0.4132  loss_mask_8: 0.1573  loss_dice_8: 1.142    time: 1.2380  last_time: 1.1639  data_time: 0.0555  last_data_time: 0.0526   lr: 0.0001  max_mem: 33442M
+[09/10 17:00:21] d2.utils.events INFO:  eta: 0:09:02  iter: 1559  total_loss: 18.47  loss_ce: 0.4097  loss_mask: 0.1389  loss_dice: 1.21  loss_ce_0: 0.4853  loss_mask_0: 0.1632  loss_dice_0: 1.384  loss_ce_1: 0.5438  loss_mask_1: 0.1472  loss_dice_1: 1.312  loss_ce_2: 0.4768  loss_mask_2: 0.141  loss_dice_2: 1.287  loss_ce_3: 0.4196  loss_mask_3: 0.1406  loss_dice_3: 1.246  loss_ce_4: 0.3969  loss_mask_4: 0.1385  loss_dice_4: 1.228  loss_ce_5: 0.4027  loss_mask_5: 0.1386  loss_dice_5: 1.194  loss_ce_6: 0.3738  loss_mask_6: 0.1387  loss_dice_6: 1.195  loss_ce_7: 0.3845  loss_mask_7: 0.1377  loss_dice_7: 1.195  loss_ce_8: 0.3935  loss_mask_8: 0.139  loss_dice_8: 1.182    time: 1.2378  last_time: 1.2408  data_time: 0.0554  last_data_time: 0.0553   lr: 0.0001  max_mem: 33442M
+[09/10 17:00:45] d2.utils.events INFO:  eta: 0:08:37  iter: 1579  total_loss: 17.26  loss_ce: 0.4063  loss_mask: 0.1433  loss_dice: 1.115  loss_ce_0: 0.517  loss_mask_0: 0.1684  loss_dice_0: 1.27  loss_ce_1: 0.5712  loss_mask_1: 0.1542  loss_dice_1: 1.234  loss_ce_2: 0.4906  loss_mask_2: 0.1451  loss_dice_2: 1.213  loss_ce_3: 0.4474  loss_mask_3: 0.1475  loss_dice_3: 1.12  loss_ce_4: 0.416  loss_mask_4: 0.1444  loss_dice_4: 1.132  loss_ce_5: 0.4138  loss_mask_5: 0.1423  loss_dice_5: 1.152  loss_ce_6: 0.4056  loss_mask_6: 0.1456  loss_dice_6: 1.068  loss_ce_7: 0.422  loss_mask_7: 0.1443  loss_dice_7: 1.097  loss_ce_8: 0.4164  loss_mask_8: 0.1431  loss_dice_8: 1.145    time: 1.2374  last_time: 1.1962  data_time: 0.0517  last_data_time: 0.0419   lr: 0.0001  max_mem: 33442M
+[09/10 17:01:10] d2.utils.events INFO:  eta: 0:08:12  iter: 1599  total_loss: 17.79  loss_ce: 0.4283  loss_mask: 0.1414  loss_dice: 1.156  loss_ce_0: 0.5501  loss_mask_0: 0.1683  loss_dice_0: 1.32  loss_ce_1: 0.5929  loss_mask_1: 0.1546  loss_dice_1: 1.265  loss_ce_2: 0.5122  loss_mask_2: 0.1482  loss_dice_2: 1.192  loss_ce_3: 0.4823  loss_mask_3: 0.1477  loss_dice_3: 1.169  loss_ce_4: 0.4123  loss_mask_4: 0.1471  loss_dice_4: 1.166  loss_ce_5: 0.422  loss_mask_5: 0.1448  loss_dice_5: 1.168  loss_ce_6: 0.4056  loss_mask_6: 0.1443  loss_dice_6: 1.132  loss_ce_7: 0.4087  loss_mask_7: 0.1445  loss_dice_7: 1.144  loss_ce_8: 0.4153  loss_mask_8: 0.1406  loss_dice_8: 1.107    time: 1.2372  last_time: 1.2011  data_time: 0.0521  last_data_time: 0.0434   lr: 0.0001  max_mem: 33442M
+[09/10 17:01:34] d2.utils.events INFO:  eta: 0:07:47  iter: 1619  total_loss: 16.77  loss_ce: 0.3599  loss_mask: 0.1363  loss_dice: 1.091  loss_ce_0: 0.4885  loss_mask_0: 0.1664  loss_dice_0: 1.274  loss_ce_1: 0.5279  loss_mask_1: 0.1493  loss_dice_1: 1.215  loss_ce_2: 0.4386  loss_mask_2: 0.1449  loss_dice_2: 1.165  loss_ce_3: 0.3898  loss_mask_3: 0.1416  loss_dice_3: 1.122  loss_ce_4: 0.3633  loss_mask_4: 0.1429  loss_dice_4: 1.089  loss_ce_5: 0.3546  loss_mask_5: 0.1341  loss_dice_5: 1.108  loss_ce_6: 0.3425  loss_mask_6: 0.1357  loss_dice_6: 1.111  loss_ce_7: 0.3554  loss_mask_7: 0.1346  loss_dice_7: 1.088  loss_ce_8: 0.3574  loss_mask_8: 0.1347  loss_dice_8: 1.104    time: 1.2370  last_time: 1.2046  data_time: 0.0542  last_data_time: 0.0483   lr: 0.0001  max_mem: 33442M
+[09/10 17:01:58] d2.utils.events INFO:  eta: 0:07:22  iter: 1639  total_loss: 18.11  loss_ce: 0.4121  loss_mask: 0.1607  loss_dice: 1.152  loss_ce_0: 0.5275  loss_mask_0: 0.179  loss_dice_0: 1.353  loss_ce_1: 0.5635  loss_mask_1: 0.1685  loss_dice_1: 1.255  loss_ce_2: 0.4896  loss_mask_2: 0.1681  loss_dice_2: 1.206  loss_ce_3: 0.4426  loss_mask_3: 0.163  loss_dice_3: 1.159  loss_ce_4: 0.4448  loss_mask_4: 0.161  loss_dice_4: 1.166  loss_ce_5: 0.4185  loss_mask_5: 0.1611  loss_dice_5: 1.165  loss_ce_6: 0.4188  loss_mask_6: 0.1585  loss_dice_6: 1.157  loss_ce_7: 0.4124  loss_mask_7: 0.161  loss_dice_7: 1.151  loss_ce_8: 0.418  loss_mask_8: 0.1609  loss_dice_8: 1.132    time: 1.2365  last_time: 1.2074  data_time: 0.0526  last_data_time: 0.0507   lr: 0.0001  max_mem: 33442M
+[09/10 17:02:23] d2.utils.events INFO:  eta: 0:06:58  iter: 1659  total_loss: 17.44  loss_ce: 0.4148  loss_mask: 0.1567  loss_dice: 1.142  loss_ce_0: 0.5343  loss_mask_0: 0.1783  loss_dice_0: 1.331  loss_ce_1: 0.5838  loss_mask_1: 0.1693  loss_dice_1: 1.286  loss_ce_2: 0.4965  loss_mask_2: 0.158  loss_dice_2: 1.207  loss_ce_3: 0.4518  loss_mask_3: 0.1582  loss_dice_3: 1.145  loss_ce_4: 0.432  loss_mask_4: 0.1598  loss_dice_4: 1.148  loss_ce_5: 0.4373  loss_mask_5: 0.1573  loss_dice_5: 1.129  loss_ce_6: 0.4152  loss_mask_6: 0.158  loss_dice_6: 1.121  loss_ce_7: 0.4014  loss_mask_7: 0.1569  loss_dice_7: 1.121  loss_ce_8: 0.4284  loss_mask_8: 0.1548  loss_dice_8: 1.144    time: 1.2363  last_time: 1.1839  data_time: 0.0489  last_data_time: 0.0652   lr: 0.0001  max_mem: 33442M
+[09/10 17:02:47] d2.utils.events INFO:  eta: 0:06:33  iter: 1679  total_loss: 19.13  loss_ce: 0.3959  loss_mask: 0.1526  loss_dice: 1.213  loss_ce_0: 0.5168  loss_mask_0: 0.1762  loss_dice_0: 1.4  loss_ce_1: 0.6051  loss_mask_1: 0.1575  loss_dice_1: 1.358  loss_ce_2: 0.519  loss_mask_2: 0.1542  loss_dice_2: 1.309  loss_ce_3: 0.481  loss_mask_3: 0.1551  loss_dice_3: 1.257  loss_ce_4: 0.418  loss_mask_4: 0.1556  loss_dice_4: 1.275  loss_ce_5: 0.4343  loss_mask_5: 0.1527  loss_dice_5: 1.239  loss_ce_6: 0.4286  loss_mask_6: 0.153  loss_dice_6: 1.205  loss_ce_7: 0.4301  loss_mask_7: 0.1537  loss_dice_7: 1.212  loss_ce_8: 0.4623  loss_mask_8: 0.1525  loss_dice_8: 1.256    time: 1.2361  last_time: 1.2106  data_time: 0.0508  last_data_time: 0.0447   lr: 0.0001  max_mem: 33442M
+[09/10 17:03:12] d2.utils.events INFO:  eta: 0:06:08  iter: 1699  total_loss: 18.05  loss_ce: 0.4232  loss_mask: 0.1415  loss_dice: 1.119  loss_ce_0: 0.5066  loss_mask_0: 0.1622  loss_dice_0: 1.324  loss_ce_1: 0.592  loss_mask_1: 0.1553  loss_dice_1: 1.255  loss_ce_2: 0.5126  loss_mask_2: 0.1499  loss_dice_2: 1.22  loss_ce_3: 0.4436  loss_mask_3: 0.1474  loss_dice_3: 1.153  loss_ce_4: 0.4315  loss_mask_4: 0.1465  loss_dice_4: 1.146  loss_ce_5: 0.4131  loss_mask_5: 0.1433  loss_dice_5: 1.137  loss_ce_6: 0.4218  loss_mask_6: 0.1438  loss_dice_6: 1.152  loss_ce_7: 0.4204  loss_mask_7: 0.1456  loss_dice_7: 1.156  loss_ce_8: 0.4295  loss_mask_8: 0.1416  loss_dice_8: 1.113    time: 1.2360  last_time: 1.2761  data_time: 0.0502  last_data_time: 0.1111   lr: 0.0001  max_mem: 33442M
+[09/10 17:03:36] d2.utils.events INFO:  eta: 0:05:44  iter: 1719  total_loss: 17.81  loss_ce: 0.3965  loss_mask: 0.1478  loss_dice: 1.091  loss_ce_0: 0.513  loss_mask_0: 0.1705  loss_dice_0: 1.237  loss_ce_1: 0.5741  loss_mask_1: 0.1604  loss_dice_1: 1.223  loss_ce_2: 0.4937  loss_mask_2: 0.1505  loss_dice_2: 1.17  loss_ce_3: 0.4495  loss_mask_3: 0.1537  loss_dice_3: 1.12  loss_ce_4: 0.4452  loss_mask_4: 0.1522  loss_dice_4: 1.149  loss_ce_5: 0.432  loss_mask_5: 0.1487  loss_dice_5: 1.129  loss_ce_6: 0.4183  loss_mask_6: 0.1497  loss_dice_6: 1.104  loss_ce_7: 0.4193  loss_mask_7: 0.1486  loss_dice_7: 1.08  loss_ce_8: 0.4103  loss_mask_8: 0.1458  loss_dice_8: 1.097    time: 1.2359  last_time: 1.1854  data_time: 0.0513  last_data_time: 0.0475   lr: 0.0001  max_mem: 33442M
+[09/10 17:04:00] d2.utils.events INFO:  eta: 0:05:19  iter: 1739  total_loss: 17.76  loss_ce: 0.4221  loss_mask: 0.147  loss_dice: 1.115  loss_ce_0: 0.5134  loss_mask_0: 0.1735  loss_dice_0: 1.3  loss_ce_1: 0.5582  loss_mask_1: 0.1597  loss_dice_1: 1.234  loss_ce_2: 0.5317  loss_mask_2: 0.1505  loss_dice_2: 1.191  loss_ce_3: 0.451  loss_mask_3: 0.1512  loss_dice_3: 1.144  loss_ce_4: 0.4141  loss_mask_4: 0.1495  loss_dice_4: 1.146  loss_ce_5: 0.42  loss_mask_5: 0.1466  loss_dice_5: 1.16  loss_ce_6: 0.4194  loss_mask_6: 0.1483  loss_dice_6: 1.111  loss_ce_7: 0.3924  loss_mask_7: 0.1466  loss_dice_7: 1.143  loss_ce_8: 0.4327  loss_mask_8: 0.1473  loss_dice_8: 1.092    time: 1.2355  last_time: 1.2017  data_time: 0.0517  last_data_time: 0.0465   lr: 0.0001  max_mem: 33442M
+[09/10 17:04:25] d2.utils.events INFO:  eta: 0:04:54  iter: 1759  total_loss: 17.96  loss_ce: 0.4201  loss_mask: 0.1525  loss_dice: 1.09  loss_ce_0: 0.5136  loss_mask_0: 0.1782  loss_dice_0: 1.322  loss_ce_1: 0.5796  loss_mask_1: 0.1603  loss_dice_1: 1.247  loss_ce_2: 0.5091  loss_mask_2: 0.1537  loss_dice_2: 1.208  loss_ce_3: 0.447  loss_mask_3: 0.155  loss_dice_3: 1.132  loss_ce_4: 0.4347  loss_mask_4: 0.1526  loss_dice_4: 1.17  loss_ce_5: 0.4175  loss_mask_5: 0.1521  loss_dice_5: 1.155  loss_ce_6: 0.4152  loss_mask_6: 0.1515  loss_dice_6: 1.142  loss_ce_7: 0.3815  loss_mask_7: 0.1487  loss_dice_7: 1.129  loss_ce_8: 0.3953  loss_mask_8: 0.1513  loss_dice_8: 1.143    time: 1.2353  last_time: 1.1762  data_time: 0.0539  last_data_time: 0.0446   lr: 0.0001  max_mem: 33442M
+[09/10 17:04:49] d2.utils.events INFO:  eta: 0:04:29  iter: 1779  total_loss: 17.5  loss_ce: 0.379  loss_mask: 0.1619  loss_dice: 1.033  loss_ce_0: 0.4884  loss_mask_0: 0.1909  loss_dice_0: 1.233  loss_ce_1: 0.5486  loss_mask_1: 0.1734  loss_dice_1: 1.189  loss_ce_2: 0.4918  loss_mask_2: 0.1638  loss_dice_2: 1.128  loss_ce_3: 0.4328  loss_mask_3: 0.164  loss_dice_3: 1.104  loss_ce_4: 0.4265  loss_mask_4: 0.1641  loss_dice_4: 1.084  loss_ce_5: 0.3852  loss_mask_5: 0.1608  loss_dice_5: 1.133  loss_ce_6: 0.3932  loss_mask_6: 0.1624  loss_dice_6: 1.077  loss_ce_7: 0.3789  loss_mask_7: 0.161  loss_dice_7: 1.022  loss_ce_8: 0.3944  loss_mask_8: 0.1588  loss_dice_8: 1.062    time: 1.2349  last_time: 1.2001  data_time: 0.0477  last_data_time: 0.0588   lr: 0.0001  max_mem: 33442M
+[09/10 17:05:13] d2.utils.events INFO:  eta: 0:04:05  iter: 1799  total_loss: 17.71  loss_ce: 0.4162  loss_mask: 0.1367  loss_dice: 1.097  loss_ce_0: 0.5187  loss_mask_0: 0.1611  loss_dice_0: 1.361  loss_ce_1: 0.5652  loss_mask_1: 0.1507  loss_dice_1: 1.266  loss_ce_2: 0.4997  loss_mask_2: 0.1421  loss_dice_2: 1.222  loss_ce_3: 0.4734  loss_mask_3: 0.1412  loss_dice_3: 1.139  loss_ce_4: 0.4266  loss_mask_4: 0.1397  loss_dice_4: 1.147  loss_ce_5: 0.4511  loss_mask_5: 0.1392  loss_dice_5: 1.135  loss_ce_6: 0.3898  loss_mask_6: 0.1412  loss_dice_6: 1.098  loss_ce_7: 0.4075  loss_mask_7: 0.1369  loss_dice_7: 1.107  loss_ce_8: 0.3945  loss_mask_8: 0.1362  loss_dice_8: 1.093    time: 1.2347  last_time: 1.2326  data_time: 0.0501  last_data_time: 0.0487   lr: 0.0001  max_mem: 33442M
+[09/10 17:05:38] d2.utils.events INFO:  eta: 0:03:40  iter: 1819  total_loss: 18.13  loss_ce: 0.3971  loss_mask: 0.1517  loss_dice: 1.14  loss_ce_0: 0.4834  loss_mask_0: 0.166  loss_dice_0: 1.294  loss_ce_1: 0.5761  loss_mask_1: 0.1577  loss_dice_1: 1.25  loss_ce_2: 0.4836  loss_mask_2: 0.1526  loss_dice_2: 1.168  loss_ce_3: 0.4893  loss_mask_3: 0.1531  loss_dice_3: 1.127  loss_ce_4: 0.4218  loss_mask_4: 0.1534  loss_dice_4: 1.136  loss_ce_5: 0.437  loss_mask_5: 0.1504  loss_dice_5: 1.108  loss_ce_6: 0.3964  loss_mask_6: 0.1511  loss_dice_6: 1.141  loss_ce_7: 0.3957  loss_mask_7: 0.152  loss_dice_7: 1.083  loss_ce_8: 0.4128  loss_mask_8: 0.1516  loss_dice_8: 1.126    time: 1.2345  last_time: 1.2180  data_time: 0.0552  last_data_time: 0.0675   lr: 0.0001  max_mem: 33442M
+[09/10 17:06:02] d2.utils.events INFO:  eta: 0:03:16  iter: 1839  total_loss: 18.15  loss_ce: 0.4231  loss_mask: 0.14  loss_dice: 1.129  loss_ce_0: 0.5049  loss_mask_0: 0.1671  loss_dice_0: 1.311  loss_ce_1: 0.6289  loss_mask_1: 0.151  loss_dice_1: 1.245  loss_ce_2: 0.5214  loss_mask_2: 0.1447  loss_dice_2: 1.207  loss_ce_3: 0.4888  loss_mask_3: 0.1438  loss_dice_3: 1.171  loss_ce_4: 0.4277  loss_mask_4: 0.1402  loss_dice_4: 1.144  loss_ce_5: 0.4673  loss_mask_5: 0.1402  loss_dice_5: 1.147  loss_ce_6: 0.4083  loss_mask_6: 0.1393  loss_dice_6: 1.136  loss_ce_7: 0.4459  loss_mask_7: 0.1402  loss_dice_7: 1.127  loss_ce_8: 0.4326  loss_mask_8: 0.1385  loss_dice_8: 1.106    time: 1.2343  last_time: 1.2394  data_time: 0.0583  last_data_time: 0.0636   lr: 0.0001  max_mem: 33442M
+[09/10 17:06:26] d2.utils.events INFO:  eta: 0:02:51  iter: 1859  total_loss: 18.31  loss_ce: 0.4316  loss_mask: 0.1469  loss_dice: 1.13  loss_ce_0: 0.5258  loss_mask_0: 0.1787  loss_dice_0: 1.318  loss_ce_1: 0.6048  loss_mask_1: 0.16  loss_dice_1: 1.271  loss_ce_2: 0.5643  loss_mask_2: 0.1556  loss_dice_2: 1.203  loss_ce_3: 0.4655  loss_mask_3: 0.1512  loss_dice_3: 1.15  loss_ce_4: 0.4611  loss_mask_4: 0.1479  loss_dice_4: 1.126  loss_ce_5: 0.4768  loss_mask_5: 0.1463  loss_dice_5: 1.113  loss_ce_6: 0.4351  loss_mask_6: 0.1474  loss_dice_6: 1.15  loss_ce_7: 0.4104  loss_mask_7: 0.1474  loss_dice_7: 1.15  loss_ce_8: 0.4274  loss_mask_8: 0.1475  loss_dice_8: 1.135    time: 1.2342  last_time: 1.1971  data_time: 0.0560  last_data_time: 0.0470   lr: 0.0001  max_mem: 33442M
+[09/10 17:06:51] d2.utils.events INFO:  eta: 0:02:26  iter: 1879  total_loss: 17.84  loss_ce: 0.3867  loss_mask: 0.1453  loss_dice: 1.155  loss_ce_0: 0.4898  loss_mask_0: 0.1658  loss_dice_0: 1.318  loss_ce_1: 0.5608  loss_mask_1: 0.1518  loss_dice_1: 1.294  loss_ce_2: 0.4912  loss_mask_2: 0.1498  loss_dice_2: 1.188  loss_ce_3: 0.4692  loss_mask_3: 0.148  loss_dice_3: 1.161  loss_ce_4: 0.4099  loss_mask_4: 0.1466  loss_dice_4: 1.151  loss_ce_5: 0.3808  loss_mask_5: 0.1457  loss_dice_5: 1.177  loss_ce_6: 0.3834  loss_mask_6: 0.1456  loss_dice_6: 1.136  loss_ce_7: 0.3982  loss_mask_7: 0.1453  loss_dice_7: 1.167  loss_ce_8: 0.3878  loss_mask_8: 0.1451  loss_dice_8: 1.134    time: 1.2341  last_time: 1.2544  data_time: 0.0475  last_data_time: 0.0455   lr: 0.0001  max_mem: 33442M
+[09/10 17:07:16] d2.utils.events INFO:  eta: 0:02:02  iter: 1899  total_loss: 17.52  loss_ce: 0.4103  loss_mask: 0.1476  loss_dice: 1.123  loss_ce_0: 0.5133  loss_mask_0: 0.1662  loss_dice_0: 1.295  loss_ce_1: 0.5506  loss_mask_1: 0.1584  loss_dice_1: 1.24  loss_ce_2: 0.5003  loss_mask_2: 0.1489  loss_dice_2: 1.227  loss_ce_3: 0.4218  loss_mask_3: 0.1513  loss_dice_3: 1.162  loss_ce_4: 0.4262  loss_mask_4: 0.1492  loss_dice_4: 1.152  loss_ce_5: 0.3988  loss_mask_5: 0.1472  loss_dice_5: 1.162  loss_ce_6: 0.3884  loss_mask_6: 0.1495  loss_dice_6: 1.128  loss_ce_7: 0.3923  loss_mask_7: 0.1476  loss_dice_7: 1.123  loss_ce_8: 0.3862  loss_mask_8: 0.1469  loss_dice_8: 1.105    time: 1.2340  last_time: 1.2362  data_time: 0.0502  last_data_time: 0.0496   lr: 0.0001  max_mem: 33442M
+[09/10 17:07:40] d2.utils.events INFO:  eta: 0:01:37  iter: 1919  total_loss: 17.36  loss_ce: 0.3876  loss_mask: 0.1449  loss_dice: 1.102  loss_ce_0: 0.4706  loss_mask_0: 0.1658  loss_dice_0: 1.236  loss_ce_1: 0.5471  loss_mask_1: 0.1604  loss_dice_1: 1.244  loss_ce_2: 0.5026  loss_mask_2: 0.1473  loss_dice_2: 1.167  loss_ce_3: 0.4289  loss_mask_3: 0.1485  loss_dice_3: 1.12  loss_ce_4: 0.4072  loss_mask_4: 0.1489  loss_dice_4: 1.127  loss_ce_5: 0.431  loss_mask_5: 0.1465  loss_dice_5: 1.114  loss_ce_6: 0.4041  loss_mask_6: 0.1456  loss_dice_6: 1.096  loss_ce_7: 0.3751  loss_mask_7: 0.1452  loss_dice_7: 1.088  loss_ce_8: 0.3876  loss_mask_8: 0.1445  loss_dice_8: 1.083    time: 1.2338  last_time: 1.2325  data_time: 0.0471  last_data_time: 0.0441   lr: 0.0001  max_mem: 33442M
+[09/10 17:08:04] d2.utils.events INFO:  eta: 0:01:13  iter: 1939  total_loss: 17.53  loss_ce: 0.4235  loss_mask: 0.1516  loss_dice: 1.097  loss_ce_0: 0.5424  loss_mask_0: 0.1772  loss_dice_0: 1.325  loss_ce_1: 0.5555  loss_mask_1: 0.1657  loss_dice_1: 1.237  loss_ce_2: 0.4961  loss_mask_2: 0.15  loss_dice_2: 1.183  loss_ce_3: 0.4506  loss_mask_3: 0.1508  loss_dice_3: 1.133  loss_ce_4: 0.4309  loss_mask_4: 0.1492  loss_dice_4: 1.128  loss_ce_5: 0.4276  loss_mask_5: 0.1506  loss_dice_5: 1.104  loss_ce_6: 0.4095  loss_mask_6: 0.1503  loss_dice_6: 1.116  loss_ce_7: 0.3944  loss_mask_7: 0.1496  loss_dice_7: 1.111  loss_ce_8: 0.4054  loss_mask_8: 0.1499  loss_dice_8: 1.119    time: 1.2336  last_time: 1.2463  data_time: 0.0454  last_data_time: 0.0464   lr: 0.0001  max_mem: 33442M
+[09/10 17:08:29] d2.utils.events INFO:  eta: 0:00:48  iter: 1959  total_loss: 17.28  loss_ce: 0.3901  loss_mask: 0.1446  loss_dice: 1.089  loss_ce_0: 0.4918  loss_mask_0: 0.1652  loss_dice_0: 1.281  loss_ce_1: 0.563  loss_mask_1: 0.161  loss_dice_1: 1.23  loss_ce_2: 0.506  loss_mask_2: 0.1528  loss_dice_2: 1.194  loss_ce_3: 0.446  loss_mask_3: 0.147  loss_dice_3: 1.136  loss_ce_4: 0.4185  loss_mask_4: 0.1474  loss_dice_4: 1.13  loss_ce_5: 0.3887  loss_mask_5: 0.1469  loss_dice_5: 1.114  loss_ce_6: 0.3728  loss_mask_6: 0.1464  loss_dice_6: 1.103  loss_ce_7: 0.3916  loss_mask_7: 0.146  loss_dice_7: 1.072  loss_ce_8: 0.387  loss_mask_8: 0.1457  loss_dice_8: 1.108    time: 1.2334  last_time: 1.2245  data_time: 0.0536  last_data_time: 0.0367   lr: 0.0001  max_mem: 33442M
+[09/10 17:08:53] d2.utils.events INFO:  eta: 0:00:24  iter: 1979  total_loss: 17.93  loss_ce: 0.3934  loss_mask: 0.1518  loss_dice: 1.101  loss_ce_0: 0.5051  loss_mask_0: 0.1847  loss_dice_0: 1.273  loss_ce_1: 0.5459  loss_mask_1: 0.1712  loss_dice_1: 1.228  loss_ce_2: 0.5055  loss_mask_2: 0.1576  loss_dice_2: 1.187  loss_ce_3: 0.4484  loss_mask_3: 0.1612  loss_dice_3: 1.141  loss_ce_4: 0.3965  loss_mask_4: 0.1592  loss_dice_4: 1.132  loss_ce_5: 0.4163  loss_mask_5: 0.1558  loss_dice_5: 1.149  loss_ce_6: 0.4099  loss_mask_6: 0.159  loss_dice_6: 1.088  loss_ce_7: 0.4122  loss_mask_7: 0.159  loss_dice_7: 1.102  loss_ce_8: 0.4092  loss_mask_8: 0.1534  loss_dice_8: 1.097    time: 1.2330  last_time: 1.1643  data_time: 0.0544  last_data_time: 0.0551   lr: 0.0001  max_mem: 33442M
+[09/10 17:09:17] fvcore.common.checkpoint INFO: Saving checkpoint to /tsi/hi-paris/GB/segmentation/results/Normal/cl_000_2000_19/model_final.pth
+[09/10 17:09:23] d2.utils.events INFO:  eta: 0:00:00  iter: 1999  total_loss: 18.25  loss_ce: 0.3974  loss_mask: 0.1533  loss_dice: 1.167  loss_ce_0: 0.5267  loss_mask_0: 0.1677  loss_dice_0: 1.334  loss_ce_1: 0.5705  loss_mask_1: 0.1564  loss_dice_1: 1.263  loss_ce_2: 0.5064  loss_mask_2: 0.1554  loss_dice_2: 1.188  loss_ce_3: 0.4541  loss_mask_3: 0.1543  loss_dice_3: 1.171  loss_ce_4: 0.4344  loss_mask_4: 0.1521  loss_dice_4: 1.167  loss_ce_5: 0.4279  loss_mask_5: 0.1565  loss_dice_5: 1.139  loss_ce_6: 0.4001  loss_mask_6: 0.1536  loss_dice_6: 1.16  loss_ce_7: 0.4088  loss_mask_7: 0.1541  loss_dice_7: 1.148  loss_ce_8: 0.4079  loss_mask_8: 0.1555  loss_dice_8: 1.154    time: 1.2329  last_time: 1.2249  data_time: 0.0540  last_data_time: 0.0438   lr: 0.0001  max_mem: 33442M
+[09/10 17:09:23] d2.engine.hooks INFO: Overall training speed: 1998 iterations in 0:41:03 (1.2329 s / it)
+[09/10 17:09:23] d2.engine.hooks INFO: Total training time: 0:41:16 (0:00:13 on hooks)
+[09/10 17:09:23] fcclip.data.datasets.register_cityscapes_panoptic INFO: 3 cities found in 'datasets/cityscapes/leftImg8bit/val'.
+[09/10 17:09:23] d2.data.dataset_mapper INFO: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(1024, 1024), max_size=2560, sample_style='choice')]
+[09/10 17:09:23] d2.data.common INFO: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[09/10 17:09:23] d2.data.common INFO: Serializing 500 elements to byte tensors and concatenating them all ...
+[09/10 17:09:23] d2.data.common INFO: Serialized dataset takes 0.74 MiB
+[09/10 17:09:23] d2.evaluation.evaluator INFO: Start inference on 500 batches
+[09/10 17:09:31] d2.evaluation.evaluator INFO: Inference done 11/500. Dataloading: 0.0034 s/iter. Inference: 0.4061 s/iter. Eval: 0.1062 s/iter. Total: 0.5157 s/iter. ETA=0:04:12
+[09/10 17:09:36] d2.evaluation.evaluator INFO: Inference done 21/500. Dataloading: 0.0035 s/iter. Inference: 0.4023 s/iter. Eval: 0.1059 s/iter. Total: 0.5118 s/iter. ETA=0:04:05
+[09/10 17:09:42] d2.evaluation.evaluator INFO: Inference done 31/500. Dataloading: 0.0038 s/iter. Inference: 0.4070 s/iter. Eval: 0.1068 s/iter. Total: 0.5177 s/iter. ETA=0:04:02
+[09/10 17:09:47] d2.evaluation.evaluator INFO: Inference done 41/500. Dataloading: 0.0040 s/iter. Inference: 0.4088 s/iter. Eval: 0.1066 s/iter. Total: 0.5195 s/iter. ETA=0:03:58
+[09/10 17:09:52] d2.evaluation.evaluator INFO: Inference done 51/500. Dataloading: 0.0040 s/iter. Inference: 0.4080 s/iter. Eval: 0.1064 s/iter. Total: 0.5185 s/iter. ETA=0:03:52
+[09/10 17:09:57] d2.evaluation.evaluator INFO: Inference done 61/500. Dataloading: 0.0040 s/iter. Inference: 0.4087 s/iter. Eval: 0.1065 s/iter. Total: 0.5193 s/iter. ETA=0:03:47
+[09/10 17:10:02] d2.evaluation.evaluator INFO: Inference done 71/500. Dataloading: 0.0041 s/iter. Inference: 0.4087 s/iter. Eval: 0.1065 s/iter. Total: 0.5194 s/iter. ETA=0:03:42
+[09/10 17:10:08] d2.evaluation.evaluator INFO: Inference done 81/500. Dataloading: 0.0041 s/iter. Inference: 0.4087 s/iter. Eval: 0.1065 s/iter. Total: 0.5195 s/iter. ETA=0:03:37
+[09/10 17:10:13] d2.evaluation.evaluator INFO: Inference done 91/500. Dataloading: 0.0041 s/iter. Inference: 0.4088 s/iter. Eval: 0.1066 s/iter. Total: 0.5196 s/iter. ETA=0:03:32
+[09/10 17:10:18] d2.evaluation.evaluator INFO: Inference done 101/500. Dataloading: 0.0041 s/iter. Inference: 0.4091 s/iter. Eval: 0.1067 s/iter. Total: 0.5201 s/iter. ETA=0:03:27
+[09/10 17:10:23] d2.evaluation.evaluator INFO: Inference done 111/500. Dataloading: 0.0041 s/iter. Inference: 0.4086 s/iter. Eval: 0.1067 s/iter. Total: 0.5195 s/iter. ETA=0:03:22
+[09/10 17:10:28] d2.evaluation.evaluator INFO: Inference done 121/500. Dataloading: 0.0041 s/iter. Inference: 0.4087 s/iter. Eval: 0.1068 s/iter. Total: 0.5197 s/iter. ETA=0:03:16
+[09/10 17:10:34] d2.evaluation.evaluator INFO: Inference done 131/500. Dataloading: 0.0041 s/iter. Inference: 0.4091 s/iter. Eval: 0.1069 s/iter. Total: 0.5203 s/iter. ETA=0:03:11
+[09/10 17:10:39] d2.evaluation.evaluator INFO: Inference done 141/500. Dataloading: 0.0041 s/iter. Inference: 0.4088 s/iter. Eval: 0.1070 s/iter. Total: 0.5200 s/iter. ETA=0:03:06
+[09/10 17:10:44] d2.evaluation.evaluator INFO: Inference done 151/500. Dataloading: 0.0041 s/iter. Inference: 0.4085 s/iter. Eval: 0.1070 s/iter. Total: 0.5197 s/iter. ETA=0:03:01
+[09/10 17:10:49] d2.evaluation.evaluator INFO: Inference done 161/500. Dataloading: 0.0041 s/iter. Inference: 0.4088 s/iter. Eval: 0.1069 s/iter. Total: 0.5199 s/iter. ETA=0:02:56
+[09/10 17:10:54] d2.evaluation.evaluator INFO: Inference done 171/500. Dataloading: 0.0042 s/iter. Inference: 0.4089 s/iter. Eval: 0.1067 s/iter. Total: 0.5199 s/iter. ETA=0:02:51
+[09/10 17:11:00] d2.evaluation.evaluator INFO: Inference done 181/500. Dataloading: 0.0042 s/iter. Inference: 0.4096 s/iter. Eval: 0.1068 s/iter. Total: 0.5207 s/iter. ETA=0:02:46
+[09/10 17:11:05] d2.evaluation.evaluator INFO: Inference done 191/500. Dataloading: 0.0042 s/iter. Inference: 0.4099 s/iter. Eval: 0.1069 s/iter. Total: 0.5212 s/iter. ETA=0:02:41
+[09/10 17:11:10] d2.evaluation.evaluator INFO: Inference done 201/500. Dataloading: 0.0042 s/iter. Inference: 0.4101 s/iter. Eval: 0.1068 s/iter. Total: 0.5213 s/iter. ETA=0:02:35
+[09/10 17:11:16] d2.evaluation.evaluator INFO: Inference done 211/500. Dataloading: 0.0042 s/iter. Inference: 0.4100 s/iter. Eval: 0.1067 s/iter. Total: 0.5210 s/iter. ETA=0:02:30
+[09/10 17:11:21] d2.evaluation.evaluator INFO: Inference done 221/500. Dataloading: 0.0042 s/iter. Inference: 0.4099 s/iter. Eval: 0.1067 s/iter. Total: 0.5209 s/iter. ETA=0:02:25
+[09/10 17:11:26] d2.evaluation.evaluator INFO: Inference done 231/500. Dataloading: 0.0042 s/iter. Inference: 0.4101 s/iter. Eval: 0.1066 s/iter. Total: 0.5210 s/iter. ETA=0:02:20
+[09/10 17:11:31] d2.evaluation.evaluator INFO: Inference done 241/500. Dataloading: 0.0043 s/iter. Inference: 0.4103 s/iter. Eval: 0.1066 s/iter. Total: 0.5212 s/iter. ETA=0:02:15
+[09/10 17:11:36] d2.evaluation.evaluator INFO: Inference done 251/500. Dataloading: 0.0043 s/iter. Inference: 0.4102 s/iter. Eval: 0.1066 s/iter. Total: 0.5212 s/iter. ETA=0:02:09
+[09/10 17:11:42] d2.evaluation.evaluator INFO: Inference done 261/500. Dataloading: 0.0043 s/iter. Inference: 0.4100 s/iter. Eval: 0.1066 s/iter. Total: 0.5210 s/iter. ETA=0:02:04
+[09/10 17:11:47] d2.evaluation.evaluator INFO: Inference done 271/500. Dataloading: 0.0043 s/iter. Inference: 0.4100 s/iter. Eval: 0.1065 s/iter. Total: 0.5209 s/iter. ETA=0:01:59
+[09/10 17:11:52] d2.evaluation.evaluator INFO: Inference done 281/500. Dataloading: 0.0043 s/iter. Inference: 0.4099 s/iter. Eval: 0.1065 s/iter. Total: 0.5208 s/iter. ETA=0:01:54
+[09/10 17:11:57] d2.evaluation.evaluator INFO: Inference done 291/500. Dataloading: 0.0043 s/iter. Inference: 0.4099 s/iter. Eval: 0.1064 s/iter. Total: 0.5208 s/iter. ETA=0:01:48
+[09/10 17:12:02] d2.evaluation.evaluator INFO: Inference done 301/500. Dataloading: 0.0043 s/iter. Inference: 0.4100 s/iter. Eval: 0.1064 s/iter. Total: 0.5208 s/iter. ETA=0:01:43
+[09/10 17:12:07] d2.evaluation.evaluator INFO: Inference done 311/500. Dataloading: 0.0043 s/iter. Inference: 0.4098 s/iter. Eval: 0.1063 s/iter. Total: 0.5205 s/iter. ETA=0:01:38
+[09/10 17:12:13] d2.evaluation.evaluator INFO: Inference done 321/500. Dataloading: 0.0043 s/iter. Inference: 0.4097 s/iter. Eval: 0.1063 s/iter. Total: 0.5203 s/iter. ETA=0:01:33
+[09/10 17:12:18] d2.evaluation.evaluator INFO: Inference done 331/500. Dataloading: 0.0043 s/iter. Inference: 0.4098 s/iter. Eval: 0.1063 s/iter. Total: 0.5205 s/iter. ETA=0:01:27
+[09/10 17:12:23] d2.evaluation.evaluator INFO: Inference done 341/500. Dataloading: 0.0043 s/iter. Inference: 0.4102 s/iter. Eval: 0.1063 s/iter. Total: 0.5209 s/iter. ETA=0:01:22
+[09/10 17:12:28] d2.evaluation.evaluator INFO: Inference done 351/500. Dataloading: 0.0043 s/iter. Inference: 0.4102 s/iter. Eval: 0.1064 s/iter. Total: 0.5210 s/iter. ETA=0:01:17
+[09/10 17:12:34] d2.evaluation.evaluator INFO: Inference done 361/500. Dataloading: 0.0043 s/iter. Inference: 0.4104 s/iter. Eval: 0.1064 s/iter. Total: 0.5212 s/iter. ETA=0:01:12
+[09/10 17:12:39] d2.evaluation.evaluator INFO: Inference done 371/500. Dataloading: 0.0043 s/iter. Inference: 0.4103 s/iter. Eval: 0.1064 s/iter. Total: 0.5211 s/iter. ETA=0:01:07
+[09/10 17:12:44] d2.evaluation.evaluator INFO: Inference done 381/500. Dataloading: 0.0044 s/iter. Inference: 0.4102 s/iter. Eval: 0.1064 s/iter. Total: 0.5211 s/iter. ETA=0:01:02
+[09/10 17:12:49] d2.evaluation.evaluator INFO: Inference done 391/500. Dataloading: 0.0044 s/iter. Inference: 0.4105 s/iter. Eval: 0.1065 s/iter. Total: 0.5215 s/iter. ETA=0:00:56
+[09/10 17:12:55] d2.evaluation.evaluator INFO: Inference done 401/500. Dataloading: 0.0044 s/iter. Inference: 0.4111 s/iter. Eval: 0.1065 s/iter. Total: 0.5220 s/iter. ETA=0:00:51
+[09/10 17:13:00] d2.evaluation.evaluator INFO: Inference done 411/500. Dataloading: 0.0044 s/iter. Inference: 0.4114 s/iter. Eval: 0.1065 s/iter. Total: 0.5224 s/iter. ETA=0:00:46
+[09/10 17:13:06] d2.evaluation.evaluator INFO: Inference done 421/500. Dataloading: 0.0044 s/iter. Inference: 0.4115 s/iter. Eval: 0.1065 s/iter. Total: 0.5225 s/iter. ETA=0:00:41
+[09/10 17:13:11] d2.evaluation.evaluator INFO: Inference done 431/500. Dataloading: 0.0044 s/iter. Inference: 0.4113 s/iter. Eval: 0.1065 s/iter. Total: 0.5223 s/iter. ETA=0:00:36
+[09/10 17:13:16] d2.evaluation.evaluator INFO: Inference done 441/500. Dataloading: 0.0044 s/iter. Inference: 0.4112 s/iter. Eval: 0.1065 s/iter. Total: 0.5222 s/iter. ETA=0:00:30
+[09/10 17:13:21] d2.evaluation.evaluator INFO: Inference done 451/500. Dataloading: 0.0044 s/iter. Inference: 0.4112 s/iter. Eval: 0.1065 s/iter. Total: 0.5221 s/iter. ETA=0:00:25
+[09/10 17:13:26] d2.evaluation.evaluator INFO: Inference done 461/500. Dataloading: 0.0044 s/iter. Inference: 0.4111 s/iter. Eval: 0.1064 s/iter. Total: 0.5220 s/iter. ETA=0:00:20
+[09/10 17:13:31] d2.evaluation.evaluator INFO: Inference done 471/500. Dataloading: 0.0044 s/iter. Inference: 0.4111 s/iter. Eval: 0.1064 s/iter. Total: 0.5220 s/iter. ETA=0:00:15
+[09/10 17:13:37] d2.evaluation.evaluator INFO: Inference done 481/500. Dataloading: 0.0044 s/iter. Inference: 0.4111 s/iter. Eval: 0.1063 s/iter. Total: 0.5220 s/iter. ETA=0:00:09
+[09/10 17:13:42] d2.evaluation.evaluator INFO: Inference done 491/500. Dataloading: 0.0044 s/iter. Inference: 0.4111 s/iter. Eval: 0.1063 s/iter. Total: 0.5219 s/iter. ETA=0:00:04
+[09/10 17:13:47] d2.evaluation.evaluator INFO: Total inference time: 0:04:18.366094 (0.521952 s / iter per device, on 1 devices)
+[09/10 17:13:47] d2.evaluation.evaluator INFO: Total inference pure compute time: 0:03:23 (0.410921 s / iter per device, on 1 devices)
+[09/10 17:13:47] d2.evaluation.panoptic_evaluation INFO: Writing all panoptic predictions to /tmp/panoptic_evala0o6x9kq ...
+[09/10 17:14:01] d2.evaluation.panoptic_evaluation INFO: Panoptic Evaluation Results:
+|        |   PQ   |   SQ   |   RQ   |  #categories  |
+|:------:|:------:|:------:|:------:|:-------------:|
+|  All   | 62.305 | 80.967 | 75.926 |      19       |
+| Things | 54.997 | 79.791 | 68.526 |       8       |
+| Stuff  | 67.620 | 81.823 | 81.308 |      11       |
+[09/10 17:14:01] d2.evaluation.panoptic_evaluation INFO: Panoptic Evaluation Results:
+|          |   PQ   |   SQ   |   RQ   |  #categories  |
+|:--------:|:------:|:------:|:------:|:-------------:|
+| class_7  | 97.397 | 97.904 | 99.482 |     Stuff     |
+| class_8  | 75.284 | 84.602 | 88.986 |     Stuff     |
+| class_11 | 88.230 | 90.358 | 97.646 |     Stuff     |
+| class_12 | 48.292 | 78.259 | 61.708 |     Stuff     |
+| class_13 | 41.194 | 75.337 | 54.680 |     Stuff     |
+| class_17 | 53.462 | 65.454 | 81.679 |     Stuff     |
+| class_19 | 52.538 | 70.051 | 75.000 |     Stuff     |
+| class_20 | 70.318 | 78.729 | 89.316 |     Stuff     |
+| class_21 | 89.818 | 90.936 | 98.770 |     Stuff     |
+| class_22 | 39.370 | 76.515 | 51.454 |     Stuff     |
+| class_23 | 87.920 | 91.907 | 95.662 |     Stuff     |
+| class_24 | 54.633 | 77.102 | 70.859 |    Things     |
+| class_25 | 46.581 | 73.856 | 63.071 |    Things     |
+| class_26 | 66.710 | 82.615 | 80.748 |    Things     |
+| class_27 | 53.730 | 85.691 | 62.703 |    Things     |
+| class_28 | 73.169 | 88.451 | 82.723 |    Things     |
+| class_31 | 57.774 | 84.254 | 68.571 |    Things     |
+| class_32 | 42.046 | 74.606 | 56.357 |    Things     |
+| class_33 | 45.330 | 71.750 | 63.177 |    Things     |
+[09/10 17:14:01] d2.engine.defaults INFO: Evaluation results for openvocab_cityscapes_fine_panoptic_val in csv format:
+[09/10 17:14:01] d2.evaluation.testing INFO: copypaste: Task: panoptic_seg
+[09/10 17:14:01] d2.evaluation.testing INFO: copypaste: PQ,SQ,RQ,PQ_th,SQ_th,RQ_th,PQ_st,SQ_st,RQ_st,PQ_7,SQ_7,RQ_7,PQ_8,SQ_8,RQ_8,PQ_11,SQ_11,RQ_11,PQ_12,SQ_12,RQ_12,PQ_13,SQ_13,RQ_13,PQ_17,SQ_17,RQ_17,PQ_19,SQ_19,RQ_19,PQ_20,SQ_20,RQ_20,PQ_21,SQ_21,RQ_21,PQ_22,SQ_22,RQ_22,PQ_23,SQ_23,RQ_23,PQ_24,SQ_24,RQ_24,PQ_25,SQ_25,RQ_25,PQ_26,SQ_26,RQ_26,PQ_27,SQ_27,RQ_27,PQ_28,SQ_28,RQ_28,PQ_31,SQ_31,RQ_31,PQ_32,SQ_32,RQ_32,PQ_33,SQ_33,RQ_33
+[09/10 17:14:01] d2.evaluation.testing INFO: copypaste: 62.3051,80.9671,75.9258,54.9967,79.7906,68.5260,67.6202,81.8227,81.3075,97.3967,97.9040,99.4819,75.2835,84.6017,88.9858,88.2304,90.3575,97.6459,48.2918,78.2585,61.7080,41.1939,75.3365,54.6798,53.4621,65.4542,81.6786,52.5382,70.0509,75.0000,70.3180,78.7293,89.3162,89.8177,90.9358,98.7705,39.3700,76.5147,51.4541,87.9200,91.9068,95.6621,54.6333,77.1019,70.8586,46.5813,73.8560,63.0705,66.7100,82.6153,80.7478,53.7303,85.6906,62.7027,73.1689,88.4510,82.7225,57.7741,84.2540,68.5714,42.0462,74.6063,56.3574,45.3296,71.7499,63.1772
