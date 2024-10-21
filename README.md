@@ -3,6 +3,8 @@
 
 This document provides detailed instructions to configure and run the normal config. Follow the steps below to copy, rename, and launch the configuration.
 
+**this works for conf 000 and 008**
+
 ## Steps to Follow
 
 ### 1. Copy the Configuration File
