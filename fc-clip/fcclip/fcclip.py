@@ -9,7 +9,7 @@ from typing import Tuple
 import torch
 from torch import nn
 from torch.nn import functional as F
-
+import yaml
 from detectron2.config import configurable
 from detectron2.data import MetadataCatalog
 from detectron2.modeling import META_ARCH_REGISTRY, build_backbone, build_sem_seg_head
@@ -17,10 +17,10 @@ from detectron2.modeling.backbone import Backbone
 from detectron2.modeling.postprocessing import sem_seg_postprocess
 from detectron2.structures import Boxes, ImageList, Instances, BitMasks
 from detectron2.utils.memory import retry_if_cuda_oom
-
+import os
 from .modeling.criterion import SetCriterion
 from .modeling.matcher import HungarianMatcher
-
+import pickle
 
 from .modeling.transformer_decoder.fcclip_transformer_decoder import MaskPooling, get_classification_logits
 VILD_PROMPT = [
@@ -290,6 +290,7 @@ class FCCLIP(nn.Module):
     def device(self):
         return self.pixel_mean.device
 
+    
     def forward(self, batched_inputs):
         """
         Args:
@@ -318,7 +319,9 @@ class FCCLIP(nn.Module):
         """
         images = [x["image"].to(self.device) for x in batched_inputs]
         images = [(x - self.pixel_mean) / self.pixel_std for x in images]
-        images = ImageList.from_tensors(images, self.size_divisibility)
+        images = ImageList.from_tensors(images, self.size_divisibility) 
+
+
 
         features = self.backbone(images.tensor)
         text_classifier, num_templates = self.get_text_classifier()
@@ -327,7 +330,8 @@ class FCCLIP(nn.Module):
         features['text_classifier'] = text_classifier
         features['num_templates'] = num_templates
         outputs = self.sem_seg_head(features)
-
+        
+                
         if self.training:
             # mask classification target
             if "instances" in batched_inputs[0]:
@@ -344,11 +348,12 @@ class FCCLIP(nn.Module):
                     losses[k] *= self.criterion.weight_dict[k]
                 else:
                     # remove this loss if not specified in `weight_dict`
-                    losses.pop(k)
-            return losses
+                    losses.pop(k) 
+            return losses 
         else:
             mask_cls_results = outputs["pred_logits"]
             mask_pred_results = outputs["pred_masks"]
+            
 
             # We ensemble the pred logits of in-vocab and out-vocab
             clip_feature = features["clip_vis_dense"]
@@ -385,11 +390,11 @@ class FCCLIP(nn.Module):
                 beta = self.geometric_ensemble_beta
 
             cls_logits_seen = (
-                (in_vocab_cls_results ** (1 - alpha) * out_vocab_cls_probs**alpha).log()
+                (in_vocab_cls_results  ).log()# ** (1 - alpha) * out_vocab_cls_probs**alpha  la supprision de out vocab
                 * category_overlapping_mask
             )
             cls_logits_unseen = (
-                (in_vocab_cls_results ** (1 - beta) * out_vocab_cls_probs**beta).log()
+                (in_vocab_cls_results  ).log()#** (1 - beta) * out_vocab_cls_probs**beta
                 * (1 - category_overlapping_mask)
             )
             cls_results = cls_logits_seen + cls_logits_unseen
@@ -397,8 +402,8 @@ class FCCLIP(nn.Module):
             # This is used to filtering void predictions.
             is_void_prob = F.softmax(mask_cls_results, dim=-1)[..., -1:]
             mask_cls_probs = torch.cat([
-                cls_results.softmax(-1) * (1.0 - is_void_prob),
-                is_void_prob], dim=-1)
+                cls_results.softmax(-1) , # * (1.0 - is_void_prob), is_void_prob, suppression void
+                ], dim=-1)
             mask_cls_results = torch.log(mask_cls_probs + 1e-8)
 
             # upsample masks
@@ -409,11 +414,13 @@ class FCCLIP(nn.Module):
                 align_corners=False,
             )
 
+            
+
             del outputs
 
             processed_results = []
-            for mask_cls_result, mask_pred_result, input_per_image, image_size in zip(
-                mask_cls_results, mask_pred_results, batched_inputs, images.image_sizes
+            for mask_cls_result, mask_pred_result, input_per_image, image_size, cls_results_ in zip(
+                mask_cls_results, mask_pred_results, batched_inputs, images.image_sizes, cls_results
             ):
                 height = input_per_image.get("height", image_size[0])
                 width = input_per_image.get("width", image_size[1])
@@ -424,25 +431,29 @@ class FCCLIP(nn.Module):
                         mask_pred_result, image_size, height, width
                     )
                     mask_cls_result = mask_cls_result.to(mask_pred_result)
+                 
 
                 # semantic segmentation inference
                 if self.semantic_on:
+                    
                     r = retry_if_cuda_oom(self.semantic_inference)(mask_cls_result, mask_pred_result)
                     if not self.sem_seg_postprocess_before_inference:
                         r = retry_if_cuda_oom(sem_seg_postprocess)(r, image_size, height, width)
                     processed_results[-1]["sem_seg"] = r
+                     
 
                 # panoptic segmentation inference
                 if self.panoptic_on:
-                    panoptic_r = retry_if_cuda_oom(self.panoptic_inference)(mask_cls_result, mask_pred_result)
+                    panoptic_r = retry_if_cuda_oom(self.panoptic_inference)(mask_cls_result, mask_pred_result, cls_results_)
                     processed_results[-1]["panoptic_seg"] = panoptic_r
+                      
                 
                 # instance segmentation inference
                 if self.instance_on:
                     instance_r = retry_if_cuda_oom(self.instance_inference)(mask_cls_result, mask_pred_result)
                     processed_results[-1]["instances"] = instance_r
 
-            return processed_results
+            return processed_results 
 
     def prepare_targets(self, targets, images):
         h_pad, w_pad = images.tensor.shape[-2:]
@@ -466,11 +477,19 @@ class FCCLIP(nn.Module):
         semseg = torch.einsum("qc,qhw->chw", mask_cls, mask_pred)
         return semseg
 
-    def panoptic_inference(self, mask_cls, mask_pred):
-        scores, labels = F.softmax(mask_cls, dim=-1).max(-1)
+    def panoptic_inference(self, mask_cls, mask_pred, cls_results_):
+
+
+        scores, labels = F.softmax(mask_cls, dim=-1).max(-1) 
+        
+        
         mask_pred = mask_pred.sigmoid()
         num_classes = len(self.test_metadata.stuff_classes)
+        
         keep = labels.ne(num_classes) & (scores > self.object_mask_threshold)
+        
+
+
         cur_scores = scores[keep]
         cur_classes = labels[keep]
         cur_masks = mask_pred[keep]
