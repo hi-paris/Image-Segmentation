@@ -250,10 +250,10 @@ def _pq_compute_single_core(proc_id, annotation_set, gt_folder, pred_folder, cat
     gt_segms_list=[]
 
     idx = 0
-    with open("/home/ids/gbrison/segmentation/segmentation/fc-clip/id.txt", 'r') as file:
+    with open("/tsi/hi-paris/GB/segmentation/storage/id.txt", 'r') as file:
         for line in file:
             id_images=int(line.strip())
-    yaml_file = '/home/ids/gbrison/segmentation/segmentation/fc-clip/configs/coco/panoptic-segmentation/fcclip/cl_exp.yaml'
+    yaml_file = '/tsi/hi-paris/GB/segmentation/storage/cl_exp.yaml'
     with open(yaml_file, 'r') as file:
         data = yaml.safe_load(file)
     for gt_ann, pred_ann in annotation_set:
@@ -361,23 +361,7 @@ def _pq_compute_single_core(proc_id, annotation_set, gt_folder, pred_folder, cat
         pickle.dump(aal, fp)
     del aal
 
-    """os.makedirs(os.path.join(data['OUTPUT_DIR'],"all"), exist_ok=True)
-    with open(os.path.join(data['OUTPUT_DIR'],"all","all"+str(id_images)), "wb") as fp:   #Pickling
-        pickle.dump(aal, fp)
-    del aal
-    os.makedirs(os.path.join(data['OUTPUT_DIR'],"all"), exist_ok=True)
-    with open(os.path.join(data['OUTPUT_DIR'],"all","all"+str(id_images)), "wb") as fp:   #Pickling
-        pickle.dump(aal, fp)
-    
-    with open("/tsi/hi-paris/FCCLIP_results/results_20/inference_results/train_100/all1", "wb") as fp:   #Pickling
-        pickle.dump(all1, fp)
-    with open("/tsi/hi-paris/FCCLIP_results/results_20/inference_results/train_100/all2", "wb") as fp:   #Pickling
-        pickle.dump(all2, fp)
-    with open("/tsi/hi-paris/FCCLIP_results/results_20/inference_results/train_100/gt_segms_list", "wb") as fp:   #Pickling
-        pickle.dump(gt_segms_list, fp)
-    with open("/tsi/hi-paris/FCCLIP_results/results_20/inference_results/train_100/pred_segms_list", "wb") as fp:   #Pickling
-        pickle.dump(pred_segms_list, fp)
-    print('Core: {}, all {} images processed'.format(proc_id, len(annotation_set)))"""
+
     return pq_stat
 
 
