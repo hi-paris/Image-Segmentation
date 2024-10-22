@@ -1,4 +1,5 @@
 from typing import Tuple
+
 import torch
 from torch import nn
 from torch.nn import functional as F
@@ -7,10 +8,13 @@ from detectron2.data import MetadataCatalog
 from detectron2.modeling import META_ARCH_REGISTRY, build_backbone, build_sem_seg_head
 from detectron2.modeling.backbone import Backbone
 from detectron2.modeling.postprocessing import sem_seg_postprocess
-from detectron2.structures import Boxes, ImageList, Instances
+from detectron2.structures import Boxes, ImageList, Instances, BitMasks
+from detectron2.utils.memory import retry_if_cuda_oom
+import os
 from .modeling.criterion import SetCriterion
 from .modeling.matcher import HungarianMatcher
-from .modeling.transformer_decoder.fcclip_transformer_decoder import MaskPooling
+import pickle
+from .modeling.transformer_decoder.fcclip_transformer_decoder import MaskPooling, get_classification_logits
 
 VILD_PROMPT = [
     "a photo of a {}.",
@@ -29,75 +33,56 @@ VILD_PROMPT = [
     "There is a large {} in the scene.",
 ]
 
-class DecoderAdapter(nn.Module):
+
+class BiggerDecoderAdapter(nn.Module):
     """
-    Lightweight decoder adapter for panoptic segmentation.
-    Applies a bottleneck structure (reduce dimensions, then restore)
-    and a skip connection, now integrating MiMi pruning strategy.
+    Bigger decoder adapter for panoptic segmentation.
+    Applies a bottleneck structure with more layers, wider bottleneck dimensions, and skip connections.
     """
-    def __init__(self, input_dim, bottleneck_dim, pruning_iterations=10, pruning_fraction=0.5):
+    def __init__(self, input_dim, bottleneck_dim, num_layers=3):
         super().__init__()
-        self.bottleneck_dim = bottleneck_dim  # Start with larger dimension
-        self.conv1 = nn.Conv2d(input_dim, self.bottleneck_dim, kernel_size=1)
-        self.conv2 = nn.Conv2d(self.bottleneck_dim, input_dim, kernel_size=1)
-        self.norm1 = nn.LayerNorm([self.bottleneck_dim, 1, 1])
-        self.norm2 = nn.LayerNorm([input_dim, 1, 1])
+        self.num_layers = num_layers
+
+        # Initial convolution to reduce dimensions
+        self.initial_conv = nn.Conv2d(input_dim, bottleneck_dim, kernel_size=1)
+        self.initial_norm = nn.BatchNorm2d(bottleneck_dim)
+
+        # Stack of bottleneck layers
+        self.layers = nn.ModuleList()
+        for _ in range(self.num_layers):
+            self.layers.append(
+                nn.Sequential(
+                    nn.Conv2d(bottleneck_dim, bottleneck_dim, kernel_size=3, padding=1),
+                    nn.BatchNorm2d(bottleneck_dim),
+                    nn.ReLU()
+                )
+            )
+
+        # Final convolution to restore original dimensions
+        self.final_conv = nn.Conv2d(bottleneck_dim, input_dim, kernel_size=1)
+        self.final_norm = nn.BatchNorm2d(input_dim)
         self.relu = nn.ReLU()
 
-        # MiMi parameters
-        self.pruning_iterations = pruning_iterations
-        self.pruning_fraction = pruning_fraction  # Fraction of neurons to prune in each iteration
-        self.current_iteration = 0
-
-
-    def load_pretrained_weights(self, pretrained_path):
-        """Load weights from a .pth file for the adapter within the sem_seg_head.pixel_decoder."""
-        if pretrained_path is not None:
-            checkpoint = torch.load(pretrained_path)
-            
-            # Extract the state_dict from the 'model' key in the checkpoint
-            model_state_dict = checkpoint.get('model', None)
-            if model_state_dict is None:
-                raise KeyError("No 'model' key found in the checkpoint.")
-            
-            # Look for adapter weights within the pixel_decoder part of sem_seg_head
-            decoder_adapter_state_dict = {k.replace('sem_seg_head.pixel_decoder.adapter_1.', ''): v
-                                          for k, v in model_state_dict.items() if 'sem_seg_head.pixel_decoder.adapter_1.' in k}
-    
-            if decoder_adapter_state_dict:
-                # Load the filtered state dict into the decoder adapter
-                self.load_state_dict(decoder_adapter_state_dict, strict=False)
-                print(f"Loaded pretrained weights for DecoderAdapter from {pretrained_path}")
-            else:
-                raise KeyError("No DecoderAdapter weights found in the 'sem_seg_head.pixel_decoder' key of the checkpoint.")
-
-
-    def prune_neurons(self):
-        """Prune the least important neurons based on MiMi's importance score"""
-        if self.current_iteration < self.pruning_iterations:
-            importance_scores = self.calculate_importance_scores()
-            num_to_prune = int(self.bottleneck_dim * self.pruning_fraction)
-            prune_indices = importance_scores.argsort()[:num_to_prune]
-            self.bottleneck_dim -= num_to_prune
-            self.current_iteration += 1
-            self.conv1 = nn.Conv2d(self.conv1.in_channels, self.bottleneck_dim, kernel_size=1)
-            self.conv2 = nn.Conv2d(self.bottleneck_dim, self.conv2.out_channels, kernel_size=1)
-            self.norm1 = nn.LayerNorm([self.bottleneck_dim, 1, 1])
-
-    def calculate_importance_scores(self):
-        importance_scores = torch.sum(torch.abs(self.conv1.weight), dim=(1, 2, 3))
-        return importance_scores
-
     def forward(self, x):
-        identity = x  # skip connection
-        x = self.conv1(x)
-        x = self.norm1(x)
+        identity = x  # Skip connection
+
+        # Initial bottleneck down-projection
+        x = self.initial_conv(x)
+        x = self.initial_norm(x)
         x = self.relu(x)
-        x = self.conv2(x)
-        x = self.norm2(x)
+
+        # Pass through the bottleneck layers
+        for layer in self.layers:
+            x = layer(x)
+
+        # Restore dimensions
+        x = self.final_conv(x)
+        x = self.final_norm(x)
+
+        # Skip connection
         x += identity
-        self.prune_neurons()  # Apply pruning after every forward pass
         return self.relu(x)
+
 
 @META_ARCH_REGISTRY.register()
 class FCCLIP(nn.Module):
@@ -128,7 +113,6 @@ class FCCLIP(nn.Module):
         geometric_ensemble_alpha: float,
         geometric_ensemble_beta: float,
         ensemble_on_valid_mask: bool,
-        pretrained_adapter_path: str = "/tsi/hi-paris/GB/segmentation/results/Normal/r50_008_1000_19/model_final.pth",  # Include pretrained path
     ):
         super().__init__()
         self.backbone = backbone
@@ -146,16 +130,18 @@ class FCCLIP(nn.Module):
         self.register_buffer("pixel_mean", torch.Tensor(pixel_mean).view(-1, 1, 1), False)
         self.register_buffer("pixel_std", torch.Tensor(pixel_std).view(-1, 1, 1), False)
 
-        # Extract number of channels from the backbone's output
+        # Extract the number of channels from the backbone's output
         output_shape = self.backbone.output_shape()
         in_channels = output_shape['res4'].channels  # Adjust based on the actual key (e.g., 'res4')
 
+        # Define the convolution layers to match the input shape
         self.conv1 = nn.Conv2d(in_channels, 512, kernel_size=3, stride=1, padding=1)
         self.bn1 = nn.BatchNorm2d(512)
         self.conv2 = nn.Conv2d(512, 256, kernel_size=3, stride=1, padding=1)
         self.bn2 = nn.BatchNorm2d(256)
         self.relu = nn.ReLU()
 
+        # Additional args
         self.semantic_on = semantic_on
         self.instance_on = instance_on
         self.panoptic_on = panoptic_on
@@ -164,17 +150,14 @@ class FCCLIP(nn.Module):
         if not self.semantic_on:
             assert self.sem_seg_postprocess_before_inference
 
+        # FC-CLIP args
         self.mask_pooling = MaskPooling()
         self.geometric_ensemble_alpha = geometric_ensemble_alpha
         self.geometric_ensemble_beta = geometric_ensemble_beta
         self.ensemble_on_valid_mask = ensemble_on_valid_mask
 
-        # MiMi-enhanced decoder adapter for panoptic segmentation
-        self.decoder_adapter = DecoderAdapter(input_dim=256, bottleneck_dim=128)
-
-        # Load the pretrained adapter weights if provided
-        if pretrained_adapter_path:
-            self.decoder_adapter.load_pretrained_weights(pretrained_adapter_path)
+        # Bigger decoder adapter for panoptic segmentation
+        self.decoder_adapter = BiggerDecoderAdapter(input_dim=256, bottleneck_dim=128, num_layers=3)
 
         self.train_text_classifier = None
         self.test_text_classifier = None
@@ -192,10 +175,11 @@ class FCCLIP(nn.Module):
             res = []
             for x_ in x:
                 x_ = x_.replace(', ', ',')
-                x_ = x_.split(',')  # there can be multiple synonyms for a single class
+                x_ = x_.split(',')  # there can be multiple synonyms for single class
                 res.append(x_)
             return res
 
+        # get text classifier
         try:
             class_names = split_labels(metadata.stuff_classes)  # it includes both thing and stuff
             train_class_names = split_labels(train_metadata.stuff_classes)
@@ -343,8 +327,10 @@ class FCCLIP(nn.Module):
         images = [(x - self.pixel_mean) / self.pixel_std for x in images]
         images = ImageList.from_tensors(images, self.size_divisibility)
     
+        # Extract features from the backbone
         features = self.backbone(images.tensor)
-
+    
+        # Check if features are in a dict and extract the 'res4' layer
         if isinstance(features, dict):
             if 'res4' in features:
                 x = features['res4']
@@ -353,25 +339,33 @@ class FCCLIP(nn.Module):
         else:
             x = features
     
+        # Pass through the convolutional layers
         x = self.conv1(x)
         x = self.relu(self.bn1(x))
         x = self.conv2(x)
         x = self.relu(self.bn2(x))
-
+    
+        # Pass through bigger decoder adapter
+        x = self.decoder_adapter(x)
+    
+        # Get text classifier and append void class weight
         text_classifier, num_templates = self.get_text_classifier()
         text_classifier = torch.cat([text_classifier, F.normalize(self.void_embedding.weight, dim=-1)], dim=0)
-
+    
+        # Add the text classifier to features for segmentation head
         features['text_classifier'] = text_classifier
         features['num_templates'] = num_templates
         outputs = self.sem_seg_head(features)
-
+    
         if self.training:
+            # Prepare targets for training
             if "instances" in batched_inputs[0]:
                 gt_instances = [x["instances"].to(self.device) for x in batched_inputs]
                 targets = self.prepare_targets(gt_instances, images)
             else:
                 targets = None
-
+    
+            # Compute the losses
             losses = self.criterion(outputs, targets)
             for k in list(losses.keys()):
                 if k in self.criterion.weight_dict:
@@ -380,16 +374,17 @@ class FCCLIP(nn.Module):
                     losses.pop(k)
             return losses
         else:
+            # For inference
             mask_cls_results = outputs["pred_logits"]
             mask_pred_results = outputs["pred_masks"]
-
+    
             processed_results = []
             for mask_cls_result, mask_pred_result, input_per_image, image_size in zip(
                 mask_cls_results, mask_pred_results, batched_inputs, images.image_sizes
             ):
                 height = input_per_image.get("height", image_size[0])
                 width = input_per_image.get("width", image_size[1])
-
+    
                 if self.panoptic_on:
                     panoptic_seg, segments_info = self.panoptic_inference(mask_cls_result, mask_pred_result)
                     panoptic_seg = self.panoptic_seg_postprocess(panoptic_seg, image_size, height, width)
@@ -402,10 +397,13 @@ class FCCLIP(nn.Module):
                     sem_seg = self.semantic_inference(mask_cls_result, mask_pred_result)
                     sem_seg = sem_seg_postprocess(sem_seg, image_size, height, width)
                     processed_results.append({"sem_seg": sem_seg})
-
+    
             return processed_results
 
     def panoptic_seg_postprocess(self, panoptic_seg, image_size, output_height, output_width):
+        """
+        Resize the panoptic segmentation prediction to the desired size.
+        """
         panoptic_seg = panoptic_seg.unsqueeze(0).float()
         panoptic_seg = F.interpolate(panoptic_seg.unsqueeze(0), size=(output_height, output_width), mode='nearest')
         panoptic_seg = panoptic_seg.squeeze(0).squeeze(0).to(torch.int32)
@@ -432,18 +430,18 @@ class FCCLIP(nn.Module):
         mask_pred = mask_pred.sigmoid()
         num_classes = len(self.test_metadata.stuff_classes)
         keep = labels.ne(num_classes) & (scores > self.object_mask_threshold)
-
+    
         cur_scores = scores[keep]
         cur_classes = labels[keep]
         cur_masks = mask_pred[keep]
         cur_mask_cls = mask_cls[keep]
         cur_mask_cls = cur_mask_cls[:, :-1]
-
+    
         cur_prob_masks = cur_scores.view(-1, 1, 1) * cur_masks
         h, w = cur_masks.shape[-2:]
         panoptic_seg = torch.zeros((h, w), dtype=torch.int32, device=cur_masks.device)
         segments_info = []
-
+    
         current_segment_id = 0
         if cur_masks.shape[0] == 0:
             return panoptic_seg, segments_info  # Ensure tuple return
@@ -456,27 +454,27 @@ class FCCLIP(nn.Module):
                 mask_area = (cur_mask_ids == k).sum().item()
                 original_area = (cur_masks[k] >= 0.5).sum().item()
                 mask = (cur_mask_ids == k) & (cur_masks[k] >= 0.5)
-
+    
                 if mask_area > 0 and original_area > 0 and mask.sum().item() > 0:
                     if mask_area / original_area < self.overlap_threshold:
                         continue
-
+    
                     if not isthing:
                         if int(pred_class) in stuff_memory_list.keys():
                             panoptic_seg[mask] = stuff_memory_list[int(pred_class)]
                             continue
                         else:
                             stuff_memory_list[int(pred_class)] = current_segment_id + 1
-
+    
                     current_segment_id += 1
                     panoptic_seg[mask] = current_segment_id
-
+    
                     segments_info.append({
                         "id": current_segment_id,
                         "isthing": bool(isthing),
                         "category_id": int(pred_class)
                     })
-
+    
             return panoptic_seg, segments_info  # Ensure tuple return
 
     def instance_inference(self, mask_cls, mask_pred):

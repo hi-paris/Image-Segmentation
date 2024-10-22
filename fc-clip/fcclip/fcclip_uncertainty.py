@@ -2,15 +2,20 @@ from typing import Tuple
 import torch
 from torch import nn
 from torch.nn import functional as F
+import yaml
 from detectron2.config import configurable
 from detectron2.data import MetadataCatalog
 from detectron2.modeling import META_ARCH_REGISTRY, build_backbone, build_sem_seg_head
 from detectron2.modeling.backbone import Backbone
 from detectron2.modeling.postprocessing import sem_seg_postprocess
 from detectron2.structures import Boxes, ImageList, Instances
+from detectron2.utils.memory import retry_if_cuda_oom
+import os
 from .modeling.criterion import SetCriterion
 from .modeling.matcher import HungarianMatcher
-from .modeling.transformer_decoder.fcclip_transformer_decoder import MaskPooling
+import pickle
+from .modeling.transformer_decoder.fcclip_transformer_decoder import MaskPooling, get_classification_logits
+
 
 VILD_PROMPT = [
     "a photo of a {}.",
@@ -29,107 +34,56 @@ VILD_PROMPT = [
     "There is a large {} in the scene.",
 ]
 
-class DecoderAdapter(nn.Module):
+class UncertaintyDecoderAdapter(nn.Module):
     """
-    Lightweight decoder adapter for panoptic segmentation.
-    Applies a bottleneck structure (reduce dimensions, then restore)
-    and a skip connection, now integrating MiMi pruning strategy.
+    Decoder adapter that outputs both segmentation map and uncertainty.
     """
-    def __init__(self, input_dim, bottleneck_dim, pruning_iterations=10, pruning_fraction=0.5):
+    def __init__(self, input_dim, bottleneck_dim):
         super().__init__()
-        self.bottleneck_dim = bottleneck_dim  # Start with larger dimension
-        self.conv1 = nn.Conv2d(input_dim, self.bottleneck_dim, kernel_size=1)
-        self.conv2 = nn.Conv2d(self.bottleneck_dim, input_dim, kernel_size=1)
-        self.norm1 = nn.LayerNorm([self.bottleneck_dim, 1, 1])
-        self.norm2 = nn.LayerNorm([input_dim, 1, 1])
+        self.conv1 = nn.Conv2d(input_dim, bottleneck_dim, kernel_size=1)
+        self.conv2 = nn.Conv2d(bottleneck_dim, input_dim, kernel_size=1)
+        self.norm1 = nn.BatchNorm2d(bottleneck_dim)  # Use BatchNorm2d instead of LayerNorm
+        self.norm2 = nn.BatchNorm2d(input_dim)  # Use BatchNorm2d instead of LayerNorm
         self.relu = nn.ReLU()
-
-        # MiMi parameters
-        self.pruning_iterations = pruning_iterations
-        self.pruning_fraction = pruning_fraction  # Fraction of neurons to prune in each iteration
-        self.current_iteration = 0
-
-
-    def load_pretrained_weights(self, pretrained_path):
-        """Load weights from a .pth file for the adapter within the sem_seg_head.pixel_decoder."""
-        if pretrained_path is not None:
-            checkpoint = torch.load(pretrained_path)
-            
-            # Extract the state_dict from the 'model' key in the checkpoint
-            model_state_dict = checkpoint.get('model', None)
-            if model_state_dict is None:
-                raise KeyError("No 'model' key found in the checkpoint.")
-            
-            # Look for adapter weights within the pixel_decoder part of sem_seg_head
-            decoder_adapter_state_dict = {k.replace('sem_seg_head.pixel_decoder.adapter_1.', ''): v
-                                          for k, v in model_state_dict.items() if 'sem_seg_head.pixel_decoder.adapter_1.' in k}
-    
-            if decoder_adapter_state_dict:
-                # Load the filtered state dict into the decoder adapter
-                self.load_state_dict(decoder_adapter_state_dict, strict=False)
-                print(f"Loaded pretrained weights for DecoderAdapter from {pretrained_path}")
-            else:
-                raise KeyError("No DecoderAdapter weights found in the 'sem_seg_head.pixel_decoder' key of the checkpoint.")
-
-
-    def prune_neurons(self):
-        """Prune the least important neurons based on MiMi's importance score"""
-        if self.current_iteration < self.pruning_iterations:
-            importance_scores = self.calculate_importance_scores()
-            num_to_prune = int(self.bottleneck_dim * self.pruning_fraction)
-            prune_indices = importance_scores.argsort()[:num_to_prune]
-            self.bottleneck_dim -= num_to_prune
-            self.current_iteration += 1
-            self.conv1 = nn.Conv2d(self.conv1.in_channels, self.bottleneck_dim, kernel_size=1)
-            self.conv2 = nn.Conv2d(self.bottleneck_dim, self.conv2.out_channels, kernel_size=1)
-            self.norm1 = nn.LayerNorm([self.bottleneck_dim, 1, 1])
-
-    def calculate_importance_scores(self):
-        importance_scores = torch.sum(torch.abs(self.conv1.weight), dim=(1, 2, 3))
-        return importance_scores
-
+        
+        # Additional layer to estimate uncertainty
+        self.uncertainty_layer = nn.Conv2d(input_dim, 1, kernel_size=1)
+        
     def forward(self, x):
         identity = x  # skip connection
         x = self.conv1(x)
-        x = self.norm1(x)
+        x = self.norm1(x)  # Apply BatchNorm2d
         x = self.relu(x)
         x = self.conv2(x)
-        x = self.norm2(x)
+        x = self.norm2(x)  # Apply BatchNorm2d
         x += identity
-        self.prune_neurons()  # Apply pruning after every forward pass
-        return self.relu(x)
+        x = self.relu(x)
+        
+        # Predict uncertainty
+        uncertainty = torch.sigmoid(self.uncertainty_layer(x))
+        
+        return x, uncertainty
+
+class MoEGate(nn.Module):
+    def __init__(self, num_experts):
+        super().__init__()
+        self.num_experts = num_experts
+    
+    def forward(self, decoder_outputs, uncertainties):
+        weights = torch.softmax(-torch.stack(uncertainties, dim=0), dim=0)
+        final_output = sum(w * out for w, out in zip(weights, decoder_outputs))
+        return final_output
 
 @META_ARCH_REGISTRY.register()
 class FCCLIP(nn.Module):
-    """
-    Main class for mask classification semantic segmentation architectures.
-    """
-
     @configurable
-    def __init__(
-        self,
-        *,
-        backbone: Backbone,
-        sem_seg_head: nn.Module,
-        criterion: nn.Module,
-        num_queries: int,
-        object_mask_threshold: float,
-        overlap_threshold: float,
-        train_metadata,
-        test_metadata,
-        size_divisibility: int,
-        sem_seg_postprocess_before_inference: bool,
-        pixel_mean: Tuple[float],
-        pixel_std: Tuple[float],
-        semantic_on: bool,
-        panoptic_on: bool,
-        instance_on: bool,
-        test_topk_per_image: int,
-        geometric_ensemble_alpha: float,
-        geometric_ensemble_beta: float,
-        ensemble_on_valid_mask: bool,
-        pretrained_adapter_path: str = "/tsi/hi-paris/GB/segmentation/results/Normal/r50_008_1000_19/model_final.pth",  # Include pretrained path
-    ):
+    def __init__(self, *, backbone: Backbone, sem_seg_head: nn.Module, criterion: nn.Module,
+                 num_queries: int, object_mask_threshold: float, overlap_threshold: float,
+                 train_metadata, test_metadata, size_divisibility: int,
+                 sem_seg_postprocess_before_inference: bool, pixel_mean: Tuple[float],
+                 pixel_std: Tuple[float], semantic_on: bool, panoptic_on: bool, instance_on: bool,
+                 test_topk_per_image: int, geometric_ensemble_alpha: float,
+                 geometric_ensemble_beta: float, ensemble_on_valid_mask: bool):
         super().__init__()
         self.backbone = backbone
         self.sem_seg_head = sem_seg_head
@@ -139,22 +93,11 @@ class FCCLIP(nn.Module):
         self.object_mask_threshold = object_mask_threshold
         self.train_metadata = train_metadata
         self.test_metadata = test_metadata
-        if size_divisibility < 0:
-            size_divisibility = self.backbone.size_divisibility
         self.size_divisibility = size_divisibility
         self.sem_seg_postprocess_before_inference = sem_seg_postprocess_before_inference
         self.register_buffer("pixel_mean", torch.Tensor(pixel_mean).view(-1, 1, 1), False)
         self.register_buffer("pixel_std", torch.Tensor(pixel_std).view(-1, 1, 1), False)
 
-        # Extract number of channels from the backbone's output
-        output_shape = self.backbone.output_shape()
-        in_channels = output_shape['res4'].channels  # Adjust based on the actual key (e.g., 'res4')
-
-        self.conv1 = nn.Conv2d(in_channels, 512, kernel_size=3, stride=1, padding=1)
-        self.bn1 = nn.BatchNorm2d(512)
-        self.conv2 = nn.Conv2d(512, 256, kernel_size=3, stride=1, padding=1)
-        self.bn2 = nn.BatchNorm2d(256)
-        self.relu = nn.ReLU()
 
         self.semantic_on = semantic_on
         self.instance_on = instance_on
@@ -164,45 +107,42 @@ class FCCLIP(nn.Module):
         if not self.semantic_on:
             assert self.sem_seg_postprocess_before_inference
 
+        # FC-CLIP args
         self.mask_pooling = MaskPooling()
         self.geometric_ensemble_alpha = geometric_ensemble_alpha
         self.geometric_ensemble_beta = geometric_ensemble_beta
         self.ensemble_on_valid_mask = ensemble_on_valid_mask
 
-        # MiMi-enhanced decoder adapter for panoptic segmentation
-        self.decoder_adapter = DecoderAdapter(input_dim=256, bottleneck_dim=128)
-
-        # Load the pretrained adapter weights if provided
-        if pretrained_adapter_path:
-            self.decoder_adapter.load_pretrained_weights(pretrained_adapter_path)
+        # Define decoder adapters and MoE gate
+        self.num_experts = 3
+        self.decoders = nn.ModuleList([UncertaintyDecoderAdapter(1024, 64) for _ in range(self.num_experts)])
+        self.gate = MoEGate(self.num_experts)
 
         self.train_text_classifier = None
         self.test_text_classifier = None
-        self.void_embedding = nn.Embedding(1, backbone.dim_latent)  # use this for void
+        self.void_embedding = nn.Embedding(1, backbone.dim_latent)
 
-        _, self.train_num_templates, self.train_class_names = self.prepare_class_names_from_metadata(
-            train_metadata, train_metadata
-        )
-        self.category_overlapping_mask, self.test_num_templates, self.test_class_names = self.prepare_class_names_from_metadata(
-            test_metadata, train_metadata
-        )
+        # Additional text classification and metadata preparation
+        _, self.train_num_templates, self.train_class_names = self.prepare_class_names_from_metadata(train_metadata, train_metadata)
+        self.category_overlapping_mask, self.test_num_templates, self.test_class_names = self.prepare_class_names_from_metadata(test_metadata, train_metadata)
 
     def prepare_class_names_from_metadata(self, metadata, train_metadata):
         def split_labels(x):
             res = []
             for x_ in x:
                 x_ = x_.replace(', ', ',')
-                x_ = x_.split(',')  # there can be multiple synonyms for a single class
+                x_ = x_.split(',')  # multiple synonyms for single class
                 res.append(x_)
             return res
 
         try:
-            class_names = split_labels(metadata.stuff_classes)  # it includes both thing and stuff
+            class_names = split_labels(metadata.stuff_classes)
             train_class_names = split_labels(train_metadata.stuff_classes)
         except:
             class_names = split_labels(metadata.thing_classes)
             train_class_names = split_labels(train_metadata.thing_classes)
         train_class_names = {l for label in train_class_names for l in label}
+        
         category_overlapping_list = []
         for test_class_names in class_names:
             is_overlapping = not set(train_class_names).isdisjoint(set(test_class_names))
@@ -222,16 +162,12 @@ class FCCLIP(nn.Module):
             templated_classes, templated_classes_num = fill_all_templates_ensemble(x)
             templated_class_names += templated_classes
             num_templates.append(templated_classes_num)
-        class_names = templated_class_names
-        return category_overlapping_mask, num_templates, class_names
+        return category_overlapping_mask, num_templates, templated_class_names
 
     def set_metadata(self, metadata):
         self.test_metadata = metadata
-        self.category_overlapping_mask, self.test_num_templates, self.test_class_names = self.prepare_class_names_from_metadata(
-            metadata, self.train_metadata
-        )
+        self.category_overlapping_mask, self.test_num_templates, self.test_class_names = self.prepare_class_names_from_metadata(metadata, self.train_metadata)
         self.test_text_classifier = None
-        return
 
     def get_text_classifier(self):
         if self.training:
@@ -267,36 +203,43 @@ class FCCLIP(nn.Module):
                 self.test_text_classifier = text_classifier
             return self.test_text_classifier, self.test_num_templates
 
+    
     @classmethod
     def from_config(cls, cfg):
         backbone = build_backbone(cfg)
         sem_seg_head = build_sem_seg_head(cfg, backbone.output_shape())
-
+        
+        # Add deep supervision settings if applicable
         deep_supervision = cfg.MODEL.MASK_FORMER.DEEP_SUPERVISION
         no_object_weight = cfg.MODEL.MASK_FORMER.NO_OBJECT_WEIGHT
-
+        
+        # Define class, mask, and dice weights for the loss function
         class_weight = cfg.MODEL.MASK_FORMER.CLASS_WEIGHT
         dice_weight = cfg.MODEL.MASK_FORMER.DICE_WEIGHT
         mask_weight = cfg.MODEL.MASK_FORMER.MASK_WEIGHT
-
+        
+        # Instantiate the Hungarian matcher
         matcher = HungarianMatcher(
             cost_class=class_weight,
             cost_mask=mask_weight,
             cost_dice=dice_weight,
             num_points=cfg.MODEL.MASK_FORMER.TRAIN_NUM_POINTS,
         )
-
+        
+        # Create a dictionary for the weights
         weight_dict = {"loss_ce": class_weight, "loss_mask": mask_weight, "loss_dice": dice_weight}
-
+        
+        # If deep supervision is enabled, add additional weights for decoder layers
         if deep_supervision:
             dec_layers = cfg.MODEL.MASK_FORMER.DEC_LAYERS
             aux_weight_dict = {}
             for i in range(dec_layers - 1):
                 aux_weight_dict.update({k + f"_{i}": v for k, v in weight_dict.items()})
             weight_dict.update(aux_weight_dict)
-
+        
         losses = ["labels", "masks"]
-
+    
+        # Instantiate the SetCriterion object with the required arguments
         criterion = SetCriterion(
             sem_seg_head.num_classes,
             matcher=matcher,
@@ -307,7 +250,7 @@ class FCCLIP(nn.Module):
             oversample_ratio=cfg.MODEL.MASK_FORMER.OVERSAMPLE_RATIO,
             importance_sample_ratio=cfg.MODEL.MASK_FORMER.IMPORTANCE_SAMPLE_RATIO,
         )
-
+        
         return {
             "backbone": backbone,
             "sem_seg_head": sem_seg_head,
@@ -334,6 +277,7 @@ class FCCLIP(nn.Module):
             "ensemble_on_valid_mask": cfg.MODEL.FC_CLIP.ENSEMBLE_ON_VALID_MASK
         }
 
+
     @property
     def device(self):
         return self.pixel_mean.device
@@ -342,36 +286,38 @@ class FCCLIP(nn.Module):
         images = [x["image"].to(self.device) for x in batched_inputs]
         images = [(x - self.pixel_mean) / self.pixel_std for x in images]
         images = ImageList.from_tensors(images, self.size_divisibility)
-    
-        features = self.backbone(images.tensor)
 
+        # Extract features from backbone
+        features = self.backbone(images.tensor)
         if isinstance(features, dict):
-            if 'res4' in features:
-                x = features['res4']
-            else:
-                raise KeyError("Expected 'res4' in features dictionary, but key not found.")
+            x = features.get('res4')
         else:
             x = features
-    
-        x = self.conv1(x)
-        x = self.relu(self.bn1(x))
-        x = self.conv2(x)
-        x = self.relu(self.bn2(x))
-
+        
+        decoder_outputs = []
+        uncertainties = []
+        for decoder in self.decoders:
+            output, uncertainty = decoder(x)
+            decoder_outputs.append(output)
+            uncertainties.append(uncertainty)
+        
+        final_output = self.gate(decoder_outputs, uncertainties)
         text_classifier, num_templates = self.get_text_classifier()
         text_classifier = torch.cat([text_classifier, F.normalize(self.void_embedding.weight, dim=-1)], dim=0)
-
+        
         features['text_classifier'] = text_classifier
         features['num_templates'] = num_templates
         outputs = self.sem_seg_head(features)
 
         if self.training:
+            # Prepare targets for training
             if "instances" in batched_inputs[0]:
                 gt_instances = [x["instances"].to(self.device) for x in batched_inputs]
                 targets = self.prepare_targets(gt_instances, images)
             else:
                 targets = None
 
+            # Compute the losses
             losses = self.criterion(outputs, targets)
             for k in list(losses.keys()):
                 if k in self.criterion.weight_dict:
@@ -380,6 +326,7 @@ class FCCLIP(nn.Module):
                     losses.pop(k)
             return losses
         else:
+            # For inference
             mask_cls_results = outputs["pred_logits"]
             mask_pred_results = outputs["pred_masks"]
 
@@ -406,6 +353,9 @@ class FCCLIP(nn.Module):
             return processed_results
 
     def panoptic_seg_postprocess(self, panoptic_seg, image_size, output_height, output_width):
+        """
+        Resize the panoptic segmentation prediction to the desired size.
+        """
         panoptic_seg = panoptic_seg.unsqueeze(0).float()
         panoptic_seg = F.interpolate(panoptic_seg.unsqueeze(0), size=(output_height, output_width), mode='nearest')
         panoptic_seg = panoptic_seg.squeeze(0).squeeze(0).to(torch.int32)

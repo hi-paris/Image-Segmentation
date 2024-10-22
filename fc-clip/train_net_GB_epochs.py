@@ -57,47 +57,46 @@ class Trainer(DefaultTrainer):
         self.checkpointer = DetectionCheckpointer(
             self.model, self.cfg.OUTPUT_DIR, optimizer=self.optimizer, scheduler=self.scheduler
         )
-        
+
         # Initialize hooks before starting training
         self.before_train()
-    
+
         # Estimate the number of iterations per epoch
-        total_epochs = 3000  # Set the total number of epochs
+        total_epochs = 3000  # Set the total number of epochs you want
         iters_per_epoch = self.cfg.SOLVER.MAX_ITER // total_epochs  # Calculate iterations per epoch
-    
+
         # Start training loop
         with EventStorage(start_iter) as storage:
             while self.iter < self.max_iter:
                 # Calculate epoch based on the number of iterations
                 epoch = self.iter // iters_per_epoch
-    
+
                 # Unfreeze the config to modify the EVAL_PERIOD
                 self.cfg.defrost()
-    
+
                 # Dynamically adjust EVAL_PERIOD based on the current epoch
                 if 0 <= epoch <= 100:
-                    self.cfg.TEST.EVAL_PERIOD = 10 * iters_per_epoch
+                    self.cfg.TEST.EVAL_PERIOD = 10
                 elif 100 < epoch <= 500:
-                    self.cfg.TEST.EVAL_PERIOD = 50 * iters_per_epoch
+                    self.cfg.TEST.EVAL_PERIOD = 50
                 elif 500 < epoch <= 3000:
-                    self.cfg.TEST.EVAL_PERIOD = 100 * iters_per_epoch
+                    self.cfg.TEST.EVAL_PERIOD = 100
                 
                 # Freeze the config again after modification
                 self.cfg.freeze()
-    
+
                 # Perform a training step
                 self.run_step()
-    
+
                 # Perform evaluation at the set intervals
                 if (self.iter % self.cfg.TEST.EVAL_PERIOD == 0) or (self.iter == self.max_iter):
                     self.test(self.cfg, self.model)
-    
-                # Save the checkpoint after every eval period or at the end of training
-                if (self.iter % self.cfg.SOLVER.CHECKPOINT_PERIOD == 0) or (self.iter == self.max_iter):
-                    self.checkpointer.save(f"model_{self.iter:07d}")
-    
+
                 # Update iteration
                 self.iter += 1
+
+
+
 
 
     @classmethod
